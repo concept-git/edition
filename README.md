@@ -1,6 +1,6 @@
-# Space
+# Edition
 
-Space 是多租户文档与知识交付平台。维护者在空间内创作或导入内容。平台通过发版，向读者和应用智能体提供已上线内容。
+Edition 是多租户文档与知识交付平台。维护者在空间内创作或导入内容。平台通过发版，向读者和应用智能体提供已上线内容。
 
 Manage content in spaces. Publish versions for readers and application agents.
 
@@ -87,8 +87,8 @@ flowchart TB
 1. 获取仓库。进入仓库根目录。
 
    ```bash
-   git clone https://github.com/concept-git/edition-builder.git
-   cd edition-builder
+   git clone https://github.com/concept-git/edition.git
+   cd edition
    ```
 
 2. 安装启动工具依赖。
