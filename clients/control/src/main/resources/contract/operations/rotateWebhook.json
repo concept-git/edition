@@ -1,0 +1,78 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "id": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "rotateWebhook",
+  "apiCommand": "control.webhooks.secret.rotate",
+  "description": "Rotate the signing secret; returned once. Verify with control.webhooks.list.",
+  "method": "POST",
+  "path": "/webhooks/{id}:rotate",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "query",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/SecretResult"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": true
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "hosting:write"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "server-key"
+}

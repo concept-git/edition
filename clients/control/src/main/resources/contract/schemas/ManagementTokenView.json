@@ -1,0 +1,75 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "type": "string"
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "content:read",
+          "content:write",
+          "content:publish",
+          "members:read",
+          "members:write",
+          "permissions:read",
+          "permissions:write",
+          "hosting:read",
+          "hosting:write",
+          "audit:read",
+          "operations:read",
+          "operations:write",
+          "account:read",
+          "account:write",
+          "platform:read",
+          "platform:write",
+          "platform:erase"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "tenantId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "expiry": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "revoked"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lastUsedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revokedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

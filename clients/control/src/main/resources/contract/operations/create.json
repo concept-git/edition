@@ -1,0 +1,81 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false,
+    "json": {
+      "name": "VALUE"
+    },
+    "privateBody": false
+  },
+  "operationId": "create",
+  "apiCommand": "control.teams.create",
+  "description": "team create. Verify with control.teams.get.",
+  "method": "POST",
+  "path": "/api/v1/tenants/{tenantId}/teams",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/TeamNameRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "201": {
+      "description": "Team created",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/TeamView"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "members:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

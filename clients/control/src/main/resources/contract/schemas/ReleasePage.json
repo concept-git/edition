@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/ReleaseSummary"
+      }
+    },
+    "nextCursor": {
+      "type": "string"
+    },
+    "total": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "allowedActions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  }
+}

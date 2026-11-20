@@ -1,0 +1,10 @@
+---
+interface Props {
+  zh: boolean;
+}
+const { zh } = Astro.props;
+---
+
+<form class="logout-form" method="post" action="/_logout">
+  <button type="submit">{zh ? "退出" : "Sign out"}</button>
+</form>

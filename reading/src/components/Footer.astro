@@ -1,0 +1,49 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Mascot from "./Mascot.astro";
+import Wordmark from "./Wordmark.astro";
+import config from "@/config";
+import { columns } from "@/data/columns";
+
+type Props = { noMarginTop?: boolean } & HTMLAttributes<"footer">;
+const { noMarginTop = false, class: className, ...attrs } = Astro.props;
+---
+
+<footer class:list={["site-foot", { "mt-auto": !noMarginTop }, className]} {...attrs}>
+  <div class="site-foot-peek" aria-hidden="true">
+    <div class="site-foot-peek-flip">
+      <Mascot />
+    </div>
+  </div>
+  <svg class="site-foot-cloud" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 0H1440V42C1360 68 1300 24 1180 36C1060 48 1010 12 880 28C750 44 700 8 560 24C420 40 370 78 240 58C130 42 70 70 0 48Z" fill="#fff" />
+  </svg>
+  <div class="site-foot-grid">
+    <div>
+      <Wordmark />
+      <p class="site-foot-tag">概念设计、本体论、软件架构。</p>
+      <a class="site-foot-rss" href="/rss.xml">订阅 RSS</a>
+    </div>
+    <nav aria-label="栏目">
+      <h2>栏目</h2>
+      <ul>
+        {columns.map(column => <li><a href={`/${column.slug}`}>{column.name}</a></li>)}
+      </ul>
+    </nav>
+    <nav aria-label="站点">
+      <h2>站点</h2>
+      <ul>
+        <li><a href="/about">关于这个站点</a></li>
+        <li><a href="/blog">全部文章</a></li>
+        <li><a href="/search">搜索</a></li>
+        <li><a href="https://docs.beautyclaw.cn/">文档</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="site-foot-base">
+    <p>
+      © {new Date().getFullYear()} {config.site.title}
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">粤ICP备2026043688号-1</a>
+    </p>
+  </div>
+</footer>

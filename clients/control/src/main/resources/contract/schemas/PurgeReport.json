@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "scanned": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "purged": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "protectedCount": {
+      "type": "integer",
+      "format": "int32"
+    }
+  }
+}

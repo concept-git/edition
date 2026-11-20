@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "pv": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "series": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialBucket"
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialRanked"
+      }
+    },
+    "notFound": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialRanked"
+      }
+    },
+    "referrers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialRanked"
+      }
+    },
+    "health": {
+      "$ref": "#/components/schemas/PartialHealth"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false
+  },
+  "operationId": "storageUsage",
+  "apiCommand": "control.operations.storage.get",
+  "description": "Inspect platform physical source storage and database size.",
+  "method": "GET",
+  "path": "/ops/storage",
+  "parameters": [
+    {
+      "name": "fields",
+      "in": "query",
+      "description": "Optional response field mask. Select fields from this operation's response schema; omit for the full response. Keep nextCursor when paginating; select dynamic maps whole.",
+      "schema": {
+        "type": "string",
+        "maxLength": 4096,
+        "minLength": 1
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "*/*": {
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StorageUsage"
+              },
+              {
+                "$ref": "#/components/schemas/PartialStorageUsage"
+              }
+            ],
+            "description": "Full response when fields is absent; selected fields may be omitted when fields is supplied."
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "operations:read"
+  ],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

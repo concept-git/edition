@@ -1,0 +1,85 @@
+{
+  "example": {
+    "params": {
+      "id": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false,
+    "json": {
+      "confirmationEmail": "agent@example.test",
+      "currentPassword": "VALUE"
+    },
+    "privateBody": true
+  },
+  "operationId": "eraseAdminUser",
+  "apiCommand": "control.admin.user.erase",
+  "description": "Irreversibly erase a deactivated global user. Verify with control.admin.user.get.",
+  "method": "POST",
+  "path": "/admin/users/{id}:erase",
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ConfirmRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "403": {
+      "description": "Caller is not a platform operator (platform_operator_required)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "204": {
+      "description": "No Content"
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": true,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "platform:erase"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "server-key"
+}

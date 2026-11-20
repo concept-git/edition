@@ -1,0 +1,93 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "spaceId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false,
+    "json": {
+      "ids": [
+        "00000000-0000-0000-0000-000000000001"
+      ]
+    },
+    "privateBody": false
+  },
+  "operationId": "unpublishPages",
+  "apiCommand": "control.spaces.pages.batchUnpublish",
+  "description": "Unpublish 1..100 selected authored Pages in one atomic Space operation, with at most one automatic Release. Any authorization failure rejects the whole batch. Verify selected Page states, actual Release outcome, and Site delivery only when requested.",
+  "method": "POST",
+  "path": "/api/v1/tenants/{tenantId}/spaces/{spaceId}/pages:unpublish",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "spaceId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/PageIdsRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/BatchPublishResult"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "content:publish"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "server-key"
+}

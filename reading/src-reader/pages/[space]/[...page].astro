@@ -1,0 +1,11 @@
+---
+import { readPageRoute } from "../../app/routes/page-route.ts";
+import RouteView from "../../app/views/RouteView.astro";
+import { applyView } from "../../app/views/apply.ts";
+
+const route = await readPageRoute(Astro);
+if (route.response) return route.response;
+applyView(Astro.response, route);
+---
+
+<RouteView view={route.view} />

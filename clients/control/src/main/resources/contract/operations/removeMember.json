@@ -1,0 +1,70 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "teamId": "00000000-0000-0000-0000-000000000001",
+      "userId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "removeMember",
+  "apiCommand": "control.teams.members.remove",
+  "description": "team member remove. Verify with control.teams.get.",
+  "method": "DELETE",
+  "path": "/api/v1/tenants/{tenantId}/teams/{teamId}/members/{userId}",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "teamId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "userId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "204": {
+      "description": "No Content"
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "members:write"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "explicit-single-attempt"
+}

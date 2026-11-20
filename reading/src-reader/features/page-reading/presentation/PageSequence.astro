@@ -1,0 +1,31 @@
+---
+import type { Sequence } from "../domain/sequence.ts";
+
+interface Props {
+  sequence: Sequence;
+  previousLabel: string;
+  nextLabel: string;
+}
+const { sequence, previousLabel, nextLabel } = Astro.props;
+---
+
+<nav class="page-sequence" aria-label="Page sequence">
+  {
+    sequence.previous ? (
+      <a class="previous" href={sequence.previous.href}>
+        <small>{previousLabel}</small>
+        <span>{sequence.previous.label}</span>
+      </a>
+    ) : (
+      <span />
+    )
+  }
+  {
+    sequence.next && (
+      <a class="next" href={sequence.next.href}>
+        <small>{nextLabel}</small>
+        <span>{sequence.next.label}</span>
+      </a>
+    )
+  }
+</nav>

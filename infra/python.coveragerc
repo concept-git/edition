@@ -1,0 +1,13 @@
+[run]
+branch = True
+source = ${SPACE_COVERAGE_SOURCE-space_vfs}
+omit = */tests/*
+# CLI tests launch real Python processes. Count those executions before making a report.
+patch = subprocess
+parallel = True
+
+[report]
+show_missing = True
+
+[json]
+show_contexts = False

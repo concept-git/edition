@@ -1,0 +1,85 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false,
+    "json": {
+      "events": [
+        "VALUE"
+      ],
+      "scopeType": "tenant",
+      "url": "VALUE"
+    },
+    "privateBody": false
+  },
+  "operationId": "createWebhook",
+  "apiCommand": "control.webhooks.create",
+  "description": "Create a signed webhook subscription. Verify with control.webhooks.list.",
+  "method": "POST",
+  "path": "/webhooks",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "query",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/WebhookConfiguration"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "201": {
+      "description": "Created",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/SecretResult"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": true
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "hosting:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "promoted",
+        "skipped",
+        "held",
+        "unchanged"
+      ]
+    },
+    "release": {
+      "$ref": "#/components/schemas/ReleaseDetail"
+    }
+  }
+}

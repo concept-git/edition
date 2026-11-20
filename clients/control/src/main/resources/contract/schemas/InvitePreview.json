@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string"
+    },
+    "tenant": {
+      "$ref": "#/components/schemas/InviteGroup"
+    },
+    "team": {
+      "$ref": "#/components/schemas/InviteGroup"
+    },
+    "email": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "retriedObjects": {
+      "type": "integer",
+      "format": "int32"
+    }
+  }
+}

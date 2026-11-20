@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "promoted",
+        "skipped",
+        "held",
+        "flagged",
+        "invalid_bundle",
+        "dependency_failed",
+        "unexpected_error",
+        "resource_unavailable",
+        "resource_deleted"
+      ]
+    },
+    "release": {
+      "$ref": "#/components/schemas/ReleaseDetail"
+    }
+  }
+}

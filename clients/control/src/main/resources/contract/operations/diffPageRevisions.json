@@ -1,0 +1,118 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "spaceId": "00000000-0000-0000-0000-000000000001",
+      "pageId": "00000000-0000-0000-0000-000000000001",
+      "from": 1,
+      "to": 1
+    },
+    "privateParams": false
+  },
+  "operationId": "diffPageRevisions",
+  "apiCommand": "control.spaces.pages.revisions.diff",
+  "description": "Compare two Page Revisions. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+  "method": "GET",
+  "path": "/api/v1/tenants/{tenantId}/spaces/{spaceId}/pages/{pageId}/revisions:diff",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "spaceId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "pageId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "from",
+      "in": "query",
+      "required": true,
+      "schema": {
+        "type": "integer",
+        "format": "int32",
+        "minimum": 1
+      }
+    },
+    {
+      "name": "to",
+      "in": "query",
+      "required": true,
+      "schema": {
+        "type": "integer",
+        "format": "int32",
+        "minimum": 1
+      }
+    },
+    {
+      "name": "fields",
+      "in": "query",
+      "description": "Optional response field mask. Select fields from this operation's response schema; omit for the full response. Keep nextCursor when paginating; select dynamic maps whole.",
+      "schema": {
+        "type": "string",
+        "maxLength": 4096,
+        "minLength": 1
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "*/*": {
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RevisionDiff"
+              },
+              {
+                "$ref": "#/components/schemas/PartialRevisionDiff"
+              }
+            ],
+            "description": "Full response when fields is absent; selected fields may be omitted when fields is supplied."
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token",
+    "space_token"
+  ],
+  "requiredScopes": [
+    "content:read"
+  ],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

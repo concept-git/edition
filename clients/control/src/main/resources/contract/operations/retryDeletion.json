@@ -1,0 +1,71 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "resourceId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "retryDeletion",
+  "apiCommand": "control.deletions.retry",
+  "description": "Retry the original cleanup and delivery intentions. Verify with control.deletions.list.",
+  "method": "POST",
+  "path": "/api/v1/tenants/{tenantId}/deletions/{resourceId}:retry",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "resourceId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "204": {
+      "description": "No Content"
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "operations:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

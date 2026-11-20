@@ -1,0 +1,168 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "spaceId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "listPages",
+  "apiCommand": "control.spaces.pages.list",
+  "description": "List readable Pages in a Space. Verify with control.spaces.pages.get.",
+  "method": "GET",
+  "path": "/api/v1/tenants/{tenantId}/spaces/{spaceId}/pages",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "spaceId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "integer",
+        "format": "int32",
+        "default": 20,
+        "maximum": 100,
+        "minimum": 1
+      }
+    },
+    {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "pattern": "draft|published",
+        "enum": [
+          "draft",
+          "published"
+        ]
+      }
+    },
+    {
+      "name": "format",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "pattern": "markdown|html|txt|json|xml",
+        "enum": [
+          "markdown",
+          "html",
+          "txt",
+          "json",
+          "xml"
+        ]
+      }
+    },
+    {
+      "name": "tag",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 0
+      }
+    },
+    {
+      "name": "ids",
+      "in": "query",
+      "description": "Select 1..100 distinct Page ids without pagination; cannot combine with limit, cursor or other filters",
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "maxItems": 100,
+        "minItems": 1
+      }
+    },
+    {
+      "name": "fields",
+      "in": "query",
+      "description": "Optional response field mask. Select fields from this operation's response schema; omit for the full response. Keep nextCursor when paginating; select dynamic maps whole.",
+      "schema": {
+        "type": "string",
+        "maxLength": 4096,
+        "minLength": 1
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "*/*": {
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PagePage"
+              },
+              {
+                "$ref": "#/components/schemas/PartialPagePage"
+              }
+            ],
+            "description": "Full response when fields is absent; selected fields may be omitted when fields is supplied."
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": true,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token",
+    "space_token"
+  ],
+  "requiredScopes": [
+    "content:read"
+  ],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

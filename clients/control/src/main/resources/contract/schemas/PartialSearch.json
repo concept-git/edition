@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "searches": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "observable": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "clicked": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "clickRate": {
+      "type": "number",
+      "format": "double"
+    },
+    "popular": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialRanked"
+      }
+    },
+    "zeroResults": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialRanked"
+      }
+    },
+    "health": {
+      "$ref": "#/components/schemas/PartialHealth"
+    }
+  }
+}

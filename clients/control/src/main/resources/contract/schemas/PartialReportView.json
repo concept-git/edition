@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "errors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialIssueView"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialIssueView"
+      }
+    },
+    "info": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialIssueView"
+      }
+    }
+  }
+}

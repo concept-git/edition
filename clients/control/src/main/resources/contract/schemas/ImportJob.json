@@ -1,0 +1,118 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "retrying",
+        "held",
+        "failed",
+        "completed"
+      ]
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "inspecting",
+        "adapting",
+        "storing",
+        "loading",
+        "validating",
+        "comparing",
+        "promoting",
+        "mirroring",
+        "completing",
+        "running",
+        "retrying",
+        "held",
+        "failed",
+        "completed"
+      ]
+    },
+    "progress": {
+      "$ref": "#/components/schemas/ImportJobProgress"
+    },
+    "attempt": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "nextRunAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "traceId": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "promoted",
+        "skipped",
+        "held",
+        "flagged",
+        "invalid_bundle",
+        "dependency_failed",
+        "unexpected_error",
+        "resource_unavailable",
+        "resource_deleted",
+        null
+      ]
+    },
+    "releaseId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "sourceUrl": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Public https address the zip was fetched from; null for uploads"
+    },
+    "adapterId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Import format detected by sniffing (bundle-v1, hwcloud-docs, okf-v0.1, file-tree); null until the zip has been inspected or when no adapter matched"
+    },
+    "report": {
+      "$ref": "#/components/schemas/ImportJobReport"
+    },
+    "terminal": {
+      "type": "boolean"
+    },
+    "successful": {
+      "type": "boolean"
+    },
+    "nextPollAfterSeconds": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "format": "int32",
+      "description": "Suggested read-only polling interval; null when terminal"
+    }
+  },
+  "required": [
+    "nextPollAfterSeconds",
+    "successful",
+    "terminal"
+  ]
+}

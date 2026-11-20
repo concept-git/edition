@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "accessToken": {
+      "type": "string"
+    },
+    "tokenType": {
+      "type": "string"
+    },
+    "expiresIn": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

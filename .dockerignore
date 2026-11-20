@@ -1,0 +1,8 @@
+.git
+.scratch
+**/__pycache__
+**/.gradle
+**/node_modules
+**/build
+**/jte-classes
+**/.features-gen

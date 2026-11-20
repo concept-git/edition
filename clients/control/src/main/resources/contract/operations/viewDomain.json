@@ -1,0 +1,94 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "siteId": "00000000-0000-0000-0000-000000000001",
+      "host": "VALUE"
+    },
+    "privateParams": false
+  },
+  "operationId": "viewDomain",
+  "apiCommand": "control.domains.get",
+  "description": "Read a bound custom domain including the TXT challenge. Verify with control.domains.get.",
+  "method": "GET",
+  "path": "/api/v1/tenants/{tenantId}/sites/{siteId}/domains/{host}",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "siteId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "host",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "fields",
+      "in": "query",
+      "description": "Optional response field mask. Select fields from this operation's response schema; omit for the full response. Keep nextCursor when paginating; select dynamic maps whole.",
+      "schema": {
+        "type": "string",
+        "maxLength": 4096,
+        "minLength": 1
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "*/*": {
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DomainDetail"
+              },
+              {
+                "$ref": "#/components/schemas/PartialDomainDetail"
+              }
+            ],
+            "description": "Full response when fields is absent; selected fields may be omitted when fields is supplied."
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": true
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "hosting:read"
+  ],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

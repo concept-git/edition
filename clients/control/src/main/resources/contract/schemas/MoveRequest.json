@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "parentId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "position": {
+      "type": "integer",
+      "format": "int32",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "position"
+  ]
+}

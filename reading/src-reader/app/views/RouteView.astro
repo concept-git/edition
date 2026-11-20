@@ -1,0 +1,79 @@
+---
+import ArticleBody from "../../features/content-rendering/presentation/ArticleBody.astro";
+import TableOfContents from "../../features/content-rendering/presentation/TableOfContents.astro";
+import ErrorPage from "../../features/error-pages/presentation/ErrorPage.astro";
+import PageSequence from "../../features/page-reading/presentation/PageSequence.astro";
+import SeoHead from "../../features/page-reading/presentation/SeoHead.astro";
+import ContinueForm from "../../features/reader-session/presentation/ContinueForm.astro";
+import LoginForm from "../../features/reader-session/presentation/LoginForm.astro";
+import SearchView from "../../features/search/presentation/SearchView.astro";
+import { languageOf } from "../../features/site/index.ts";
+import NavTree from "../../features/site/presentation/NavTree.astro";
+import type { View } from "../routes/route-result.ts";
+import { zhOf } from "../routes/route-result.ts";
+import LoginBehavior from "./LoginBehavior.astro";
+import ReaderLayout from "./ReaderLayout.astro";
+
+interface Props {
+  view: View;
+}
+const { view } = Astro.props;
+const zh = view.kind === "article" ? languageOf(view.article.site) === "zh-CN" : zhOf(view.site);
+---
+
+{
+  view.kind === "article" ? (
+    <ReaderLayout site={view.article.site} title={view.article.seo.title} currentSpace={view.article.page.space}>
+      <SeoHead slot="head" seo={view.article.seo} siteName={view.article.site.name} />
+      <div class="reader-shell">
+        <aside class="site-sidebar">
+          <strong>{view.article.page.spaceName}</strong>
+          <NavTree nodes={view.article.navigation} currentPath={view.article.page.path} />
+        </aside>
+        <main class="page-main">
+          {view.article.trail.length > 0 && (
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+              {view.article.trail.map((section) => (
+                <span class="breadcrumb-section">{section}</span>
+              ))}
+            </nav>
+          )}
+          <article class="page-content">
+            <h1>{view.article.page.title}</h1>
+            <ArticleBody html={view.article.body.html} />
+          </article>
+          <PageSequence
+            sequence={view.article.sequence}
+            previousLabel={zh ? "上一篇" : "Previous"}
+            nextLabel={zh ? "下一篇" : "Next"}
+          />
+        </main>
+        <TableOfContents headings={view.article.body.headings} label={zh ? "本页目录" : "On this page"} />
+      </div>
+    </ReaderLayout>
+  ) : view.kind === "login" ? (
+    <ReaderLayout site={view.site} title={zh ? "登录" : "Sign in"} noIndex>
+      <main class="login-page">
+        <h1>{zh ? "登录后阅读" : "Sign in to read"}</h1>
+        <LoginForm returnTo={view.returnTo} zh={zh} clearStale={view.clearStale} error={view.error} />
+        <LoginBehavior />
+      </main>
+    </ReaderLayout>
+  ) : view.kind === "continue" ? (
+    <ReaderLayout site={view.site} title={zh ? "继续阅读" : "Continue reading"} noIndex>
+      <main class="login-page">
+        <h1>{zh ? "阅读凭据已过期" : "Your reading access expired"}</h1>
+        <p>{zh ? "会话仍然有效，继续阅读即可续期。" : "Your session is still valid. Continue to renew it."}</p>
+        <ContinueForm returnTo={view.returnTo} zh={zh} />
+      </main>
+    </ReaderLayout>
+  ) : view.kind === "search" ? (
+    <ReaderLayout site={view.site} title={zh ? "搜索" : "Search"} noIndex scope={view.scope}>
+      <SearchView query={view.query} hits={view.hits} nextHref={view.nextHref} zh={zh} proof={view.proof} scope={view.scope} />
+    </ReaderLayout>
+  ) : (
+    <ReaderLayout site={view.site} title={view.copy.heading} noIndex>
+      <ErrorPage copy={view.copy} zh={zh} />
+    </ReaderLayout>
+  )
+}

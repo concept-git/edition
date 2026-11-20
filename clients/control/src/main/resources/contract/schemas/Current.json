@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "epoch": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "primaryHost": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "readerHref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "spaces": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/OnlineSpace"
+      }
+    },
+    "readable": {
+      "type": "boolean",
+      "description": "The actual snapshot is present and has no pending site fence. Each Reader request still enforces current reader policy; this does not prove anonymous access."
+    },
+    "searchStatus": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

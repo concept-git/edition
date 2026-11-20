@@ -1,0 +1,58 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "sourceId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tenantId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "siteId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "pageId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "type": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "searchId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "visitor": {
+      "type": "string"
+    },
+    "referrer": {
+      "type": "string"
+    },
+    "zero": {
+      "type": "boolean"
+    },
+    "observable": {
+      "type": "boolean"
+    },
+    "dropped": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

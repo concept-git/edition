@@ -1,0 +1,21 @@
+---
+import type { Seo } from "../domain/seo.ts";
+
+interface Props {
+  seo: Seo;
+  siteName: string;
+}
+const { seo, siteName } = Astro.props;
+---
+
+<title>{seo.title}</title>
+<meta name="description" content={seo.description} />
+{seo.keywords && <meta name="keywords" content={seo.keywords} />}
+{seo.noIndex && <meta name="robots" content="noindex,nofollow" />}
+<link rel="canonical" href={seo.canonical} />
+<meta property="og:type" content="article" />
+<meta property="og:title" content={seo.title} />
+<meta property="og:description" content={seo.description} />
+<meta property="og:url" content={seo.canonical} />
+<meta property="og:site_name" content={siteName} />
+{seo.ogImage && <meta property="og:image" content={seo.ogImage} />}

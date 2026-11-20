@@ -1,0 +1,57 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false
+  },
+  "operationId": "retryStorage",
+  "apiCommand": "control.operations.storage.retry",
+  "description": "Requeue failed source cleanup without bypassing reference protection.",
+  "method": "POST",
+  "path": "/ops/storage:retry",
+  "parameters": [
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "202": {
+      "description": "Accepted",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/StorageRetry"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "operations:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "releaseId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "status": {
+      "type": "string"
+    },
+    "attempts": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "error": {
+      "type": "string"
+    },
+    "traceId": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "bytes": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

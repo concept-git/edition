@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "properties": {
+    "credentialType": {
+      "type": "string",
+      "enum": [
+        "session",
+        "space_token",
+        "management_token"
+      ]
+    },
+    "actorId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "credentialId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "tenantId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "expiry": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

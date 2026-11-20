@@ -1,0 +1,32 @@
+---
+import type { ErrorCopy } from "../domain/messages.ts";
+
+interface Props {
+  copy: ErrorCopy;
+  zh: boolean;
+}
+const { copy, zh } = Astro.props;
+---
+
+<main class="error-page">
+  <p class="error-status">{copy.status}</p>
+  <h1>{copy.heading}</h1>
+  <p>{copy.message}</p>
+  {
+    copy.traceId && (
+      <p class="trace-id">
+        {zh ? "请求编号：" : "Trace ID: "}
+        <code>{copy.traceId}</code>
+      </p>
+    )
+  }
+  {
+    copy.requestId && (
+      <p class="trace-id">
+        {zh ? "请求标识：" : "Request ID: "}
+        <code>{copy.requestId}</code>
+      </p>
+    )
+  }
+  <a class="reader-secondary-action" href="/">{zh ? "返回首页" : "Home"}</a>
+</main>

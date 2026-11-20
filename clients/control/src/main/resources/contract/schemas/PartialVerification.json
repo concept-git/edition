@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "developmentId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "candidateId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "sourceDigest": {
+      "type": "string"
+    },
+    "bundleDigest": {
+      "type": "string"
+    },
+    "fixtureDigest": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "browserEvidence": {
+      "$ref": "#/components/schemas/PartialEvidence"
+    },
+    "serverValidation": {
+      "$ref": "#/components/schemas/PartialEvidence"
+    },
+    "productionEligible": {
+      "type": "boolean"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

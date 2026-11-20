@@ -1,0 +1,15 @@
+ALTER TABLE releases.release_pages ADD COLUMN content_definition jsonb;
+CREATE TABLE shared.content_types(tenant_id uuid NOT NULL REFERENCES shared.tenants(id),content_type text NOT NULL,active_version_id uuid,payload jsonb NOT NULL,PRIMARY KEY(tenant_id,content_type));
+CREATE TABLE shared.content_type_versions(id uuid PRIMARY KEY,tenant_id uuid NOT NULL REFERENCES shared.tenants(id),content_type text NOT NULL,version text NOT NULL,payload jsonb NOT NULL,UNIQUE(tenant_id,content_type,version),UNIQUE(tenant_id,content_type,id));
+ALTER TABLE shared.content_types ADD FOREIGN KEY(tenant_id,content_type,active_version_id) REFERENCES shared.content_type_versions(tenant_id,content_type,id);
+ALTER TABLE shared.content_types ENABLE ROW LEVEL SECURITY;
+ALTER TABLE shared.content_types FORCE ROW LEVEL SECURITY;
+ALTER TABLE shared.content_type_versions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE shared.content_type_versions FORCE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation ON shared.content_types TO space_app USING(tenant_id=shared.require_tenant_id()) WITH CHECK(tenant_id=shared.require_tenant_id());
+CREATE POLICY tenant_isolation ON shared.content_type_versions TO space_app USING(tenant_id=shared.require_tenant_id()) WITH CHECK(tenant_id=shared.require_tenant_id());
+CREATE TRIGGER forbid_update BEFORE UPDATE ON shared.content_type_versions FOR EACH ROW EXECUTE FUNCTION shared.forbid_update();
+GRANT SELECT,INSERT,UPDATE,DELETE ON shared.content_types TO space_app;
+GRANT SELECT,INSERT,DELETE ON shared.content_type_versions TO space_app;
+COMMENT ON TABLE shared.content_types IS 'rls:tenant/direct; ContentType owns activation and optimistic baseline';
+COMMENT ON TABLE shared.content_type_versions IS 'rls:tenant/direct; ContentType owns immutable definitions and schema closures';

@@ -1,0 +1,36 @@
+---
+import type { NavNode } from "../domain/site.ts";
+
+interface Props {
+  nodes: NavNode[];
+  currentPath?: string;
+}
+const { nodes, currentPath } = Astro.props;
+---
+
+<ul class="site-nav-list">
+  {
+    nodes.map((node) => (
+      <li class={`nav-${node.kind}`}>
+        {node.href === null && node.children.length > 0 ? (
+          <details open>
+            <summary>{node.label}</summary>
+            <Astro.self nodes={node.children} currentPath={currentPath} />
+          </details>
+        ) : node.href === null ? (
+          <span>{node.label}</span>
+        ) : (
+          <a
+            href={node.href}
+            aria-current={node.href === currentPath ? "page" : undefined}
+          >
+            {node.label}
+          </a>
+        )}
+        {node.href !== null && node.children.length > 0 && (
+          <Astro.self nodes={node.children} currentPath={currentPath} />
+        )}
+      </li>
+    ))
+  }
+</ul>

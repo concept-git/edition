@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "properties": {
+    "principal": {
+      "$ref": "#/components/schemas/PartialPrincipalView"
+    },
+    "allowed": {
+      "type": "boolean"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "direct_grant",
+        "team_grant",
+        "explicit_none",
+        "no_grant",
+        "restriction_miss"
+      ]
+    },
+    "effectiveOperations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "read",
+          "write",
+          "publish",
+          "admin"
+        ]
+      }
+    },
+    "matchedLayer": {
+      "$ref": "#/components/schemas/PartialResourceView"
+    },
+    "matchedGrants": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialEffectiveGrantView"
+      }
+    },
+    "trace": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialDecisionTraceView"
+      }
+    }
+  }
+}

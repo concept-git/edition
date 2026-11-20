@@ -1,0 +1,29 @@
+---
+interface Props {
+  returnTo: string;
+  zh: boolean;
+}
+const { returnTo, zh } = Astro.props;
+const messages = {
+  unavailable: zh
+    ? "暂时无法继续阅读，请稍后重试。会话已保留。"
+    : "Reading cannot continue right now. Your session is kept; try again shortly.",
+  offline: zh ? "网络连接失败，请重试。会话已保留。" : "Network error. Your session is kept; try again.",
+  countdown: zh ? "{n} 秒后重试" : "Retry in {n}s",
+};
+---
+
+<form
+  class="continue-form"
+  method="post"
+  action="/_auth/session/refresh"
+  data-return-to={returnTo}
+  data-messages={JSON.stringify(messages)}
+>
+  <input type="hidden" name="returnTo" value={returnTo} />
+  <p class="continue-status" role="alert" hidden></p>
+  <button type="submit">{zh ? "继续阅读" : "Continue reading"}</button>
+</form>
+<p class="continue-login">
+  <a href={`/_login?returnTo=${encodeURIComponent(returnTo)}`}>{zh ? "改用其他账号登录" : "Sign in with another account"}</a>
+</p>

@@ -1,0 +1,562 @@
+{
+  "apiVersion": 1,
+  "types": [
+    {
+      "id": "markdown",
+      "label": "Markdown",
+      "format": "markdown",
+      "mediaType": "text/markdown",
+      "language": "markdown",
+      "renderHost": "server",
+      "version": "1.0.0",
+      "defaultInterpretation": {},
+      "validation": {
+        "encoding": "text"
+      },
+      "schemaResources": {},
+      "editors": [
+        {
+          "pluginId": "builtin.markdown",
+          "pluginVersion": "1.0.0",
+          "contributionId": "visual",
+          "config": {
+            "codec": "markdown"
+          }
+        },
+        {
+          "pluginId": "builtin.markdown",
+          "pluginVersion": "1.0.0",
+          "contributionId": "source",
+          "config": {
+            "language": "markdown"
+          }
+        }
+      ],
+      "renderers": [
+        {
+          "pluginId": "builtin.markdown",
+          "pluginVersion": "1.0.0",
+          "contributionId": "render",
+          "config": {
+            "codec": "markdown"
+          }
+        }
+      ]
+    },
+    {
+      "id": "html",
+      "label": "HTML",
+      "format": "html",
+      "mediaType": "text/html",
+      "language": "html",
+      "renderHost": "server",
+      "version": "1.0.0",
+      "defaultInterpretation": {},
+      "validation": {
+        "encoding": "text"
+      },
+      "schemaResources": {},
+      "editors": [
+        {
+          "pluginId": "builtin.html",
+          "pluginVersion": "1.0.0",
+          "contributionId": "visual",
+          "config": {
+            "codec": "html"
+          }
+        },
+        {
+          "pluginId": "builtin.html",
+          "pluginVersion": "1.0.0",
+          "contributionId": "source",
+          "config": {
+            "language": "html"
+          }
+        }
+      ],
+      "renderers": [
+        {
+          "pluginId": "builtin.html",
+          "pluginVersion": "1.0.0",
+          "contributionId": "render",
+          "config": {
+            "codec": "html"
+          }
+        }
+      ]
+    },
+    {
+      "id": "txt",
+      "label": "TXT",
+      "format": "txt",
+      "mediaType": "text/plain",
+      "language": "plain",
+      "renderHost": "server",
+      "version": "1.0.0",
+      "defaultInterpretation": {},
+      "validation": {
+        "encoding": "text"
+      },
+      "schemaResources": {},
+      "editors": [
+        {
+          "pluginId": "builtin.txt",
+          "pluginVersion": "1.0.0",
+          "contributionId": "source",
+          "config": {
+            "language": "plain"
+          }
+        }
+      ],
+      "renderers": [
+        {
+          "pluginId": "builtin.txt",
+          "pluginVersion": "1.0.0",
+          "contributionId": "render",
+          "config": {
+            "language": "plain"
+          }
+        }
+      ]
+    },
+    {
+      "id": "json",
+      "label": "JSON",
+      "format": "json",
+      "mediaType": "application/json",
+      "language": "json",
+      "renderHost": "browser",
+      "version": "1.0.0",
+      "defaultInterpretation": {},
+      "validation": {
+        "encoding": "json",
+        "instanceSchemaPointer": "/interpretation/schema"
+      },
+      "schemaResources": {},
+      "editors": [
+        {
+          "pluginId": "builtin.json",
+          "pluginVersion": "1.0.0",
+          "contributionId": "source",
+          "config": {
+            "language": "json"
+          }
+        }
+      ],
+      "renderers": [
+        {
+          "pluginId": "builtin.json",
+          "pluginVersion": "1.0.0",
+          "contributionId": "render",
+          "config": {
+            "language": "json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "xml",
+      "label": "XML",
+      "format": "xml",
+      "mediaType": "application/xml",
+      "language": "xml",
+      "renderHost": "server",
+      "version": "1.0.0",
+      "defaultInterpretation": {},
+      "validation": {
+        "encoding": "text"
+      },
+      "schemaResources": {},
+      "editors": [
+        {
+          "pluginId": "builtin.xml",
+          "pluginVersion": "1.0.0",
+          "contributionId": "source",
+          "config": {
+            "language": "xml"
+          }
+        }
+      ],
+      "renderers": [
+        {
+          "pluginId": "builtin.xml",
+          "pluginVersion": "1.0.0",
+          "contributionId": "render",
+          "config": {
+            "language": "xml"
+          }
+        }
+      ]
+    },
+    {
+      "id": "json-schema",
+      "label": "JSON Schema",
+      "format": "json",
+      "mediaType": "application/schema+json",
+      "language": "json",
+      "renderHost": "browser",
+      "version": "1.0.0",
+      "defaultInterpretation": {},
+      "validation": {
+        "encoding": "json",
+        "schemaRef": "https://space.invalid/content-schemas/json-schema-envelope.json"
+      },
+      "schemaResources": {},
+      "editors": [
+        {
+          "pluginId": "builtin.json-schema",
+          "pluginVersion": "1.0.0",
+          "contributionId": "source",
+          "config": {
+            "language": "json"
+          }
+        }
+      ],
+      "renderers": [
+        {
+          "pluginId": "builtin.json-schema",
+          "pluginVersion": "1.0.0",
+          "contributionId": "render",
+          "config": {
+            "language": "json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "a2ui",
+      "label": "A2UI",
+      "format": "json",
+      "mediaType": "application/a2ui+json",
+      "language": "json",
+      "renderHost": "browser",
+      "version": "1.0.0",
+      "defaultInterpretation": {
+        "protocolVersion": "v0.9.1",
+        "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json"
+      },
+      "validation": {
+        "encoding": "json",
+        "schemaRef": "https://space.invalid/content-schemas/a2ui-envelope.json"
+      },
+      "schemaResources": {},
+      "editors": [
+        {
+          "pluginId": "builtin.a2ui",
+          "pluginVersion": "1.0.0",
+          "contributionId": "source",
+          "config": {
+            "language": "json"
+          }
+        }
+      ],
+      "renderers": [
+        {
+          "pluginId": "builtin.a2ui",
+          "pluginVersion": "1.0.0",
+          "contributionId": "render",
+          "config": {
+            "language": "json"
+          }
+        }
+      ]
+    }
+  ],
+  "plugins": [
+    {
+      "manifest": {
+        "id": "builtin.markdown",
+        "name": "Markdown",
+        "version": "1.0.0",
+        "apiVersion": 1,
+        "contentTypes": [
+          "markdown"
+        ],
+        "editors": [
+          {
+            "id": "visual",
+            "label": "编辑",
+            "tagName": "space-rich-editor",
+            "contentTypes": [
+              "markdown"
+            ],
+            "config": {
+              "codec": "markdown"
+            }
+          },
+          {
+            "id": "source",
+            "label": "源码",
+            "tagName": "space-source-editor",
+            "contentTypes": [
+              "markdown"
+            ],
+            "config": {
+              "language": "markdown"
+            }
+          }
+        ],
+        "renderers": [
+          {
+            "id": "render",
+            "label": "效果",
+            "tagName": "space-markup-renderer",
+            "contentTypes": [
+              "markdown"
+            ],
+            "config": {
+              "codec": "markdown"
+            }
+          }
+        ]
+      },
+      "editorEntry": "editors",
+      "rendererEntry": "markup"
+    },
+    {
+      "manifest": {
+        "id": "builtin.html",
+        "name": "HTML",
+        "version": "1.0.0",
+        "apiVersion": 1,
+        "contentTypes": [
+          "html"
+        ],
+        "editors": [
+          {
+            "id": "visual",
+            "label": "编辑",
+            "tagName": "space-rich-editor",
+            "contentTypes": [
+              "html"
+            ],
+            "config": {
+              "codec": "html"
+            }
+          },
+          {
+            "id": "source",
+            "label": "源码",
+            "tagName": "space-source-editor",
+            "contentTypes": [
+              "html"
+            ],
+            "config": {
+              "language": "html"
+            }
+          }
+        ],
+        "renderers": [
+          {
+            "id": "render",
+            "label": "效果",
+            "tagName": "space-markup-renderer",
+            "contentTypes": [
+              "html"
+            ],
+            "config": {
+              "codec": "html"
+            }
+          }
+        ]
+      },
+      "editorEntry": "editors",
+      "rendererEntry": "markup"
+    },
+    {
+      "manifest": {
+        "id": "builtin.txt",
+        "name": "TXT",
+        "version": "1.0.0",
+        "apiVersion": 1,
+        "contentTypes": [
+          "txt"
+        ],
+        "editors": [
+          {
+            "id": "source",
+            "label": "源码",
+            "tagName": "space-source-editor",
+            "contentTypes": [
+              "txt"
+            ],
+            "config": {
+              "language": "plain"
+            }
+          }
+        ],
+        "renderers": [
+          {
+            "id": "render",
+            "label": "效果",
+            "tagName": "space-text-renderer",
+            "contentTypes": [
+              "txt"
+            ],
+            "config": {
+              "language": "plain"
+            }
+          }
+        ]
+      },
+      "editorEntry": "source",
+      "rendererEntry": "text"
+    },
+    {
+      "manifest": {
+        "id": "builtin.json",
+        "name": "JSON",
+        "version": "1.0.0",
+        "apiVersion": 1,
+        "contentTypes": [
+          "json"
+        ],
+        "editors": [
+          {
+            "id": "source",
+            "label": "源码",
+            "tagName": "space-source-editor",
+            "contentTypes": [
+              "json"
+            ],
+            "config": {
+              "language": "json"
+            }
+          }
+        ],
+        "renderers": [
+          {
+            "id": "render",
+            "label": "效果",
+            "tagName": "space-json-renderer",
+            "contentTypes": [
+              "json"
+            ],
+            "config": {
+              "language": "json"
+            }
+          }
+        ]
+      },
+      "editorEntry": "source",
+      "rendererEntry": "json"
+    },
+    {
+      "manifest": {
+        "id": "builtin.xml",
+        "name": "XML",
+        "version": "1.0.0",
+        "apiVersion": 1,
+        "contentTypes": [
+          "xml"
+        ],
+        "editors": [
+          {
+            "id": "source",
+            "label": "源码",
+            "tagName": "space-source-editor",
+            "contentTypes": [
+              "xml"
+            ],
+            "config": {
+              "language": "xml"
+            }
+          }
+        ],
+        "renderers": [
+          {
+            "id": "render",
+            "label": "效果",
+            "tagName": "space-text-renderer",
+            "contentTypes": [
+              "xml"
+            ],
+            "config": {
+              "language": "xml"
+            }
+          }
+        ]
+      },
+      "editorEntry": "source",
+      "rendererEntry": "text"
+    },
+    {
+      "manifest": {
+        "id": "builtin.json-schema",
+        "name": "JSON Schema",
+        "version": "1.0.0",
+        "apiVersion": 1,
+        "contentTypes": [
+          "json-schema"
+        ],
+        "editors": [
+          {
+            "id": "source",
+            "label": "源码",
+            "tagName": "space-source-editor",
+            "contentTypes": [
+              "json-schema"
+            ],
+            "config": {
+              "language": "json"
+            }
+          }
+        ],
+        "renderers": [
+          {
+            "id": "render",
+            "label": "效果",
+            "tagName": "space-schema-renderer",
+            "contentTypes": [
+              "json-schema"
+            ],
+            "config": {
+              "language": "json"
+            }
+          }
+        ]
+      },
+      "editorEntry": "source",
+      "rendererEntry": "schema"
+    },
+    {
+      "manifest": {
+        "id": "builtin.a2ui",
+        "name": "A2UI",
+        "version": "1.0.0",
+        "apiVersion": 1,
+        "contentTypes": [
+          "a2ui"
+        ],
+        "editors": [
+          {
+            "id": "source",
+            "label": "源码",
+            "tagName": "space-source-editor",
+            "contentTypes": [
+              "a2ui"
+            ],
+            "config": {
+              "language": "json"
+            }
+          }
+        ],
+        "renderers": [
+          {
+            "id": "render",
+            "label": "效果",
+            "tagName": "space-a2ui-renderer",
+            "contentTypes": [
+              "a2ui"
+            ],
+            "config": {
+              "language": "json"
+            }
+          }
+        ]
+      },
+      "editorEntry": "source",
+      "rendererEntry": "a2ui"
+    }
+  ]
+}

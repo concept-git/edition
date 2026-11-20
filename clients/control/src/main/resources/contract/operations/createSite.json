@@ -1,0 +1,121 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false,
+    "json": {
+      "name": "VALUE"
+    },
+    "privateBody": false
+  },
+  "operationId": "createSite",
+  "apiCommand": "control.sites.create",
+  "description": "Create a tenant Site. Verify with control.sites.get.",
+  "method": "POST",
+  "path": "/api/v1/tenants/{tenantId}/sites",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/CreateSiteRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "201": {
+      "description": "Created",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/SiteDetail"
+          }
+        }
+      }
+    },
+    "401": {
+      "description": "Unauthorized",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "409": {
+      "description": "Conflict",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "422": {
+      "description": "Unprocessable Content",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "hosting:write"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "server-key"
+}

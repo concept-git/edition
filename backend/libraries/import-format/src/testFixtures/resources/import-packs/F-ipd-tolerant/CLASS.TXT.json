@@ -1,0 +1,52 @@
+[
+  {
+    "code": 100,
+    "title": "产品文档",
+    "business": {
+      "ignored": true
+    }
+  },
+  {
+    "code": 110,
+    "p_code": "100",
+    "uri": "intro.html",
+    "title": "介绍导航"
+  },
+  {
+    "code": "120",
+    "p_code": 110,
+    "uri": "details.html",
+    "title": "详细说明"
+  },
+  {
+    "code": 130,
+    "p_code": 100,
+    "uri": "class-only.html",
+    "title": "CLASS 独有页面"
+  },
+  {
+    "code": 140,
+    "p_code": 100,
+    "uri": "./intro.html",
+    "title": "再次访问介绍"
+  },
+  {
+    "code": 150,
+    "p_code": 100,
+    "uri": "fallback.html"
+  },
+  {
+    "code": 160,
+    "p_code": 100,
+    "uri": "guides/a/same.html"
+  },
+  {
+    "code": 170,
+    "p_code": 100,
+    "uri": "guides/b/same.html"
+  },
+  {
+    "code": "other",
+    "p_code": null
+  }
+]

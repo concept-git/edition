@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "added": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "changed": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "removed": {
+      "type": "integer",
+      "format": "int32"
+    }
+  }
+}

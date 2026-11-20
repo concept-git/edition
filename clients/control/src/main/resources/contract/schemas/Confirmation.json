@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "confirmationName": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 0
+    }
+  },
+  "required": [
+    "confirmationName"
+  ]
+}

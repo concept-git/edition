@@ -1,0 +1,152 @@
+# Isolated platform and acceptance dependencies; ports and volumes are separate from manual development.
+x-app: &app
+  profiles: [platform]
+  image: ${SPACE_COMPOSE_PROJECT:-dw-platform}-app:local
+  build: { context: ../.., dockerfile: infra/deployment/Dockerfile, target: app, args: [HTTP_PROXY, HTTPS_PROXY, NO_PROXY, http_proxy, https_proxy, no_proxy] }
+  restart: unless-stopped
+  volumes: ["${SPACE_RUNTIME_DIR:-../../.scratch/dw-v1/runtime/platform-dw-platform}:/workspace/.scratch/dw-v1/runtime/platform"]
+  environment: &app-env
+    SPACE_CONTAINER: "1"
+    E2E_RUNTIME_DIR: /workspace/.scratch/dw-v1/runtime/platform
+    E2E_STORAGE_NAMESPACE: ${E2E_STORAGE_NAMESPACE:-dw-platform}
+    E2E_TRUSTED_PROXIES: ${E2E_TRUSTED_PROXIES:-127.0.0.1,::1}
+    SPACE_CONSOLE_PROFILE: ${SPACE_CONSOLE_PROFILE:-dev}
+    SPACE_CONSOLE_ORIGINS: http://localhost:${E2E_BROWSER_PORT:-4176},http://127.0.0.1:${E2E_BROWSER_PORT:-4176}
+    READER_PUBLIC_SCHEME: http
+    # Site links point at the public entry (the web edge in the platform), not at Reader's JSON port.
+    READER_PUBLIC_PORT: ${E2E_BROWSER_PORT:-4176}
+  healthcheck: &http
+    test: [CMD, node, -e, "fetch('http://127.0.0.1:'+process.env.HEALTH_PORT+(process.env.HEALTH_PATH||'/healthz'),{signal:AbortSignal.timeout(3000)}).then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    interval: 5s
+    timeout: 5s
+    retries: 30
+    start_period: 30s
+
+services:
+  ingress:
+    image: caddy:2
+    profiles: [ingress]
+    # 8446: HTTPS for the private-reader suite. 8097: plain-HTTP edge for delivery tests.
+    ports: ["127.0.0.1:${E2E_INGRESS_PORT:-8446}:8446", "127.0.0.1:${E2E_EDGE_PORT:-8097}:8097"]
+    environment: { E2E_CONTENT_UPSTREAM: "${E2E_CONTENT_UPSTREAM:-host.docker.internal:${E2E_CONTENT_PORT:-8095}}", E2E_CONTROL_UPSTREAM: "${E2E_CONTROL_UPSTREAM:-host.docker.internal:${E2E_CONTROL_PORT:-8094}}", E2E_READING_UPSTREAM: "${E2E_READING_UPSTREAM:-host.docker.internal:${E2E_READING_PORT:-8096}}" }
+    volumes:
+      - ./acceptance.Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${E2E_TLS_CERT_FILE:-../../.scratch/dw-v1/runtime/private-reader/tls-cert.pem}:/certs/cert.pem:ro
+      - ${E2E_TLS_KEY_FILE:-../../.scratch/dw-v1/runtime/private-reader/tls-key.pem}:/certs/key.pem:ro
+  source:
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    image: postgres:18.6
+    environment: { POSTGRES_DB: space, POSTGRES_USER: space, POSTGRES_PASSWORD: space }
+    ports: ["127.0.0.1:${E2E_SOURCE_PORT:-5412}:5432"]
+    volumes: ["source:/var/lib/postgresql"]
+  search:
+    healthcheck:
+      test: [CMD, curl, -fsS, "http://127.0.0.1:7700/health"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    image: getmeili/meilisearch:v1.53
+    environment: { MEILI_MASTER_KEY: acceptance-master-key, MEILI_ENV: development }
+    ports: ["127.0.0.1:${E2E_SEARCH_PORT:-7712}:7700"]
+    volumes: ["search:/meili_data"]
+  mailpit:
+    image: axllent/mailpit:v1.31.0
+    ports:
+      - "127.0.0.1:${E2E_SMTP_PORT:-1035}:1025"
+      - "127.0.0.1:${E2E_MAILPIT_PORT:-8035}:8025"
+  objects:
+    healthcheck:
+      test: [CMD, wget, -q, --spider, "http://127.0.0.1:9000/minio/health/ready"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    image: ${SPACE_OBJECT_IMAGE:-space-objectstore:2025-09-07}
+    build: { context: ../.., dockerfile: infra/deployment/Dockerfile, target: objectstore }
+    pull_policy: never
+    command: server /data
+    environment: { MINIO_ROOT_USER: space, MINIO_ROOT_PASSWORD: space-dev }
+    ports: ["127.0.0.1:${E2E_OBJECTS_PORT:-9012}:9000"]
+    volumes: ["objects:/data"]
+  init:
+    <<: *app
+    profiles: [tools]
+    restart: "no"
+    healthcheck: { disable: true }
+    command: [init]
+  objects-init:
+    image: ${SPACE_OBJECT_IMAGE:-space-objectstore:2025-09-07}
+    pull_policy: never
+    profiles: [tools]
+    volumes:
+      - ./reader-policy.json:/policies/reader-policy.json:ro
+    entrypoint: [sh, -ec]
+  control:
+    <<: *app
+    command: [run, control, --environment, acceptance]
+    environment: { <<: *app-env, HEALTH_PORT: "8094", HEALTH_PATH: /health }
+    ports: ["127.0.0.1:${E2E_CONTROL_PORT:-8094}:8094"]
+    depends_on: { source: { condition: service_healthy } }
+  content:
+    <<: *app
+    command: [run, content, --environment, acceptance]
+    environment: { <<: *app-env, HEALTH_PORT: "8095" }
+    ports: ["127.0.0.1:${E2E_CONTENT_PORT:-8095}:8095"]
+    depends_on: { source: { condition: service_healthy } }
+  index:
+    <<: *app
+    command: [run, index, --environment, acceptance]
+    healthcheck: { disable: true } # Worker has no HTTP; search readiness is reported separately.
+    depends_on: { source: { condition: service_healthy }, search: { condition: service_healthy } }
+  reading:
+    # Reading frontend (Astro SSR): stateless; renders pages from content JSON and forwards session writes to Control.
+    profiles: [platform]
+    build: { context: ../.., dockerfile: infra/deployment/Dockerfile, target: reading, args: [HTTP_PROXY, HTTPS_PROXY, NO_PROXY, http_proxy, https_proxy, no_proxy] }
+    restart: unless-stopped
+    environment: { HOST: 0.0.0.0, PORT: "8096", SPACE_CONTENT_ORIGIN: "http://content:8095", SPACE_CONTROL_ORIGIN: "http://control:8094" }
+    ports: ["127.0.0.1:${E2E_READING_PORT:-8096}:8096"]
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8096/',{redirect:'manual',signal:AbortSignal.timeout(3000)}).then(()=>process.exit(0)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+  web:
+    profiles: [platform]
+    build: { context: ../.., dockerfile: infra/deployment/Dockerfile, target: web, args: [HTTP_PROXY, HTTPS_PROXY, NO_PROXY, http_proxy, https_proxy, no_proxy] }
+    restart: unless-stopped
+    ports: ["127.0.0.1:${E2E_BROWSER_PORT:-4176}:8088"]
+    environment: { ADMIN_UPSTREAM: "control:8094", CONTENT_UPSTREAM: "content:8095", READING_UPSTREAM: "reading:8096" }
+    depends_on: { control: { condition: service_healthy }, content: { condition: service_healthy }, reading: { condition: service_healthy } }
+    healthcheck:
+      test: [CMD, wget, -q, --spider, "http://127.0.0.1:8088/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  seed:
+    <<: *app
+    profiles: [tools]
+    restart: "no"
+    healthcheck: { disable: true }
+    entrypoint: [node, infra/space.ts, seed]
+    environment:
+      <<: *app-env
+      LOCAL_CONTROL_ORIGIN: http://control:8094
+      LOCAL_PUBLIC_CONTROL_ORIGIN: http://localhost:${E2E_CONTROL_PORT:-8094}
+      LOCAL_CONTENT_ORIGIN: http://content:8095
+      LOCAL_READING_ORIGIN: http://reading:8096
+      LOCAL_BROWSER_ORIGIN: http://localhost:${E2E_BROWSER_PORT:-4176}
+      LOCAL_SEED_EMAIL: ${LOCAL_SEED_EMAIL:-owner@dev.local}
+      LOCAL_SEED_PASSWORD: ${LOCAL_SEED_PASSWORD:-password1}
+      LOCAL_SEED_RUNTIME_DIR: /workspace/.scratch/dw-v1/runtime/platform
+      PGPASSWORD: space
+volumes:
+  source:
+    name: ${E2E_STORAGE_NAMESPACE:-dw-remaining}_source
+  search:
+    name: ${E2E_STORAGE_NAMESPACE:-dw-remaining}_search
+  objects:
+    name: ${E2E_STORAGE_NAMESPACE:-dw-remaining}_objects

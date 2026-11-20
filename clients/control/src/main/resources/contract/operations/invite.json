@@ -1,0 +1,92 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "teamId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false,
+    "json": {
+      "email": "agent@example.test",
+      "role": "owner"
+    },
+    "privateBody": false
+  },
+  "operationId": "invite",
+  "apiCommand": "control.teams.invitations.create",
+  "description": "Invite an existing tenant member to a team as owner or member. Verify with control.teams.invitations.list.",
+  "method": "POST",
+  "path": "/api/v1/tenants/{tenantId}/teams/{teamId}/invitations",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "teamId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/InviteRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "201": {
+      "description": "Invitation created; one-time secret included",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/TeamIssuedInvitation"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": true
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "members:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

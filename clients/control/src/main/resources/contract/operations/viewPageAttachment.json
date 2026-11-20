@@ -1,0 +1,129 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "spaceId": "00000000-0000-0000-0000-000000000001",
+      "pageId": "00000000-0000-0000-0000-000000000001",
+      "ref": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "viewPageAttachment",
+  "apiCommand": "control.spaces.pages.attachments.get",
+  "description": "Short-lived signed download URL for one attachment. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+  "method": "GET",
+  "path": "/api/v1/tenants/{tenantId}/spaces/{spaceId}/pages/{pageId}/attachments/{ref}",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "spaceId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "pageId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "ref",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "fields",
+      "in": "query",
+      "description": "Optional response field mask. Select fields from this operation's response schema; omit for the full response. Keep nextCursor when paginating; select dynamic maps whole.",
+      "schema": {
+        "type": "string",
+        "maxLength": 4096,
+        "minLength": 1
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "application/json": {
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttachmentLink"
+              },
+              {
+                "$ref": "#/components/schemas/PartialAttachmentLink"
+              }
+            ],
+            "description": "Full response when fields is absent; selected fields may be omitted when fields is supplied."
+          }
+        }
+      }
+    },
+    "401": {
+      "description": "Unauthorized",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "404": {
+      "description": "Not Found",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "503": {
+      "description": "Service Unavailable",
+      "content": {
+        "application/problem+json": {}
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "content:read"
+  ],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

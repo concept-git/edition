@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "pv": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "series": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Bucket"
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Ranked"
+      }
+    },
+    "notFound": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Ranked"
+      }
+    },
+    "referrers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Ranked"
+      }
+    },
+    "health": {
+      "$ref": "#/components/schemas/Health"
+    }
+  }
+}

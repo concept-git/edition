@@ -1,0 +1,95 @@
+{
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "disabled",
+        "queued",
+        "running",
+        "retrying",
+        "failed",
+        "completed",
+        "access_pending"
+      ]
+    },
+    "targetEpoch": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "onlineEpoch": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "format": "int64"
+    },
+    "primaryHost": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "spaces": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/OnlineSpace"
+      }
+    },
+    "error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canRetry": {
+      "type": "boolean"
+    },
+    "searchStatus": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "desired": {
+      "anyOf": [
+        {
+          "$ref": "#/components/schemas/Desired"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "current": {
+      "anyOf": [
+        {
+          "$ref": "#/components/schemas/Current"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "terminal": {
+      "type": "boolean"
+    },
+    "successful": {
+      "type": "boolean"
+    },
+    "nextPollAfterSeconds": {
+      "type": "integer",
+      "format": "int32"
+    }
+  },
+  "required": [
+    "enabled",
+    "status",
+    "successful",
+    "targetEpoch",
+    "terminal"
+  ]
+}

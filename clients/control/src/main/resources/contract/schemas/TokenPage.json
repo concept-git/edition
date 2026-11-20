@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "tokens": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/TokenView"
+      }
+    },
+    "nextCursor": {
+      "type": "string"
+    },
+    "total": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

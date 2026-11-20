@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "tenantId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "filter": {
+      "$ref": "#/components/schemas/AuditFilter"
+    }
+  },
+  "required": [
+    "filter"
+  ]
+}

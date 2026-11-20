@@ -1,0 +1,66 @@
+/* Register design tokens for Tailwind v4 */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-node-a: var(--node-a);
+  --color-node-b: var(--node-b);
+  --color-node-c: var(--node-c);
+  --font-app:
+    "Figtree", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Light theme values */
+:root,
+[data-theme="light"] {
+  --background: #ffffff;
+  --foreground: #202433;
+  --accent: #e60067;
+  --accent-foreground: #ffffff;
+  --muted: #e8eef3;
+  --muted-foreground: #5a6072;
+  --border: #e4e8ee;
+  --logo: #4242fa;
+  --sky: #7dc4e8;
+  --sky-top: #a9d8ef;
+  --sky-bottom: #d9eff8;
+  --cloud: #b1dff6;
+  --cream: #fff5cc;
+  --ink: #0d0f12;
+  --dek: #5a6072;
+  --code-bg: #e8f1fc;
+  --node-a: #1f7a82;
+  --node-b: #e07a3d;
+  --node-c: #6b4c8a;
+  --ease-swap: cubic-bezier(0.41, 0.1, 0.13, 1);
+  --interaction: 180ms cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+/* Dark theme values */
+[data-theme="dark"] {
+  --background: #121826;
+  --foreground: #f4f7fb;
+  --accent: #ff4d8d;
+  --accent-foreground: #121826;
+  --muted: #243044;
+  --muted-foreground: #c5d0dc;
+  --border: #314056;
+  --logo: #9aa4ff;
+  --sky: #16324d;
+  --sky-top: #1a3e5c;
+  --sky-bottom: #192e41;
+  --cloud: #1d4a68;
+  --cream: #2c2818;
+  --ink: #f4efe2;
+  --dek: #b7c0ce;
+  --code-bg: #1c2436;
+  --node-a: #7dcec4;
+  --node-b: #f0a06a;
+  --node-c: #c4b4e4;
+}

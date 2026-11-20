@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "newSlug": {
+      "type": "string",
+      "maxLength": 80,
+      "minLength": 0
+    }
+  },
+  "required": [
+    "newSlug"
+  ]
+}

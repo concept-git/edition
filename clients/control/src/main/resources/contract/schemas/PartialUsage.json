@@ -1,0 +1,64 @@
+{
+  "type": "object",
+  "properties": {
+    "workingPages": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "trashedPages": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "publishedPages": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "workingTextBytes": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "trashedTextBytes": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "attachmentCount": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "attachmentBytes": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "releases": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "snapshotPages": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "snapshotTextBytes": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "promotions": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "activeAuthors": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "imports": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "format": "int64"
+      }
+    },
+    "computedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

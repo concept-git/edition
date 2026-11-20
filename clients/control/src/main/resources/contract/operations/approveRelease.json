@@ -1,0 +1,118 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "spaceId": "00000000-0000-0000-0000-000000000001",
+      "releaseId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "approveRelease",
+  "apiCommand": "control.spaces.releases.approve",
+  "description": "Approve a flagged import Release and promote it. Verify with control.spaces.releases.get. Release promotion observed, followed by site delivery if external availability is intended.",
+  "method": "POST",
+  "path": "/api/v1/tenants/{tenantId}/spaces/{spaceId}/releases/{releaseId}:approve",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "spaceId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "releaseId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApproveReleaseResult"
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Bad Request",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "401": {
+      "description": "Unauthorized",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "404": {
+      "description": "Not Found",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "409": {
+      "description": "Conflict",
+      "content": {
+        "application/problem+json": {}
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "content:publish"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "server-key"
+}

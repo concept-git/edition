@@ -1,0 +1,5 @@
+{
+  "source": "https://json-schema.org/draft/2020-12/schema",
+  "packagedBy": "com.networknt:json-schema-validator:3.0.7",
+  "description": "Unmodified draft 2020-12 schema resources from the pinned validator artifact."
+}

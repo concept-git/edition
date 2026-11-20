@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialDelivery"
+      }
+    },
+    "nextCursor": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

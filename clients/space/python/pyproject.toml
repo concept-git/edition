@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "space-vfs"
+version = "0.1.0"
+description = "Read-only Space consumption adapter over /api/content"
+requires-python = ">=3.11"
+dependencies = [
+  "httpx>=0.28.1",
+  "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+mirage = ["mirage-ai==0.0.6"]
+fuse = ["fusepy==3.0.1"]
+
+[project.scripts]
+space-vfs = "space_vfs.cli:main"
+space-vfs-mount = "space_vfs.mount:main"
+
+[project.entry-points."mirage.resources"]
+space = "space_vfs:SpaceVFS"
+
+[tool.setuptools.packages.find]
+where = ["src"]

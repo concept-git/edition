@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "versionRef": {
+      "type": "string"
+    },
+    "contentType": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "digest": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

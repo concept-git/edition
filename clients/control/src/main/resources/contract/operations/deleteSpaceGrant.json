@@ -1,0 +1,70 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "spaceId": "00000000-0000-0000-0000-000000000001",
+      "principalKey": "user:00000000-0000-4000-8000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "deleteSpaceGrant",
+  "apiCommand": "control.spaces.grants.remove",
+  "description": "Delete a local Space grant. Verify with control.spaces.get.",
+  "method": "DELETE",
+  "path": "/api/v1/tenants/{tenantId}/spaces/{spaceId}/permissions/grants/{principalKey}",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "spaceId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "principalKey",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "pattern": "(?:user|team|token):[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|anonymous"
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "204": {
+      "description": "No Content"
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "permissions:write"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "explicit-single-attempt"
+}

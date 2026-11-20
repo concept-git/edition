@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "markdown|html|txt|json|xml",
+      "enum": [
+        "markdown",
+        "html",
+        "txt",
+        "json",
+        "xml"
+      ]
+    },
+    "content": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "content",
+    "format"
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "spaceId": "00000000-0000-0000-0000-000000000001",
+      "pageId": "00000000-0000-0000-0000-000000000001",
+      "field": "VALUE"
+    },
+    "privateParams": false,
+    "json": {
+      "value": "VALUE"
+    },
+    "privateBody": false
+  },
+  "operationId": "setPageProperty",
+  "apiCommand": "control.spaces.pages.properties.set",
+  "description": "Upsert one free-form Page property. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+  "method": "PUT",
+  "path": "/api/v1/tenants/{tenantId}/spaces/{spaceId}/pages/{pageId}/properties/{field}",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "spaceId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "pageId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "field",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 64,
+        "minLength": 1
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/SetPagePropertyRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/PageDetail"
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Bad Request",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "401": {
+      "description": "Unauthorized",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "404": {
+      "description": "Not Found",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "409": {
+      "description": "Conflict",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "422": {
+      "description": "Unprocessable Content",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "428": {
+      "description": "Precondition Required",
+      "content": {
+        "application/problem+json": {}
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "content:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

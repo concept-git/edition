@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string",
+      "maxLength": 2048,
+      "minLength": 0
+    },
+    "scopeType": {
+      "type": "string",
+      "pattern": "tenant|space|site",
+      "enum": [
+        "tenant",
+        "space",
+        "site"
+      ]
+    },
+    "scopeId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "active": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "events",
+    "scopeType",
+    "url"
+  ]
+}

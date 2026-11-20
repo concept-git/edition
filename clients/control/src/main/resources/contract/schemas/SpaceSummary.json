@@ -1,0 +1,122 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "tenantId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "type": "string"
+    },
+    "icon": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "book",
+        "code",
+        "api",
+        "guide",
+        "reference",
+        null
+      ]
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "authored",
+        "synced"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived"
+      ]
+    },
+    "pageCount": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "driftCount": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "lastReleaseAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "createdBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "collectionId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "allowedActions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "delete",
+          "create",
+          "read",
+          "update",
+          "archive",
+          "restore",
+          "convert",
+          "write_pages",
+          "manage_permissions"
+        ]
+      }
+    }
+  },
+  "required": [
+    "allowedActions",
+    "collectionId",
+    "createdAt",
+    "createdBy",
+    "driftCount",
+    "icon",
+    "id",
+    "lastReleaseAt",
+    "mode",
+    "name",
+    "pageCount",
+    "status",
+    "tenantId",
+    "updatedAt",
+    "updatedBy"
+  ]
+}

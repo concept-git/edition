@@ -1,0 +1,77 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false,
+    "json": {
+      "email": "agent@example.test",
+      "name": "VALUE",
+      "password": "VALUE"
+    },
+    "privateBody": true
+  },
+  "operationId": "register",
+  "apiCommand": "control.auth.register",
+  "description": "Register a new account.",
+  "method": "POST",
+  "path": "/auth/register",
+  "parameters": [],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/RegisterRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "201": {
+      "description": "Account created; verification mail issued",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/RegisterResponse"
+          }
+        }
+      }
+    },
+    "409": {
+      "description": "Email already registered (email_taken)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "422": {
+      "description": "Password too weak (password_too_weak); registration is rolled back",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": true,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "anonymous"
+  ],
+  "requiredScopes": [],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "explicit-single-attempt"
+}

@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "parentId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "position": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "label": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "targetId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "url": {
+      "type": "string"
+    },
+    "depth": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "children": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialTocEntry"
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "example": {
+    "params": {
+      "id": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "endSession",
+  "apiCommand": "control.account.sessions.revoke",
+  "description": "Revoke one of the authenticated user's sessions.",
+  "method": "DELETE",
+  "path": "/api/v1/me/sessions/{id}",
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "401": {
+      "description": "Missing, expired or revoked session (authentication_required)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "204": {
+      "description": "No Content"
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "account:write"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "explicit-single-attempt"
+}

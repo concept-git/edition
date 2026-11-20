@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "audit": {
+      "type": "boolean"
+    },
+    "webhooks": {
+      "type": "boolean"
+    },
+    "tenantStats": {
+      "type": "boolean"
+    },
+    "spaces": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Choice"
+      }
+    },
+    "sites": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Choice"
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "properties": {
+    "resource": {
+      "$ref": "#/components/schemas/ResourceView"
+    },
+    "subjectGrants": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/EffectiveGrantView"
+      }
+    },
+    "restrictionActive": {
+      "type": "boolean"
+    },
+    "restrictionRevision": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "restrictionMatches": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "restrictionSatisfied": {
+      "type": "boolean"
+    },
+    "decisive": {
+      "type": "boolean"
+    }
+  }
+}

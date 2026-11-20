@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "spaceId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "releaseId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "readerHref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

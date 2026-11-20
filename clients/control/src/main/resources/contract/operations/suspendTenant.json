@@ -1,0 +1,80 @@
+{
+  "example": {
+    "params": {
+      "id": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "suspendTenant",
+  "apiCommand": "control.admin.tenants.suspend",
+  "description": "Freeze a tenant. Verify with control.tenants.capability.get.",
+  "method": "POST",
+  "path": "/admin/tenants/{id}:suspend",
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "401": {
+      "description": "Missing, expired or revoked session (authentication_required)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Caller is not a platform operator (platform_operator_required)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "404": {
+      "description": "Unknown tenant (tenant_not_found)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "204": {
+      "description": "No Content"
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "platform:write"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "explicit-single-attempt"
+}

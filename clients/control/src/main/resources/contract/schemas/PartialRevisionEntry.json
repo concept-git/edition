@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "properties": {
+    "n": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "actor": {
+      "$ref": "#/components/schemas/PartialActorView"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "note": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sizeBytes": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "sizeDelta": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

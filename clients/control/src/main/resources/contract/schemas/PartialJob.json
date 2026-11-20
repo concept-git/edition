@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "tenantId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "spaceId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "type": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "done": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "total": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "attempt": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "nextRunAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "outcome": {
+      "type": "string"
+    },
+    "traceId": {
+      "type": "string"
+    },
+    "allowedActions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  }
+}

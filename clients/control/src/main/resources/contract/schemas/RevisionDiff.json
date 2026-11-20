@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "from": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "to": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "hunks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/DiffHunkResponse"
+      }
+    }
+  }
+}

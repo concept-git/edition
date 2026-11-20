@@ -1,0 +1,76 @@
+{
+  "example": {
+    "params": {
+      "token": "VALUE"
+    },
+    "privateParams": true
+  },
+  "operationId": "acceptInvitation",
+  "apiCommand": "control.invitations.accept",
+  "description": "Accept an invitation.",
+  "method": "POST",
+  "path": "/api/v1/invitations/{token}:accept",
+  "parameters": [
+    {
+      "name": "token",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "Joined the tenant",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/InvitationAcceptance"
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Invalid, expired or already used (invite_invalid)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "409": {
+      "description": "Invited address differs (invite_email_mismatch)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": true,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "members:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "explicit-single-attempt"
+}

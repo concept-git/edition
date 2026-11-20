@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contentType": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "$ref": "#/components/schemas/Source"
+    }
+  },
+  "required": [
+    "contentType",
+    "name",
+    "source"
+  ]
+}

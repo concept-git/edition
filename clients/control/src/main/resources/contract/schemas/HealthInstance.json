@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "instance": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "seenAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string"
+    },
+    "details": {
+      "type": "object",
+      "additionalProperties": {}
+    }
+  }
+}

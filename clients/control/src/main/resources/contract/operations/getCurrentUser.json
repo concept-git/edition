@@ -1,0 +1,55 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false
+  },
+  "operationId": "getCurrentUser",
+  "apiCommand": "control.account.get",
+  "description": "Read the authenticated user's profile. Verify with control.account.get.",
+  "method": "GET",
+  "path": "/api/v1/me",
+  "parameters": [],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "Current profile",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/Profile"
+          }
+        }
+      }
+    },
+    "401": {
+      "description": "Missing, expired or revoked session (authentication_required)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "account:read"
+  ],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

@@ -1,0 +1,74 @@
+{
+  "example": {
+    "params": {
+      "jobId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false,
+    "json": {
+      "tenantId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateBody": false
+  },
+  "operationId": "retryJob",
+  "apiCommand": "control.jobs.retry",
+  "description": "Retry a failed import with current publish authorization. Verify with control.jobs.list.",
+  "method": "POST",
+  "path": "/ops/jobs/{jobId}:retry",
+  "parameters": [
+    {
+      "name": "jobId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/RetryRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "204": {
+      "description": "No Content"
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "operations:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

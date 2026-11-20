@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "eventId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "eventType": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "attempts": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "nextRunAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "responseCode": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Attempt"
+      }
+    }
+  }
+}

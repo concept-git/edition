@@ -1,0 +1,40 @@
+---
+import type { SearchHit } from "../domain/search.ts";
+
+interface Props {
+  query: string;
+  hits: SearchHit[];
+  nextHref: string | null;
+  zh: boolean;
+  /** 搜索观测凭据：脚本据此上报「已展示」与点击。 */
+  proof?: string | null;
+  scope?: string | null;
+}
+const { query, hits, nextHref, zh, proof = null, scope = null } = Astro.props;
+---
+
+<main class="search-page" data-search-proof={proof ?? undefined}>
+  <h1>{zh ? "搜索" : "Search"}</h1>
+  <form method="get" action="/_search" role="search">
+    {scope && <input name="spaceSlug" type="hidden" value={scope} />}
+    <input name="q" type="search" value={query} maxlength="200" aria-label={zh ? "搜索词" : "Query"} />
+    <button type="submit">{zh ? "搜索" : "Search"}</button>
+  </form>
+  {
+    query && hits.length === 0 && (
+      <p class="search-empty">{zh ? "没有找到相关内容。" : "No results."}</p>
+    )
+  }
+  <ol class="search-results">
+    {
+      hits.map((hit) => (
+        <li>
+          <a href={hit.path}>{hit.title}</a>
+          <small>{hit.spaceName}</small>
+          <p>{hit.snippet}</p>
+        </li>
+      ))
+    }
+  </ol>
+  {nextHref && <a class="search-more" href={nextHref}>{zh ? "更多结果" : "More results"}</a>}
+</main>

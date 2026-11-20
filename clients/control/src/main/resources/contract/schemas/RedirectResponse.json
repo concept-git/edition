@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string"
+    },
+    "targetId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "targetType": {
+      "type": "string"
+    },
+    "origin": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "hitCount": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "currentPath": {
+      "type": "string"
+    },
+    "targetLabel": {
+      "type": "string"
+    },
+    "reachable": {
+      "type": "boolean"
+    }
+  }
+}

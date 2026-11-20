@@ -1,0 +1,14 @@
+# 全量 Gherkin 验收（TESTING.md §4 nightly）
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+
+jobs:
+  acceptance:
+    uses: ./.github/workflows/e2e.yml
+
+  independent-delivery:
+    uses: ./.github/workflows/delivery.yml

@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "properties": {
+    "currentRevision": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "currentEtag": {
+      "type": "string"
+    },
+    "theirs": {
+      "type": "string"
+    },
+    "currentContentType": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "currentVersionRef": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "currentInterpretation": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "currentEtag",
+    "currentRevision",
+    "theirs"
+  ]
+}

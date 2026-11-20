@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialDescriptor"
+      }
+    },
+    "productionLoading": {
+      "type": "string"
+    },
+    "canDevelop": {
+      "type": "boolean"
+    }
+  }
+}

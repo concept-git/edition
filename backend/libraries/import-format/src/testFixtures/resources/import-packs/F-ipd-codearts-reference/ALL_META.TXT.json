@@ -1,0 +1,29 @@
+[
+  {"dockw":"产品介绍"},
+  {
+    "uri":"codeartsagent_pd_0001.html",
+    "node_id":"codeartsagent_pd_0001.xml",
+    "product_code":"codeartssnap",
+    "code":"1",
+    "des":"华为云码道，更懂工程实践的代码智能体。软件开发过程中，开发者面临着项目复杂度高、交付周期短、代码质量要求严苛等多重挑战。华为云码道代码智能体从以下几个维度解决开发者的核心痛点：创新原生编码体验，性能卓越提升应用开发效率：与智能体深度融合，打破传统开发边界，应用代码一键生成，构建智能开发新范式。优化资源消耗：通过代码智能切片智能检索增强，在",
+    "doc_type":"productdesc",
+    "kw":"什么是华为云码道CodeArts,产品介绍",
+    "search_title":"",
+    "metedata":[{"prodname":"codeartssnap","documenttype":"productdesc"}],
+    "title":"什么是华为云码道CodeArts",
+    "githuburl":""
+  },
+  {
+    "uri":"codeartsagent_pd_0003.html",
+    "node_id":"codeartsagent_pd_0003.xml",
+    "product_code":"",
+    "code":"2",
+    "des":"华为云服务及平台通过了多项国内外权威机构（ISO/SOC/PCI等）的安全合规认证，用户可自行申请下载合规资质证书。合规证书下载华为云还提供以下资源来帮助用户满足合规性要求，具体请查看资源中心。资源中心华为云安全服务提供了网络安全专用产品安全检测证书、软件著作权等证书，供用户下载和参考。具体请查看合规资质证书。合规资质证书",
+    "doc_type":"",
+    "kw":"认证证书,产品介绍",
+    "search_title":"",
+    "metedata":[{}],
+    "title":"认证证书",
+    "githuburl":""
+  }
+]

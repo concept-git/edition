@@ -1,0 +1,143 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "listTenantReleases",
+  "apiCommand": "control.tenants.releases.list",
+  "description": "List Releases across every readable Space of a tenant. Verify with control.tenants.capability.get.",
+  "method": "GET",
+  "path": "/api/v1/tenants/{tenantId}/releases",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "spaceId",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "mode",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "pattern": "authored|synced",
+        "enum": [
+          "authored",
+          "synced"
+        ]
+      }
+    },
+    {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "pattern": "draft|flagged|validated|live|archived",
+        "enum": [
+          "draft",
+          "flagged",
+          "validated",
+          "live",
+          "archived"
+        ]
+      }
+    },
+    {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "integer",
+        "format": "int32",
+        "default": 20,
+        "maximum": 100,
+        "minimum": 1
+      }
+    },
+    {
+      "name": "fields",
+      "in": "query",
+      "description": "Optional response field mask. Select fields from this operation's response schema; omit for the full response. Keep nextCursor when paginating; select dynamic maps whole.",
+      "schema": {
+        "type": "string",
+        "maxLength": 4096,
+        "minLength": 1
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "One page of releases with their owning spaces",
+      "content": {
+        "*/*": {
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TenantReleasePage"
+              },
+              {
+                "$ref": "#/components/schemas/PartialTenantReleasePage"
+              }
+            ],
+            "description": "Full response when fields is absent; selected fields may be omitted when fields is supplied."
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Malformed cursor (invalid_cursor)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": true,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "content:read"
+  ],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

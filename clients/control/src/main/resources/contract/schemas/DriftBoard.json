@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "driftCount": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/DriftItem"
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://space.invalid/content-schemas/json-schema-envelope.json",
+  "type": "object",
+  "required": [
+    "content",
+    "interpretation"
+  ],
+  "properties": {
+    "content": {
+      "$ref": "https://json-schema.org/draft/2020-12/schema"
+    },
+    "interpretation": {
+      "type": "object"
+    }
+  }
+}

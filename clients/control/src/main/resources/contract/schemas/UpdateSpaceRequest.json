@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "description": "JSON Merge Patch: omitted keeps, null clears",
+  "properties": {
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 120
+    },
+    "icon": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "book",
+        "code",
+        "api",
+        "guide",
+        "reference",
+        null
+      ]
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 4000
+    },
+    "autoRelease": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    }
+  }
+}

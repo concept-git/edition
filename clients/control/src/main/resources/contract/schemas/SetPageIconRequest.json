@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "description": "icon 为 http(s) URL；null 清空",
+  "properties": {
+    "icon": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 2048,
+      "minLength": 0
+    }
+  }
+}

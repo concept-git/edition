@@ -1,0 +1,30 @@
+{
+  admin off
+  auto_https off
+}
+
+# Edge routing (ADR-0035): machine resources -> Reader, session resource -> Control, everything else -> reading frontend.
+# /healthz stays on Reader: space.ts reads Reader's access log to learn Caddy's peer address.
+(edge_routes) {
+  handle /_auth/* {
+    reverse_proxy {$E2E_CONTROL_UPSTREAM:host.docker.internal:8094}
+  }
+  @reader expression `path('/api/content/*', '/sitemap.xml', '/robots.txt', '/llms.txt', '/healthz') || path_regexp('^/[^/]+/llms\\.txt$') || {http.request.uri.query.view} in ['markdown', 'source']`
+  handle @reader {
+    reverse_proxy {$E2E_CONTENT_UPSTREAM:host.docker.internal:8095}
+  }
+  handle {
+    reverse_proxy {$E2E_READING_UPSTREAM:host.docker.internal:8096}
+  }
+}
+
+# TLS entry for the private-reader suite (Secure cookies need HTTPS).
+https://*.acme.test:8446 {
+  tls /certs/cert.pem /certs/key.pem
+  import edge_routes
+}
+
+# Plain-HTTP entry for the console and delivery suites; keeps their Playwright configs free of HTTPS settings.
+http://:8097 {
+  import edge_routes
+}

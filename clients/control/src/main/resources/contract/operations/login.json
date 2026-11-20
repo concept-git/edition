@@ -1,0 +1,86 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false,
+    "json": {
+      "email": "agent@example.test",
+      "password": "VALUE"
+    },
+    "privateBody": true
+  },
+  "operationId": "login",
+  "apiCommand": "control.auth.bootstrap.login",
+  "description": "Exchange credentials for an access token.",
+  "method": "POST",
+  "path": "/auth/login",
+  "parameters": [],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/LoginRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "200": {
+      "description": "Access token issued; refresh cookie set",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/TokenResponse"
+          }
+        }
+      }
+    },
+    "401": {
+      "description": "Uniform rejection (invalid_credentials) for unknown email, wrong password, locked, unverified, deactivated or erased accounts",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Origin not allowed (cross_site_request_rejected)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "429": {
+      "description": "Too many attempts (rate_limited)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": true,
+    "secretOutput": true
+  },
+  "credentialTypes": [
+    "anonymous"
+  ],
+  "requiredScopes": [],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "explicit-single-attempt"
+}

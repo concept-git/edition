@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "baseRevision": {
+      "type": "integer",
+      "format": "int32",
+      "minimum": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contentType": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "$ref": "#/components/schemas/Source"
+    }
+  },
+  "required": [
+    "contentType",
+    "name",
+    "source"
+  ]
+}

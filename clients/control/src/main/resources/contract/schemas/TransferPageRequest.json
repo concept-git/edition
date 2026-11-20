@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "toSpace": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "slug": {
+      "type": "string",
+      "maxLength": 2048,
+      "minLength": 0
+    }
+  },
+  "required": [
+    "slug",
+    "toSpace"
+  ]
+}

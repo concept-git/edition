@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "token": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "token",
+    "user"
+  ]
+}

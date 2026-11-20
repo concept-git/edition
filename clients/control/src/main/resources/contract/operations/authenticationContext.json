@@ -1,0 +1,74 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false
+  },
+  "operationId": "authenticationContext",
+  "apiCommand": "control.auth.status",
+  "description": "Inspect current credential limits without returning any secret.",
+  "method": "GET",
+  "path": "/api/v1/auth/context",
+  "parameters": [],
+  "requestBody": {},
+  "responses": {
+    "401": {
+      "description": "Credential invalid or expired",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Credential type, scope or current permission denied",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "503": {
+      "description": "Required dependency unavailable",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "200": {
+      "description": "Authenticated actor and credential limits",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/ManagementAuthenticationContext"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token",
+    "space_token"
+  ],
+  "requiredScopes": [],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

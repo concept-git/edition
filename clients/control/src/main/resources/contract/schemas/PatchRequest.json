@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 200
+    },
+    "icon": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "book",
+        "code",
+        "api",
+        "guide",
+        "reference",
+        null
+      ]
+    }
+  }
+}

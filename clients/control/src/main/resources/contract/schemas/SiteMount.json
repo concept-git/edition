@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "properties": {
+    "spaceId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "slug": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "slug",
+    "spaceId"
+  ]
+}

@@ -1,0 +1,39 @@
+---
+import { getEntry, render } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import SkyBand from "@/components/SkyBand.astro";
+import Footer from "@/components/Footer.astro";
+import config from "@/config";
+
+const about = await getEntry("pages", "about");
+
+if (!about) {
+  throw new Error(
+    "Missing published Space page: about"
+  );
+}
+
+const { Content } = await render(about);
+---
+
+<Layout
+  title={`${about.data.title} | ${config.site.title}`}
+  description={about.data.description}
+  ogImage={about.data.ogImage}
+  canonicalURL={about.data.canonicalURL}
+  noIndex={about.data.noIndex}
+>
+  <SkyBand />
+
+  <main id="main-content" class="article-main">
+    <header class="article-hero">
+      <h1>{about.data.title}</h1>
+      {about.data.description && <p class="article-dek">{about.data.description}</p>}
+    </header>
+    <div class="app-prose">
+      <Content />
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

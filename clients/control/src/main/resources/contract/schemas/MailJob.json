@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "recipient": {
+      "type": "string"
+    },
+    "tenantId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "status": {
+      "type": "string"
+    },
+    "attempt": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "nextRunAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "error": {
+      "type": "string"
+    },
+    "traceId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "outcome": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "canRetry": {
+      "type": "boolean"
+    }
+  }
+}

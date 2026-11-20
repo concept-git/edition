@@ -1,0 +1,26 @@
+---
+import type { Heading } from "../domain/render.ts";
+
+interface Props {
+  headings: Heading[];
+  label: string;
+}
+const { headings, label } = Astro.props;
+---
+
+{
+  headings.length > 0 && (
+    <aside class="page-toc">
+      <nav class="toc-panel" aria-label={label}>
+        <h2>{label}</h2>
+        <ul class="page-toc-list">
+          {headings.map((heading) => (
+            <li class={`level-${heading.level}`}>
+              <a href={`#${heading.id}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+  )
+}

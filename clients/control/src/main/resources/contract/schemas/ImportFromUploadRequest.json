@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "description": "Exactly one of uploadKey (presigned upload) or url (public https zip fetched by the server).",
+  "properties": {
+    "uploadKey": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 512,
+      "minLength": 0
+    },
+    "url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 2048,
+      "minLength": 0
+    }
+  }
+}

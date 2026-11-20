@@ -1,0 +1,93 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false
+  },
+  "operationId": "listManagementTokens",
+  "apiCommand": "control.managementTokens.list",
+  "description": "List own personal management credentials without secrets; session only. Verify with control.managementTokens.list.",
+  "method": "GET",
+  "path": "/api/v1/me/access-tokens",
+  "parameters": [
+    {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "integer",
+        "format": "int32",
+        "default": 20,
+        "maximum": 100,
+        "minimum": 1
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "401": {
+      "description": "Credential invalid or expired",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Credential type, scope or current permission denied",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "503": {
+      "description": "Required dependency unavailable",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "200": {
+      "description": "Own credential metadata without secrets",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/ManagementTokenPage"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": true,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session"
+  ],
+  "requiredScopes": [],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

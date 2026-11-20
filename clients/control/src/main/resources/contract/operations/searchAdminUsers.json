@@ -1,0 +1,106 @@
+{
+  "example": {
+    "params": {
+      "q": "VALUE"
+    },
+    "privateParams": false
+  },
+  "operationId": "searchAdminUsers",
+  "apiCommand": "control.admin.user.list",
+  "description": "Search global users by email or name prefix. Verify with control.admin.user.get.",
+  "method": "GET",
+  "path": "/admin/users",
+  "parameters": [
+    {
+      "name": "q",
+      "in": "query",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 2147483647,
+        "minLength": 3
+      }
+    },
+    {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "integer",
+        "format": "int32",
+        "default": 20,
+        "maximum": 100,
+        "minimum": 1
+      }
+    },
+    {
+      "name": "fields",
+      "in": "query",
+      "description": "Optional response field mask. Select fields from this operation's response schema; omit for the full response. Keep nextCursor when paginating; select dynamic maps whole.",
+      "schema": {
+        "type": "string",
+        "maxLength": 4096,
+        "minLength": 1
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "One page of matching users",
+      "content": {
+        "*/*": {
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserPage"
+              },
+              {
+                "$ref": "#/components/schemas/PartialUserPage"
+              }
+            ],
+            "description": "Full response when fields is absent; selected fields may be omitted when fields is supplied."
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Caller is not a platform operator (platform_operator_required)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": true,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "platform:read"
+  ],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

@@ -1,0 +1,78 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false,
+    "json": {
+      "name": "VALUE"
+    },
+    "privateBody": false
+  },
+  "operationId": "updateCurrentUser",
+  "apiCommand": "control.account.update",
+  "description": "Deprecated merge-style user profile update for legacy consumers. New clients use control.account.replace and explicitly supply nullable locale/avatar fields. Verify with control.account.get.",
+  "method": "PATCH",
+  "path": "/api/v1/me",
+  "parameters": [],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/UpdateProfileRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "200": {
+      "description": "Updated profile",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/Profile"
+          }
+        }
+      }
+    },
+    "422": {
+      "description": "Blank name or non-HTTPS avatar (profile_invalid)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "401": {
+      "description": "Missing, expired or revoked session (authentication_required)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "account:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "explicit-single-attempt"
+}

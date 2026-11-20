@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "resources": {
+    "https://a2ui.org/specification/v0_9/common_types.json": "a2ui/json/common_types.json",
+    "https://a2ui.org/specification/v0_9/server_to_client_list.json": "a2ui/json/server_to_client_list.json",
+    "https://a2ui.org/specification/v0_9/server_to_client.json": "a2ui/json/server_to_client.json",
+    "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json": "a2ui/catalogs/basic/catalog.json",
+    "https://a2ui.org/specification/v0_9/catalog.json": "a2ui/catalogs/basic/catalog.json",
+    "https://json-schema.org/draft/2020-12/meta/applicator": "json-schema/draft/2020-12/meta/applicator.json",
+    "https://json-schema.org/draft/2020-12/meta/content": "json-schema/draft/2020-12/meta/content.json",
+    "https://json-schema.org/draft/2020-12/meta/core": "json-schema/draft/2020-12/meta/core.json",
+    "https://json-schema.org/draft/2020-12/meta/format-annotation": "json-schema/draft/2020-12/meta/format-annotation.json",
+    "https://json-schema.org/draft/2020-12/meta/format-assertion": "json-schema/draft/2020-12/meta/format-assertion.json",
+    "https://json-schema.org/draft/2020-12/meta/meta-data": "json-schema/draft/2020-12/meta/meta-data.json",
+    "https://json-schema.org/draft/2020-12/meta/unevaluated": "json-schema/draft/2020-12/meta/unevaluated.json",
+    "https://json-schema.org/draft/2020-12/meta/validation": "json-schema/draft/2020-12/meta/validation.json",
+    "https://json-schema.org/draft/2020-12/schema": "json-schema/draft/2020-12/schema.json",
+    "https://space.invalid/content-schemas/json-schema-envelope.json": "templates/json-schema-envelope.json",
+    "https://space.invalid/content-schemas/a2ui-envelope.json": "templates/a2ui-envelope.json"
+  },
+  "types": {
+    "json-schema": [
+      "https://space.invalid/content-schemas/json-schema-envelope.json",
+      "https://json-schema.org/draft/2020-12/meta/applicator",
+      "https://json-schema.org/draft/2020-12/meta/content",
+      "https://json-schema.org/draft/2020-12/meta/core",
+      "https://json-schema.org/draft/2020-12/meta/format-annotation",
+      "https://json-schema.org/draft/2020-12/meta/meta-data",
+      "https://json-schema.org/draft/2020-12/meta/unevaluated",
+      "https://json-schema.org/draft/2020-12/meta/validation",
+      "https://json-schema.org/draft/2020-12/schema"
+    ],
+    "a2ui": [
+      "https://space.invalid/content-schemas/a2ui-envelope.json",
+      "https://a2ui.org/specification/v0_9/common_types.json",
+      "https://a2ui.org/specification/v0_9/server_to_client_list.json",
+      "https://a2ui.org/specification/v0_9/server_to_client.json",
+      "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "https://a2ui.org/specification/v0_9/catalog.json"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "not_found"
+      ]
+    },
+    "page": {
+      "anyOf": [
+        {
+          "$ref": "#/components/schemas/PageSummary"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "content": {
+      "anyOf": [
+        {
+          "$ref": "#/components/schemas/ContentSnapshot"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "etag": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "status"
+  ]
+}

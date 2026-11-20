@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "developmentId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "sourceRevision": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "sourceDigest": {
+      "type": "string"
+    },
+    "bundleDigest": {
+      "type": "string"
+    },
+    "entryPoint": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

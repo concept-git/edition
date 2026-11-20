@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: space-content
+  datasource:
+    url: ${DELIVERY_DB_URL}
+    username: ${DELIVERY_DB_USER}
+    password: ${DELIVERY_DB_PASSWORD}
+    hikari:
+      read-only: true
+      maximum-pool-size: 8
+      minimum-idle: 0
+      connection-timeout: 3000
+      data-source-properties:
+        socketTimeout: 10
+        connectTimeout: 3
+server:
+  port: ${PORT:8082}
+delivery:
+  cursor-key: ${DELIVERY_CURSOR_KEY}
+  search:
+    url: ${MEILI_URL}
+    key: ${MEILI_SEARCH_KEY}
+  objects:
+    url: ${OBJECT_STORE_ENDPOINT}
+    user: ${OBJECT_STORE_READER_KEY}
+    password: ${OBJECT_STORE_READER_SECRET}
+    bucket: ${OBJECT_STORE_BUCKET:attachments}
+management:
+  metrics:
+    distribution:
+      percentiles:
+        http.server.requests: [0.5, 0.95, 0.99]
+        space.delivery.search: [0.5, 0.95, 0.99]
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: metrics
+      exposure:
+        include: health,prometheus
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+
+logging:
+  file:
+    name: ${READER_LOG_FILE:}
+  structured:
+    format:
+      console: ecs
+      file: ecs
+
+security:
+  trusted-proxies: ${TRUSTED_PROXIES:127.0.0.1,::1}

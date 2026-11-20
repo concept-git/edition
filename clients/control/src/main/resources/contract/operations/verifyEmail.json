@@ -1,0 +1,59 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false,
+    "json": {
+      "token": "VALUE",
+      "user": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateBody": true
+  },
+  "operationId": "verifyEmail",
+  "apiCommand": "control.auth.email.verify",
+  "description": "Redeem an email verification token.",
+  "method": "POST",
+  "path": "/auth/email:verify",
+  "parameters": [],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/VerifyEmailRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "204": {
+      "description": "Email verified"
+    },
+    "400": {
+      "description": "Token invalid, expired or already used (verify_token_invalid)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": true,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "anonymous"
+  ],
+  "requiredScopes": [],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "explicit-single-attempt"
+}

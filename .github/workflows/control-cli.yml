@@ -1,0 +1,45 @@
+name: Control CLI
+on:
+  pull_request:
+    paths: ['clients/control/**', 'contracts/openapi.json', 'docs/design/control-cli-api-inventory.csv', 'backend/apps/control/**', '.github/workflows/control-cli.yml']
+  push:
+    branches: [main]
+    paths: ['clients/control/**', 'contracts/openapi.json', 'docs/design/control-cli-api-inventory.csv', '.github/workflows/control-cli.yml']
+jobs:
+  cli:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: clients/control
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: python scripts/generate_contract.py --check
+      - run: ./gradlew --no-daemon --max-workers=2 --warning-mode=fail check jacocoTestCoverageVerification installDist distZip
+        shell: bash
+      - name: Actual CLI process with Control and PostgreSQL
+        if: matrix.os == 'ubuntu-latest'
+        env:
+          SPACECTL_REQUIRE_CLI: 'true'
+        run: ../../backend/gradlew --project-dir ../../backend --no-daemon --max-workers=2 :control:test --tests '*ManagementTokenAcceptanceTest'
+        shell: bash
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spacectl-${{ matrix.os }}
+          path: clients/control/build/distributions/*.zip
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: spacectl-test-results-${{ matrix.os }}
+          path: clients/control/build/test-results/test/*.xml

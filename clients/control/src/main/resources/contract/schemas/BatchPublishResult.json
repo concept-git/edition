@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "pages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PageSummary"
+      }
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "promoted",
+        "skipped",
+        "held",
+        "unchanged"
+      ]
+    },
+    "release": {
+      "$ref": "#/components/schemas/ReleaseDetail"
+    }
+  }
+}

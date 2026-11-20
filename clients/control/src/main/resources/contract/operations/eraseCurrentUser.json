@@ -1,0 +1,81 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false,
+    "json": {
+      "confirmationEmail": "agent@example.test",
+      "currentPassword": "VALUE"
+    },
+    "privateBody": true
+  },
+  "operationId": "eraseCurrentUser",
+  "apiCommand": "control.account.erase",
+  "description": "Irreversibly erase the authenticated user. Verify with control.account.get.",
+  "method": "POST",
+  "path": "/api/v1/me:erase",
+  "parameters": [
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/EraseRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "204": {
+      "description": "User erased; refresh cookie cleared"
+    },
+    "400": {
+      "description": "Confirmation rejected (erase_confirmation_invalid)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "409": {
+      "description": "Ownership must be transferred first (ownership_transfer_required)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": true,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session"
+  ],
+  "requiredScopes": [],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "server-key"
+}

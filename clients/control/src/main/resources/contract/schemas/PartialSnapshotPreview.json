@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "properties": {
+    "html": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "format": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "contentType": {
+      "type": "string"
+    },
+    "versionRef": {
+      "type": "string"
+    },
+    "interpretation": {
+      "type": "object",
+      "additionalProperties": {}
+    },
+    "contentTypeDefinition": {
+      "$ref": "#/components/schemas/PartialContentTypeSnapshot"
+    }
+  }
+}

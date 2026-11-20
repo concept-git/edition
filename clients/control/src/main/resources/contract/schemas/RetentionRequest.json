@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "keep": {
+      "type": "integer",
+      "format": "int32",
+      "maximum": 50,
+      "minimum": 1
+    }
+  },
+  "required": [
+    "keep"
+  ]
+}

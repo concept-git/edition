@@ -1,0 +1,65 @@
+[
+  {
+    "dockw": "产品介绍",
+    "business": {
+      "audience": [
+        "developer"
+      ]
+    }
+  },
+  {
+    "uri": "./intro.html",
+    "code": "seo-id-unrelated",
+    "title": "产品介绍",
+    "des": "IPD 导入验证",
+    "kw": "IPD,SEO",
+    "extension": {
+      "edition": "test",
+      "flags": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "uri": "intro.html",
+    "code": "other-meta-code",
+    "title": "产品介绍",
+    "des": "IPD 导入验证",
+    "kw": "IPD,SEO",
+    "extension": {
+      "edition": "test",
+      "flags": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "uri": "details.html",
+    "title": false,
+    "des": {
+      "invalid": "ignored"
+    },
+    "kw": [
+      "ignored"
+    ]
+  },
+  {
+    "uri": "meta-only.html",
+    "title": "仅元数据页面"
+  },
+  {
+    "uri": "fallback.html",
+    "title": [],
+    "kw": 45
+  },
+  {
+    "uri": "guides/a/same.html",
+    "title": "同名页面 A"
+  },
+  {
+    "uri": "guides/b/same.html",
+    "title": "同名页面 B"
+  }
+]

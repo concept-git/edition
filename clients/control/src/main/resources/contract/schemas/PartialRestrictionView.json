@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "active": {
+      "type": "boolean"
+    },
+    "principals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialPrincipalView"
+      }
+    },
+    "revision": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "all": true,
+  "extension": [".ts"],
+  "include": ["space.ts"],
+  "exclude": ["**/*.test.ts"],
+  "reporter": ["text-summary", "json-summary", "html", "lcov"],
+  "reports-dir": "../.scratch/dw-v1/runtime/quality/coverage/infra",
+  "temp-directory": "../.scratch/dw-v1/runtime/quality/infra-unit-v8",
+  "check-coverage": true,
+  "lines": 90,
+  "branches": 90,
+  "functions": 90,
+  "statements": 90
+}

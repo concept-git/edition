@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "content": {
+      "type": "string"
+    },
+    "contentType": {
+      "type": "string"
+    },
+    "versionRef": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "interpretation": {
+      "type": "object",
+      "additionalProperties": {}
+    },
+    "intent": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Explicit effect constraint; omitted only for legacy clients",
+      "enum": [
+        "draft_only",
+        "hotfix",
+        null
+      ]
+    }
+  },
+  "required": [
+    "content"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "host": {
+      "type": "string"
+    },
+    "verified": {
+      "type": "boolean"
+    },
+    "isPrimary": {
+      "type": "boolean"
+    },
+    "dnsToken": {
+      "type": "string"
+    },
+    "txtName": {
+      "type": "string"
+    },
+    "txtValue": {
+      "type": "string"
+    }
+  }
+}

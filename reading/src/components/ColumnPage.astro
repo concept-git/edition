@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import SkyBand from "./SkyBand.astro";
+import Footer from "./Footer.astro";
+import Card from "./Card.astro";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { columns } from "@/data/columns";
+import config from "@/config";
+interface Props { slug: string }
+const column = columns.find(column => column.slug === Astro.props.slug)!;
+const guides = await getCollection("posts", ({ data }) => data.kind === "guide" && data.category === column.slug && !data.noIndex);
+const posts = getSortedPosts(await getCollection("posts", ({ data }) => data.category === column.slug && !data.noIndex));
+---
+<Layout title={`${column.name} | ${config.site.title}`} description={column.description}>
+  <SkyBand />
+  <main id="main-content" class="app-layout pb-12">
+    <a href="/" class="text-muted-foreground mt-7 inline-block py-2 text-sm hover:underline">首页</a>
+    <header class="border-border border-b pt-3 pb-7">
+      <h1 class="text-3xl leading-normal font-bold">{column.name}</h1>
+      <p class="text-muted-foreground mt-3">{column.description}</p>
+      <p class="text-muted-foreground mt-3 text-sm">{posts.length} 篇文章</p>
+    </header>
+    {guides.length > 0 && <section class="pt-7 pb-4"><h2 class="text-xl font-semibold">专题指南</h2><ul>{guides.map(post => <Card variant="h3" {...post} />)}</ul></section>}
+    <section class="pt-7"><h2 class="text-xl font-semibold">相关文章</h2><ul>{posts.map(post => <Card variant="h3" {...post} />)}</ul></section>
+    {posts.length === 0 && <p class="text-muted-foreground py-10">这个栏目还没有文章，先去浏览其他主题。</p>}
+  </main>
+  <Footer />
+</Layout>

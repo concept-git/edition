@@ -1,0 +1,164 @@
+spring:
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${SMTP_AUTH:false}
+      mail.smtp.starttls.enable: ${SMTP_STARTTLS:true}
+      mail.smtp.starttls.required: ${SMTP_STARTTLS:true}
+      mail.smtp.connectiontimeout: 10000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
+  task:
+    scheduling:
+      pool:
+        size: 8
+  application:
+    name: space
+
+  datasource:
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:32}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/space}
+    username: ${DB_USER:space}
+    password: ${DB_PASSWORD:space}
+
+  flyway:
+    schemas: shared,iam,authoring,releases,hosting
+
+  servlet:
+    multipart:
+      # 附件单文件上限 10 MiB（Page 概念不变量）；request 上限留 1 MiB 给 multipart 边界与表单字段
+      max-file-size: ${ATTACHMENT_MAX_FILE_SIZE:10MB}
+      max-request-size: ${ATTACHMENT_MAX_REQUEST_SIZE:11MB}
+
+  modulith:
+    events:
+      completion-mode: archive # 事件留档供审计对账，见 docs/tech/DELIVERY.md
+      jdbc:
+        schema: shared
+        schema-initialization:
+          enabled: false # event_publication 表由 Flyway 创建，运行时角色没有 DDL 权限
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true # mapper 与 record 直映
+
+management:
+  metrics:
+    web:
+      server:
+        # 管理端点超过默认 100 个 URI 标签；保留有界余量，HttpMetricsBudgetTest 核对契约覆盖。
+        max-uri-tags: 256
+  health:
+    mail:
+      enabled: ${MAIL_ENABLED:false}
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: metrics
+      exposure:
+        include: health,info,prometheus
+  observations:
+    annotations:
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+
+logging:
+  structured:
+    format:
+      console: ecs
+      file: ecs
+  file:
+    name: ${LOG_FILE:logs/space.log}
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs # contracts/openapi.json 的生成来源
+  group-configs:
+    - group: reader-commands
+      paths-to-match: /_auth/**
+
+identity:
+  password:
+    lock-duration: ${LOCK_DURATION:PT15M}
+    reset-ttl: ${RESET_TTL:PT30M}
+
+io:
+  space:
+    analytics:
+      ingest-key: ${ANALYTICS_INGEST_KEY:}
+    health:
+      # 平台 · 服务状态：进程心跳间隔；reader 无管理库凭据，改由管理面探测其 /healthz（为空则显示未配置）
+      heartbeat-ms: ${SERVICE_HEARTBEAT_MS:30000}
+      reader-url: ${READER_HEALTH_URL:}
+    delivery:
+      reader-public-scheme: ${READER_PUBLIC_SCHEME:https}
+      reader-public-port: ${READER_PUBLIC_PORT:-1}
+    rls:
+      enabled: ${RLS_ENABLED:true}
+    # 邮件里的验证链接形态（%s = userId, %s = token）；界面路由属实现层配置，不进概念模块
+    verify-url-template: ${VERIFY_URL_TEMPLATE:}
+    # 邀请链接形态（%s = 明文邀请令牌）；未注册的受邀人从这里进入注册
+    invite-url-template: ${INVITE_URL_TEMPLATE:}
+    # 密码重置链接（%s = 一次性明文 token）
+    reset-url-template: ${RESET_URL_TEMPLATE:}
+    reader-auth:
+      access-ttl: ${READER_ACCESS_TTL:PT10M}
+    session:
+      key-id: ${SESSION_KEY_ID:space-session-1}
+      private-key: ${SESSION_PRIVATE_KEY:}
+      public-key: ${SESSION_PUBLIC_KEY:}
+      access-ttl: ${SESSION_ACCESS_TTL:PT10M}
+    idempotency:
+      # 独立于 session JWT：base64 编码的 32-byte AES-256 key；缺失时默认拒绝启动
+      encryption-key: ${IDEMPOTENCY_ENCRYPTION_KEY:}
+    mail-outbox:
+      enabled: ${MAIL_ENABLED:false}
+      from: ${MAIL_FROM:noreply@space.local}
+      # base64 32-byte AES key；独立于 Session 与幂等响应密钥
+      encryption-key: ${MAIL_OUTBOX_ENCRYPTION_KEY:}
+    import:
+      remote:
+        # 远程地址导入：精确主机名列表（逗号分隔）。命中即视为运维信任的来源，跳过 https 与私网地址检查
+        # （e2e 用测试栈内 MinIO；私有部署可填自建 GitLab）。默认空 = 只接受公开 https 地址。
+        allowed-hosts: ${IMPORT_REMOTE_ALLOWED_HOSTS:}
+    webhooks:
+      # Webhook 接收端：精确主机名列表（逗号分隔）。命中只跳过公网地址检查，仍须 HTTPS 且不跟随重定向
+      # （隔离验收用 localhost；私有部署可填内网接收端）。默认空 = 只投递公网地址。
+      allowed-hosts: ${WEBHOOK_ALLOWED_HOSTS:}
+    object-store:
+      # MinIO（S3 协议）：附件二进制按 sha256 内容寻址；桶由 docker compose minio-init 预建
+      endpoint: ${OBJECT_STORE_ENDPOINT:http://localhost:9000}
+      access-key: ${OBJECT_STORE_ACCESS_KEY:space}
+      secret-key: ${OBJECT_STORE_SECRET_KEY:space-dev}
+      bucket: ${OBJECT_STORE_BUCKET:attachments}
+      # 浏览器可达的签名地址 host（容器内外不同）；为空即与 endpoint 相同
+      presign-public-endpoint: ${OBJECT_STORE_PRESIGN_PUBLIC_ENDPOINT:}
+    auth:
+      login-ip-capacity: ${LOGIN_IP_CAPACITY:10}
+      login-email-capacity: ${LOGIN_EMAIL_CAPACITY:20} # 须高于 5 次锁定阈值，否则锁定不可达
+      refresh-capacity: ${REFRESH_CAPACITY:30}
+      forgot-ip-capacity: ${FORGOT_IP_CAPACITY:5}
+      forgot-email-capacity: ${FORGOT_EMAIL_CAPACITY:3}
+    dns:
+      resolver: ${DNS_RESOLVER:system}
+      auto-prove: ${DNS_AUTO_PROVE:false}
+      unverified-ttl: ${UNVERIFIED_DOMAIN_TTL:PT72H}
+    domain-ask:
+      token: ${DOMAIN_ASK_TOKEN:}
+
+security:
+  cors:
+    # 8088=Caddy（浏览器同源 POST 也带 Origin，缺名单即 403）
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:8088,http://127.0.0.1:8088}
+  trusted-proxies: ${TRUSTED_PROXIES:127.0.0.1,::1}
+
+server:
+  port: ${PORT:8081} # 本机 8080 常被其他服务占用；Caddy 反代与文档一律指向 8081

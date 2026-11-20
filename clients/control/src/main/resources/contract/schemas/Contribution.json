@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "pluginId": {
+      "type": "string"
+    },
+    "pluginVersion": {
+      "type": "string"
+    },
+    "contributionId": {
+      "type": "string"
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": {}
+    }
+  }
+}

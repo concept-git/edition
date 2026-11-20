@@ -1,0 +1,14 @@
+---
+import { methodNotAllowed, logoutRoute } from "../routes/session-route.ts";
+import RouteView from "../views/RouteView.astro";
+import { applyView } from "../views/apply.ts";
+
+const route =
+  Astro.request.method === "POST"
+    ? await logoutRoute(Astro)
+    : methodNotAllowed("POST");
+if (route.response) return route.response;
+applyView(Astro.response, route);
+---
+
+<RouteView view={route.view} />

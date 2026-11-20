@@ -1,0 +1,842 @@
+{
+  "eraseCurrentUser": {
+    "name": "control.account.erase",
+    "description": "Irreversibly erase the authenticated user. Verify with control.account.get.",
+    "confirm": true
+  },
+  "getCurrentUser": {
+    "name": "control.account.get",
+    "description": "Read the authenticated user's profile. Verify with control.account.get."
+  },
+  "changePassword": {
+    "name": "control.account.password.change",
+    "description": "Change the authenticated user's password. Verify with control.account.get."
+  },
+  "listSessions": {
+    "name": "control.account.sessions.list",
+    "description": "List the authenticated user's device sessions."
+  },
+  "endSession": {
+    "name": "control.account.sessions.revoke",
+    "description": "Revoke one of the authenticated user's sessions.",
+    "confirm": true
+  },
+  "updateCurrentUser": {
+    "name": "control.account.update",
+    "description": "Deprecated merge-style user profile update for legacy consumers. New clients use control.account.replace and explicitly supply nullable locale/avatar fields. Verify with control.account.get."
+  },
+  "platformHealth": {
+    "name": "control.admin.health.get",
+    "description": "Report liveness and lag of the management, reader and worker processes."
+  },
+  "provisionTenant": {
+    "name": "control.admin.tenants.create",
+    "description": "Provision a tenant and seat its first owner. Verify with control.tenants.capability.get."
+  },
+  "listTenants": {
+    "name": "control.admin.tenants.list",
+    "description": "List tenants. Verify with control.tenants.capability.get."
+  },
+  "resumeTenant": {
+    "name": "control.admin.tenants.resume",
+    "description": "Unfreeze a tenant. Verify with control.tenants.capability.get."
+  },
+  "suspendTenant": {
+    "name": "control.admin.tenants.suspend",
+    "description": "Freeze a tenant. Verify with control.tenants.capability.get.",
+    "confirm": true
+  },
+  "deactivateAdminUser": {
+    "name": "control.admin.user.deactivate",
+    "description": "Globally freeze a user and revoke credentials. Verify with control.admin.user.get.",
+    "confirm": true
+  },
+  "eraseAdminUser": {
+    "name": "control.admin.user.erase",
+    "description": "Irreversibly erase a deactivated global user. Verify with control.admin.user.get.",
+    "confirm": true
+  },
+  "getAdminUser": {
+    "name": "control.admin.user.get",
+    "description": "Read global user lifecycle and membership details. Verify with control.admin.user.get."
+  },
+  "searchAdminUsers": {
+    "name": "control.admin.user.list",
+    "description": "Search global users by email or name prefix. Verify with control.admin.user.get."
+  },
+  "reactivateAdminUser": {
+    "name": "control.admin.user.reactivate",
+    "description": "Re-enable a deactivated user. Verify with control.admin.user.get."
+  },
+  "exportAudit": {
+    "name": "control.audit.exports.create",
+    "description": "Create a snapshot CSV export of all filtered audit records."
+  },
+  "downloadAuditExport": {
+    "name": "control.audit.exports.download",
+    "description": "Download an export after checking current authorization."
+  },
+  "viewAuditExport": {
+    "name": "control.audit.exports.get",
+    "description": "Inspect export generation state."
+  },
+  "listAudit": {
+    "name": "control.audit.list",
+    "description": "Query tenant or platform audit facts."
+  },
+  "login": {
+    "name": "control.auth.bootstrap.login",
+    "description": "Exchange credentials for an access token."
+  },
+  "resendVerification": {
+    "name": "control.auth.email.resend",
+    "description": "Request a new verification email."
+  },
+  "verifyEmail": {
+    "name": "control.auth.email.verify",
+    "description": "Redeem an email verification token."
+  },
+  "forgotPassword": {
+    "name": "control.auth.password.forgot",
+    "description": "Request a password reset."
+  },
+  "resetPassword": {
+    "name": "control.auth.password.reset",
+    "description": "Redeem a one-time password reset token."
+  },
+  "register": {
+    "name": "control.auth.register",
+    "description": "Register a new account."
+  },
+  "authenticationContext": {
+    "name": "control.auth.status",
+    "description": "Inspect current credential limits without returning any secret."
+  },
+  "createCollection": {
+    "name": "control.collections.create",
+    "description": "Create a Collection. Verify with control.collections.list."
+  },
+  "removeCollection": {
+    "name": "control.collections.delete",
+    "description": "Delete an empty Collection. Verify with control.collections.list.",
+    "confirm": true
+  },
+  "viewCollections": {
+    "name": "control.collections.list",
+    "description": "Read the tenant Collection forest in author order. Verify with control.collections.list."
+  },
+  "moveCollection": {
+    "name": "control.collections.move",
+    "description": "Move a Collection. Verify with control.collections.list."
+  },
+  "unplaceSpace": {
+    "name": "control.collections.spaces.remove",
+    "description": "Remove a Space from this Collection if present. Verify with control.collections.list.",
+    "confirm": true
+  },
+  "placeSpace": {
+    "name": "control.collections.spaces.set",
+    "description": "Place a Space into a Collection. Verify with control.collections.list."
+  },
+  "patchCollection": {
+    "name": "control.collections.update",
+    "description": "Rename a Collection or set its icon. Verify with control.collections.list."
+  },
+  "listDeletions": {
+    "name": "control.deletions.list",
+    "description": "Query deletion cleanup even after the resource is gone. Verify with control.deletions.list."
+  },
+  "retryDeletion": {
+    "name": "control.deletions.retry",
+    "description": "Retry the original cleanup and delivery intentions. Verify with control.deletions.list."
+  },
+  "domainCertificate": {
+    "name": "control.domains.certificate.get",
+    "description": "Inspect the actual TLS certificate of a bound domain. Verify with control.domains.get."
+  },
+  "bindDomain": {
+    "name": "control.domains.create",
+    "description": "Bind a custom domain to a Site. Verify with control.domains.get. Domain binding observed; verify domain ownership/TLS and routing as requested.",
+    "confirm": true
+  },
+  "unbindDomain": {
+    "name": "control.domains.delete",
+    "description": "Unbind a custom domain. Verify with control.domains.get.",
+    "confirm": true
+  },
+  "viewDomain": {
+    "name": "control.domains.get",
+    "description": "Read a bound custom domain including the TXT challenge. Verify with control.domains.get."
+  },
+  "listTenantDomains": {
+    "name": "control.domains.list",
+    "description": "List custom domains across every readable Site of a tenant. Verify with control.domains.get."
+  },
+  "setPrimaryDomain": {
+    "name": "control.domains.primary.set",
+    "description": "Mark a verified custom domain as primary. Verify with control.domains.get.",
+    "confirm": true
+  },
+  "verifyDomain": {
+    "name": "control.domains.verify",
+    "description": "Verify a custom domain via DNS TXT. Verify with control.domains.get.",
+    "confirm": true
+  },
+  "requestBundleExport": {
+    "name": "control.spaces.exports.create",
+    "description": "Queue a complete portable ZIP for a retained live or archived release. Verify with control.spaces.exports.get. Export job ready, then downloaded ZIP bytes exist and match intended release."
+  },
+  "downloadBundleExport": {
+    "name": "control.spaces.exports.download",
+    "description": "Reauthorize every current page before streaming the complete private ZIP. Verify with control.spaces.exports.get. Binary download saved atomically; verify expected release and file bytes."
+  },
+  "viewBundleExport": {
+    "name": "control.spaces.exports.get",
+    "description": "Read export progress without exposing snapshot or object keys. Verify with control.spaces.exports.get."
+  },
+  "listBundleExports": {
+    "name": "control.spaces.exports.list",
+    "description": "List export tasks in this space. Verify with control.spaces.exports.get."
+  },
+  "retryBundleExport": {
+    "name": "control.spaces.exports.retry",
+    "description": "Retry the same failed captured export after checking current permissions. Verify with control.spaces.exports.get. terminal wait target."
+  },
+  "health": {
+    "name": "control.health.liveness",
+    "description": "Liveness probe."
+  },
+  "readiness": {
+    "name": "control.health.readiness",
+    "description": "Readiness probe."
+  },
+  "importRelease": {
+    "name": "control.spaces.imports.create",
+    "description": "Import a zip or uploadKey into a synced Space and enqueue the job. Requires: 空间必须处于 active 状态; 此操作要求 synced 空间. Verify with control.spaces.imports.get. Import job is terminal and report/release status agrees with intended outcome; flagged is held, not reader-visible completion.",
+    "confirm": true
+  },
+  "viewImportJob": {
+    "name": "control.spaces.imports.get",
+    "description": "Read one import job in this Space. Verify with control.spaces.imports.get."
+  },
+  "startImportUpload": {
+    "name": "control.spaces.imports.upload.create",
+    "description": "Create a short-lived PUT URL for a large import zip. Verify with control.spaces.imports.get."
+  },
+  "acceptInvitation": {
+    "name": "control.invitations.accept",
+    "description": "Accept an invitation."
+  },
+  "previewInvitation": {
+    "name": "control.invitations.get",
+    "description": "Read an invitation summary."
+  },
+  "listJobs": {
+    "name": "control.jobs.list",
+    "description": "Inspect import work and recovery state. Verify with control.jobs.list."
+  },
+  "retryJob": {
+    "name": "control.jobs.retry",
+    "description": "Retry a failed import with current publish authorization. Verify with control.jobs.list."
+  },
+  "listMailJobs": {
+    "name": "control.mailJobs.list",
+    "description": "List masked mail delivery metadata. Verify with control.mailJobs.list."
+  },
+  "retryMailJob": {
+    "name": "control.mailJobs.retry",
+    "description": "Replay the original failed mail intent. Verify with control.mailJobs.list."
+  },
+  "issueManagementToken": {
+    "name": "control.managementTokens.create",
+    "description": "Issue a scoped personal management credential; session only. Verify with control.managementTokens.list. Metadata and one-time secret secured; authentication context verified without disclosing the bearer."
+  },
+  "listManagementTokens": {
+    "name": "control.managementTokens.list",
+    "description": "List own personal management credentials without secrets; session only. Verify with control.managementTokens.list."
+  },
+  "revokeManagementToken": {
+    "name": "control.managementTokens.revoke",
+    "description": "Revoke own management credential; missing credentials are idempotent. Verify with control.managementTokens.list.",
+    "confirm": true
+  },
+  "reindexSearch": {
+    "name": "control.operations.search.reindex",
+    "description": "Queue a complete search rebuild as platform operator."
+  },
+  "storageUsage": {
+    "name": "control.operations.storage.get",
+    "description": "Inspect platform physical source storage and database size."
+  },
+  "retryStorage": {
+    "name": "control.operations.storage.retry",
+    "description": "Requeue failed source cleanup without bypassing reference protection."
+  },
+  "purgeTrash": {
+    "name": "control.operations.trash.purge",
+    "description": "Scan expired trash without bypassing reference protection.",
+    "confirm": true
+  },
+  "downloadPageAttachment": {
+    "name": "control.spaces.pages.attachments.download",
+    "description": "Download an attachment with current authorization. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "viewPageAttachment": {
+    "name": "control.spaces.pages.attachments.get",
+    "description": "Short-lived signed download URL for one attachment. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "detachPageFile": {
+    "name": "control.spaces.pages.attachments.remove",
+    "description": "Detach one attachment (reference only; idempotent). Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+    "confirm": true
+  },
+  "attachPageFile": {
+    "name": "control.spaces.pages.attachments.upload",
+    "description": "Upload one attachment (≤10 MiB; png/jpeg/gif/webp/pdf detected from content). Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "editPage": {
+    "name": "control.spaces.pages.edit",
+    "description": "Replace Page content at a current strong ETag from pages.content.get / pages +inspect. Explicit intent draft_only saves only the authored working copy and suppresses automatic Release; intent hotfix is synced-only and promotes a new live Release. The server rejects a mode/intent mismatch before effects. Confirm with --yes; verify content/revision and hotfix live Release. Site delivery remains separate.",
+    "confirm": true
+  },
+  "createPage": {
+    "name": "control.spaces.pages.create",
+    "description": "Create and place an authored Page. Requires: 空间必须处于 active 状态; 此操作要求 authored 空间. Verify with control.spaces.pages.get. Created page ID and current placement observed."
+  },
+  "viewPage": {
+    "name": "control.spaces.pages.get",
+    "description": "Read one Page. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "setPageIcon": {
+    "name": "control.spaces.pages.icon.set",
+    "description": "Set or clear the Page icon URL. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "listPages": {
+    "name": "control.spaces.pages.list",
+    "description": "List readable Pages in a Space. Verify with control.spaces.pages.get."
+  },
+  "explainPageRead": {
+    "name": "control.spaces.pages.permissions.explain",
+    "description": "Explain effective Page read access. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "viewPagePermission": {
+    "name": "control.spaces.pages.permissions.get",
+    "description": "Read the Page restriction snapshot. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "previewPage": {
+    "name": "control.spaces.pages.preview",
+    "description": "Render a safe Page preview without persistence. Verify with control.spaces.pages.get."
+  },
+  "removePageProperty": {
+    "name": "control.spaces.pages.properties.remove",
+    "description": "Remove one Page property (idempotent). Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+    "confirm": true
+  },
+  "setPageProperty": {
+    "name": "control.spaces.pages.properties.set",
+    "description": "Upsert one free-form Page property. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "publishPage": {
+    "name": "control.spaces.pages.publish",
+    "description": "Mark a Page published and auto-promote when wiki mode is on. Requires: Page current placement must match the input space; 空间必须处于 active 状态; 此操作要求 authored 空间. Verify with control.spaces.pages.get. Working-page published status observed; build and delivery remain separate if reader visibility is the goal.",
+    "confirm": true
+  },
+  "renamePage": {
+    "name": "control.spaces.pages.rename",
+    "description": "Rename a Page. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+    "confirm": true
+  },
+  "restorePage": {
+    "name": "control.spaces.pages.restore",
+    "description": "Restore a trashed Page without re-hanging the Toc. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "deletePageRestriction": {
+    "name": "control.spaces.pages.restrictions.remove",
+    "description": "Remove the Page restriction. Requires: Use a current strong ETag; reconcile after conflict; Page current placement must match the input space. Verify with control.spaces.pages.get.",
+    "confirm": true
+  },
+  "putPageRestriction": {
+    "name": "control.spaces.pages.restrictions.set",
+    "description": "Replace the complete Page restriction. Requires: Use a current strong ETag; reconcile after conflict; Page current placement must match the input space. Verify with control.spaces.pages.get. Restriction principals/revision and effective permission explanation agree with intent.",
+    "confirm": true
+  },
+  "diffPageRevisions": {
+    "name": "control.spaces.pages.revisions.diff",
+    "description": "Compare two Page Revisions. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "viewPageRevision": {
+    "name": "control.spaces.pages.revisions.get",
+    "description": "Read one Page Revision. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "listPageRevisions": {
+    "name": "control.spaces.pages.revisions.list",
+    "description": "List Page Revisions newest first. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "revertPage": {
+    "name": "control.spaces.pages.revisions.revert",
+    "description": "Save historical content as a new Revision. Requires: Use a current strong ETag; reconcile after conflict; Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "setPageSeo": {
+    "name": "control.spaces.pages.seo.update",
+    "description": "Merge-patch Page SEO (TDK); omitted keeps, null clears. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "reslugPage": {
+    "name": "control.spaces.pages.slug.set",
+    "description": "Change a Page slug and register redirects. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "untagPage": {
+    "name": "control.spaces.pages.tags.remove",
+    "description": "Remove a tag from a Page; missing labels are idempotent. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+    "confirm": true
+  },
+  "tagPage": {
+    "name": "control.spaces.pages.tags.set",
+    "description": "Tag a Page; idempotent; does not bump revision. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "transferPage": {
+    "name": "control.spaces.pages.transfer",
+    "description": "Move a Page to another Space and register redirects. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get. Page is currently placed in the intended destination; inspect effective permission and public delivery when relevant.",
+    "confirm": true
+  },
+  "listTrash": {
+    "name": "control.spaces.pages.trash.list",
+    "description": "List trashed Pages in a Space. Verify with control.spaces.pages.get."
+  },
+  "trashPage": {
+    "name": "control.spaces.pages.trash.set",
+    "description": "Move a Page to trash without deleting it. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get."
+  },
+  "unpublishPage": {
+    "name": "control.spaces.pages.unpublish",
+    "description": "Mark a Page unpublished and auto-promote when wiki mode is on. Requires: Page current placement must match the input space; 空间必须处于 active 状态; 此操作要求 authored 空间. Verify with control.spaces.pages.get. Working-page status is draft; verify live release and site delivery separately for reader removal.",
+    "confirm": true
+  },
+  "deleteRedirect": {
+    "name": "control.redirects.delete",
+    "description": "Delete a manual redirect.",
+    "confirm": true
+  },
+  "listRedirects": {
+    "name": "control.redirects.list",
+    "description": "List Site redirect rules."
+  },
+  "createRedirect": {
+    "name": "control.redirects.set",
+    "description": "Create or replace a redirect to a Space mounted on this Site, or a page in that Space. Verify with control.redirects.list."
+  },
+  "approveRelease": {
+    "name": "control.spaces.releases.approve",
+    "description": "Approve a flagged import Release and promote it. Verify with control.spaces.releases.get. Release promotion observed, followed by site delivery if external availability is intended.",
+    "confirm": true
+  },
+  "buildRelease": {
+    "name": "control.spaces.releases.build",
+    "description": "Build a Release from published Pages and promote when it differs. Requires: 空间必须处于 active 状态; 此操作要求 authored 空间. Verify with control.spaces.releases.get. Returned live release and its pages observed; site delivery is a separate boundary.",
+    "confirm": true
+  },
+  "diffReleases": {
+    "name": "control.spaces.releases.diff",
+    "description": "Diff two Releases in a Space. Verify with control.spaces.releases.get."
+  },
+  "discardRelease": {
+    "name": "control.spaces.releases.discard",
+    "description": "Discard a draft, flagged or validated Release. Verify with control.spaces.releases.get.",
+    "confirm": true
+  },
+  "viewRelease": {
+    "name": "control.spaces.releases.get",
+    "description": "Read one Release with its report and live diff. Verify with control.spaces.releases.get."
+  },
+  "listReleases": {
+    "name": "control.spaces.releases.list",
+    "description": "List Releases in a Space. Verify with control.spaces.releases.get."
+  },
+  "previewRelease": {
+    "name": "control.spaces.releases.preview.get",
+    "description": "Render one snapshot page from a not-yet-live Release. Verify with control.spaces.releases.get."
+  },
+  "listReleasePreviewPages": {
+    "name": "control.spaces.releases.preview.list",
+    "description": "List snapshot pages available for preview. Verify with control.spaces.releases.get."
+  },
+  "promoteRelease": {
+    "name": "control.spaces.releases.promote",
+    "description": "Promote a validated or archived Release. Verify with control.spaces.releases.get. Live release ID equals the intended retained release; then verify site delivery.",
+    "confirm": true
+  },
+  "rollbackRelease": {
+    "name": "control.spaces.releases.rollback",
+    "description": "Promote an archived Release back to live. Verify with control.spaces.releases.get. Live release and content match rollback intent; verify external delivery separately.",
+    "confirm": true
+  },
+  "patchRelease": {
+    "name": "control.spaces.releases.update",
+    "description": "Merge-patch Release label and notes. Verify with control.spaces.releases.get."
+  },
+  "createSite": {
+    "name": "control.sites.create",
+    "description": "Create a tenant Site. Verify with control.sites.get.",
+    "confirm": true
+  },
+  "deleteSite": {
+    "name": "control.sites.delete",
+    "description": "Delete an unmounted Site and unbind its domains. Requires: Site must have no mounts before termination. Verify with control.sites.get. Deletion terminal state and intended public routing removal verified.",
+    "confirm": true
+  },
+  "planSiteTermination": {
+    "name": "control.sites.deletions.plan",
+    "description": "Validate current Site termination prerequisites and observe cascade impact without mutation. Requires: Site must have no mounts before termination. Verify with control.sites.get."
+  },
+  "siteDeliveryStatus": {
+    "name": "control.sites.deliveries.get",
+    "description": "Read actual per-site online version and publication state. Verify with control.sites.get. Observed target epoch, online epoch, delivery state and search state; this query does not itself advance delivery."
+  },
+  "retrySiteDelivery": {
+    "name": "control.sites.deliveries.retry",
+    "description": "Retry the existing durable publication without republishing. Verify with control.sites.deliveries.get. Delivery state applied and online epoch reaches target epoch; inspect search status if search availability matters."
+  },
+  "viewSite": {
+    "name": "control.sites.get",
+    "description": "Read one Site by stable id. Verify with control.sites.get."
+  },
+  "deleteSiteGrant": {
+    "name": "control.sites.grants.remove",
+    "description": "Delete a local Site grant. Verify with control.sites.get.",
+    "confirm": true
+  },
+  "putSiteGrant": {
+    "name": "control.sites.grants.set",
+    "description": "Create or replace a local Site grant. Verify with control.sites.get. Site permission explanation and public access agree with intent.",
+    "confirm": true
+  },
+  "listSites": {
+    "name": "control.sites.list",
+    "description": "List readable Sites with an opaque cursor. Verify with control.sites.get."
+  },
+  "unmountSpace": {
+    "name": "control.sites.mounts.remove",
+    "description": "Unmount a Space from a Site slug. Verify with control.sites.get.",
+    "confirm": true
+  },
+  "remountSpace": {
+    "name": "control.sites.mounts.rename",
+    "description": "Change a Site mount slug and register a redirect. Verify with control.sites.get.",
+    "confirm": true
+  },
+  "reorderMounts": {
+    "name": "control.sites.mounts.reorder",
+    "description": "Reorder Site mounts. Verify with control.sites.get.",
+    "confirm": true
+  },
+  "mountSpace": {
+    "name": "control.sites.mounts.set",
+    "description": "Mount a Space at a Site slug. Verify with control.sites.get. Fresh mount state matches intent and delivery has applied the target epoch.",
+    "confirm": true
+  },
+  "explainSiteAdmin": {
+    "name": "control.sites.permissions.explain",
+    "description": "Explain effective Site admin access. Verify with control.sites.get."
+  },
+  "listSitePermissions": {
+    "name": "control.sites.permissions.list",
+    "description": "List inherited and local Site grants. Verify with control.sites.get."
+  },
+  "searchSitePermissionTeams": {
+    "name": "control.sites.principals.teams.list",
+    "description": "Search tenant Teams for Site ACL. Verify with control.sites.get."
+  },
+  "searchSitePermissionUsers": {
+    "name": "control.sites.principals.user.list",
+    "description": "Search active tenant Users for Site ACL. Verify with control.sites.get."
+  },
+  "searchConfiguration": {
+    "name": "control.sites.search.get",
+    "description": "Read desired search field order. Verify with control.sites.get."
+  },
+  "configureSearch": {
+    "name": "control.sites.search.set",
+    "description": "Queue a search field order change. Verify with control.sites.get.",
+    "confirm": true
+  },
+  "siteSearchStats": {
+    "name": "control.sites.search.stats",
+    "description": "Submitted searches, zero results and observable click rate. Verify with control.sites.get."
+  },
+  "siteTraffic": {
+    "name": "control.sites.traffic.get",
+    "description": "Page views, daily estimated visitors and missing paths. Verify with control.sites.get."
+  },
+  "updateSite": {
+    "name": "control.sites.update",
+    "description": "Merge-patch Site settings. Verify with control.sites.get.",
+    "confirm": true
+  },
+  "archiveSpace": {
+    "name": "control.spaces.archive",
+    "description": "Archive a Space. Verify with control.spaces.get.",
+    "confirm": true
+  },
+  "listSpaceAttachments": {
+    "name": "control.spaces.attachments.list",
+    "description": "Browse readable working attachments with bounded scanning. Verify with control.spaces.get."
+  },
+  "convertSpace": {
+    "name": "control.spaces.convert",
+    "description": "Convert a Space between authored and synced modes. Verify with control.spaces.get.",
+    "confirm": true
+  },
+  "createSpace": {
+    "name": "control.spaces.create",
+    "description": "Create a tenant Space. Verify with control.spaces.get."
+  },
+  "deleteSpace": {
+    "name": "control.spaces.delete",
+    "description": "Permanently delete an archived Space with name confirmation. Requires: Space must be archived before termination. Verify with control.spaces.get. Deletion work reaches its intended terminal cleanup state; request acceptance alone is insufficient.",
+    "confirm": true
+  },
+  "planSpaceTermination": {
+    "name": "control.spaces.deletions.plan",
+    "description": "Validate current Space termination prerequisites and observe cascade impact without mutation. Requires: Space must be archived before termination. Verify with control.spaces.get."
+  },
+  "viewDrift": {
+    "name": "control.spaces.drift.get",
+    "description": "Read live vs last-import drift in this Space. Verify with control.spaces.get."
+  },
+  "viewSpace": {
+    "name": "control.spaces.get",
+    "description": "Read one Space by stable id. Verify with control.spaces.get."
+  },
+  "deleteSpaceGrant": {
+    "name": "control.spaces.grants.remove",
+    "description": "Delete a local Space grant. Verify with control.spaces.get.",
+    "confirm": true
+  },
+  "putSpaceGrant": {
+    "name": "control.spaces.grants.set",
+    "description": "Create or replace a local Space grant. Verify with control.spaces.get. Fresh permission explanation agrees with the intended principal, layer and effective access.",
+    "confirm": true
+  },
+  "listSpaces": {
+    "name": "control.spaces.list",
+    "description": "List readable Spaces with an opaque cursor. Verify with control.spaces.get."
+  },
+  "listSpaceMounts": {
+    "name": "control.spaces.mounts.list",
+    "description": "List delivery mounts for one Space. Verify with control.spaces.get."
+  },
+  "listSpacePermissions": {
+    "name": "control.spaces.permissions.list",
+    "description": "List inherited and local Space grants. Verify with control.spaces.get."
+  },
+  "listPermissionPages": {
+    "name": "control.spaces.permissions.pages.list",
+    "description": "List every Page for ACL administration. Verify with control.spaces.get."
+  },
+  "searchPermissionTeams": {
+    "name": "control.spaces.principals.teams.list",
+    "description": "Search tenant Teams for ACL editing. Verify with control.spaces.get."
+  },
+  "searchPermissionUsers": {
+    "name": "control.spaces.principals.user.list",
+    "description": "Search active tenant Users for ACL editing. Verify with control.spaces.get."
+  },
+  "restoreSpace": {
+    "name": "control.spaces.restore",
+    "description": "Restore an archived Space. Verify with control.spaces.get."
+  },
+  "setRetention": {
+    "name": "control.spaces.retention.set",
+    "description": "Set how many archived Releases to keep. Verify with control.spaces.get."
+  },
+  "spaceUsage": {
+    "name": "control.spaces.stats.get",
+    "description": "Space logical usage and activity. Verify with control.spaces.get."
+  },
+  "updateSpace": {
+    "name": "control.spaces.update",
+    "description": "Merge-patch Space metadata. Verify with control.spaces.get."
+  },
+  "listTags": {
+    "name": "control.tags.list",
+    "description": "List visible tags in a tenant with observer-relative pageCount. Verify with control.tags.list."
+  },
+  "listTaggedPages": {
+    "name": "control.tags.pages.list",
+    "description": "List readable Pages that carry a tag. Verify with control.tags.list."
+  },
+  "renameTag": {
+    "name": "control.tags.rename",
+    "description": "Rename a tag across the tenant; merge if the target exists. Verify with control.tags.list.",
+    "confirm": true
+  },
+  "create": {
+    "name": "control.teams.create",
+    "description": "team create. Verify with control.teams.get."
+  },
+  "delete": {
+    "name": "control.teams.delete",
+    "description": "team delete. Verify with control.teams.get.",
+    "confirm": true
+  },
+  "view": {
+    "name": "control.teams.get",
+    "description": "team get. Verify with control.teams.get."
+  },
+  "invite": {
+    "name": "control.teams.invitations.create",
+    "description": "Invite an existing tenant member to a team as owner or member. Verify with control.teams.invitations.list."
+  },
+  "invitations": {
+    "name": "control.teams.invitations.list",
+    "description": "team invitation list. Verify with control.teams.get."
+  },
+  "revoke_1": {
+    "name": "control.teams.invitations.revoke",
+    "description": "team invitation revoke. Verify with control.teams.get.",
+    "confirm": true
+  },
+  "list_1": {
+    "name": "control.teams.list",
+    "description": "team list. Verify with control.teams.get."
+  },
+  "members": {
+    "name": "control.teams.members.list",
+    "description": "team member list. Verify with control.teams.get."
+  },
+  "removeMember": {
+    "name": "control.teams.members.remove",
+    "description": "team member remove. Verify with control.teams.get.",
+    "confirm": true
+  },
+  "setRole": {
+    "name": "control.teams.members.role.set",
+    "description": "team member role set. Verify with control.teams.get.",
+    "confirm": true
+  },
+  "rename": {
+    "name": "control.teams.rename",
+    "description": "team rename. Verify with control.teams.get.",
+    "confirm": true
+  },
+  "operationsCapabilities": {
+    "name": "control.tenants.capability.get",
+    "description": "List the current actor's operational capabilities. Verify with control.tenants.capability.get."
+  },
+  "inviteTenantMember": {
+    "name": "control.tenants.invitations.create",
+    "description": "Invite someone to the tenant. Verify with control.tenants.capability.get."
+  },
+  "listTenantInvitations": {
+    "name": "control.tenants.invitations.list",
+    "description": "List pending invitations. Verify with control.tenants.capability.get."
+  },
+  "revokeTenantInvitation": {
+    "name": "control.tenants.invitations.revoke",
+    "description": "Revoke a pending invitation. Verify with control.tenants.capability.get.",
+    "confirm": true
+  },
+  "listTenantMembers": {
+    "name": "control.tenants.members.list",
+    "description": "List the tenant's members. Verify with control.tenants.capability.get."
+  },
+  "removeTenantMember": {
+    "name": "control.tenants.members.remove",
+    "description": "Remove a member. Verify with control.tenants.capability.get.",
+    "confirm": true
+  },
+  "setTenantMemberRole": {
+    "name": "control.tenants.members.role.set",
+    "description": "Change a member's role. Verify with control.tenants.capability.get.",
+    "confirm": true
+  },
+  "listTenantReleases": {
+    "name": "control.tenants.releases.list",
+    "description": "List Releases across every readable Space of a tenant. Verify with control.tenants.capability.get."
+  },
+  "tenantUsage": {
+    "name": "control.tenants.stats.get",
+    "description": "Tenant logical usage and activity. Verify with control.tenants.capability.get."
+  },
+  "addTocEntry": {
+    "name": "control.spaces.toc.create",
+    "description": "Add a directory entry. Verify with control.spaces.toc.list."
+  },
+  "removeTocEntry": {
+    "name": "control.spaces.toc.delete",
+    "description": "Remove a directory entry and its descendants. Verify with control.spaces.toc.list.",
+    "confirm": true
+  },
+  "viewToc": {
+    "name": "control.spaces.toc.list",
+    "description": "Read the Space directory tree in author order. Verify with control.spaces.toc.list."
+  },
+  "moveTocEntry": {
+    "name": "control.spaces.toc.move",
+    "description": "Move a directory entry. Verify with control.spaces.toc.list."
+  },
+  "relabelTocEntry": {
+    "name": "control.spaces.toc.rename",
+    "description": "Rename a directory entry. Verify with control.spaces.toc.list.",
+    "confirm": true
+  },
+  "issue": {
+    "name": "control.tokens.create",
+    "description": "token create. Verify with control.tokens.list."
+  },
+  "list": {
+    "name": "control.tokens.list",
+    "description": "token list. Verify with control.tokens.list."
+  },
+  "revoke": {
+    "name": "control.tokens.revoke",
+    "description": "token revoke. Verify with control.tokens.list.",
+    "confirm": true
+  },
+  "createWebhook": {
+    "name": "control.webhooks.create",
+    "description": "Create a signed webhook subscription. Verify with control.webhooks.list."
+  },
+  "listWebhookDeliveries": {
+    "name": "control.webhooks.deliveries.list",
+    "description": "Inspect delivery state and attempts. Verify with control.webhooks.list."
+  },
+  "redeliverWebhook": {
+    "name": "control.webhooks.deliveries.retry",
+    "description": "Redeliver the same event with a new attempt. Verify with control.webhooks.list."
+  },
+  "listWebhooks": {
+    "name": "control.webhooks.list",
+    "description": "List tenant webhook subscriptions without secrets. Verify with control.webhooks.list."
+  },
+  "rotateWebhook": {
+    "name": "control.webhooks.secret.rotate",
+    "description": "Rotate the signing secret; returned once. Verify with control.webhooks.list.",
+    "confirm": true
+  },
+  "updateWebhook": {
+    "name": "control.webhooks.update",
+    "description": "Edit or disable a webhook subscription. Verify with control.webhooks.list."
+  },
+  "viewPageContent": {
+    "name": "control.spaces.pages.content.get",
+    "description": "Read one bounded content snapshot and its strong ETag together. Use this content baseline for edit/revert; summary and full-detail responses are not the new editing baseline."
+  },
+  "batchGetPages": {
+    "name": "control.spaces.pages.batchGet",
+    "description": "Read 1..100 selected Pages in one Space without business writes, despite POST. Choose summary or content; inaccessible and absent IDs both return not_found. Content results carry per-page baseline ETags. Duplicate IDs and responses above 4 MiB are rejected; reduce the batch or use summary."
+  },
+  "publishPages": {
+    "name": "control.spaces.pages.batchPublish",
+    "description": "Publish 1..100 selected authored Pages in one atomic Space operation, with at most one automatic Release. Any authorization failure rejects the whole batch. Outcome held means page selection committed but the live Release did not advance; Site delivery remains separate.",
+    "confirm": true
+  },
+  "unpublishPages": {
+    "name": "control.spaces.pages.batchUnpublish",
+    "description": "Unpublish 1..100 selected authored Pages in one atomic Space operation, with at most one automatic Release. Any authorization failure rejects the whole batch. Verify selected Page states, actual Release outcome, and Site delivery only when requested.",
+    "confirm": true
+  },
+  "replaceCurrentUser": {
+    "name": "control.account.replace",
+    "description": "Replace the authenticated user profile with a complete representation. Every declared profile field, including nullable locale and avatar, must be supplied; null clears the value. Verify with control.account.get."
+  }
+}

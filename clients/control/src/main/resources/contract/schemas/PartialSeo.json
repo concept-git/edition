@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "keywords": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ogImage": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "noIndex": {
+      "type": "boolean"
+    }
+  }
+}

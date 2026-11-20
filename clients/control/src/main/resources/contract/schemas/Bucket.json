@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "pv": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "uv": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

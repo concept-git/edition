@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "versionRef": {
+      "type": "string"
+    },
+    "digest": {
+      "type": "string"
+    },
+    "definition": {
+      "$ref": "#/components/schemas/ContentTypeDefinition"
+    },
+    "createdAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

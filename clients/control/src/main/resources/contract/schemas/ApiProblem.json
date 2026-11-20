@@ -1,0 +1,58 @@
+{
+  "type": "object",
+  "description": "RFC 9457 error response",
+  "properties": {
+    "type": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "code": {
+      "$ref": "#/components/schemas/ProblemCode"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "traceId": {
+      "type": "string"
+    },
+    "violations": {
+      "type": "array",
+      "description": "Field-level reasons that let the caller correct rejected input",
+      "items": {
+        "$ref": "#/components/schemas/Violation"
+      }
+    },
+    "relatedIds": {
+      "type": "array",
+      "description": "Stable related resource ids for conflicts that require another resource to change",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedGroups": {
+      "type": "array",
+      "description": "Minimal group references that require ownership transfer before user erasure",
+      "items": {
+        "$ref": "#/components/schemas/RelatedGroup"
+      }
+    },
+    "conflict": {
+      "$ref": "#/components/schemas/Conflict",
+      "description": "Current Page baseline and content for a caller-resolvable edit conflict"
+    }
+  },
+  "required": [
+    "code",
+    "detail",
+    "status",
+    "title",
+    "traceId",
+    "type"
+  ]
+}

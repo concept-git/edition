@@ -1,0 +1,16 @@
+---
+// 页面脚本的装配：由 app 把 data 层网关注入 search 与 reader-session 用例。
+---
+
+<script>
+  import { mountContinueForm } from "../client/continue-form.ts";
+  import { mountSearchBox, trackSearchPage } from "../client/search-box.ts";
+  import { renewer, suggestGateway, tracker } from "../client/browser.ts";
+
+  mountSearchBox(document, { gateway: suggestGateway, tracker });
+  trackSearchPage(document, tracker);
+  mountContinueForm(document, renewer, (to) => location.replace(to));
+  // 内容插件脚本由 reading 自己构建（带 hash 的独立 chunk）；页面含插件宿主时才加载。
+  if (document.querySelector("[data-content-plugin]"))
+    void import("../client/content-plugins/reader.ts");
+</script>

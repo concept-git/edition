@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "format": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "contentType": {
+      "type": "string"
+    },
+    "versionRef": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "interpretation": {
+      "type": "object",
+      "additionalProperties": {}
+    }
+  }
+}

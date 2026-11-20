@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "authored|synced",
+      "enum": [
+        "authored",
+        "synced"
+      ]
+    }
+  },
+  "required": [
+    "mode"
+  ]
+}

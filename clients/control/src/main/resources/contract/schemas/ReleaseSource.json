@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string"
+    },
+    "ref": {
+      "type": "string"
+    },
+    "actor": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

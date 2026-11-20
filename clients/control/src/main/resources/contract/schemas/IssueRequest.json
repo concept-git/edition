@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "maxLength": 120,
+      "minLength": 0
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "content:read",
+          "content:write",
+          "content:publish",
+          "members:read",
+          "members:write",
+          "permissions:read",
+          "permissions:write",
+          "hosting:read",
+          "hosting:write",
+          "audit:read",
+          "operations:read",
+          "operations:write",
+          "account:read",
+          "account:write",
+          "platform:read",
+          "platform:write",
+          "platform:erase"
+        ],
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "tenantId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "expiry": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "expiry",
+    "name",
+    "scopes"
+  ]
+}

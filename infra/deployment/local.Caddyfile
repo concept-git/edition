@@ -1,0 +1,66 @@
+# 本地开发用 Caddyfile。
+# 生产形态（ADR-0006 / STACK.md）：按需 ACME TLS——
+#   on_demand_tls {
+#     ask http://app:8081/ops/domains/allowed
+#   }
+# Caddy 以 ?domain= 传递 SNI；ask 已核验返回 200 空体，否则 404。
+# 自定义域名 host 路由到交付面；此处本地关闭 TLS 只做同域反代。
+{
+	auto_https off
+}
+
+# Edge routing (ADR-0035): machine resources -> Reader, /_auth -> Control, everything else -> reading frontend.
+(edge_routes) {
+	handle /_auth/* {
+		reverse_proxy {$ADMIN_UPSTREAM:host.docker.internal:8081}
+	}
+	@reader expression `path('/api/content/*', '/sitemap.xml', '/robots.txt', '/llms.txt', '/healthz') || path_regexp('^/[^/]+/llms\\.txt$') || {http.request.uri.query.view} in ['markdown', 'source']`
+	handle @reader {
+		reverse_proxy {$CONTENT_UPSTREAM:host.docker.internal:8082}
+	}
+	handle {
+		reverse_proxy {$READING_UPSTREAM:host.docker.internal:8083}
+	}
+}
+
+# Loopback hosts serve Control API; published site hosts follow edge_routes.
+http://localhost:8088, http://127.0.0.1:8088 {
+	# 同域反代后端（免 CORS；host.docker.internal = 宿主机上的 Boot 应用）
+	handle /api/content/* {
+		reverse_proxy {$CONTENT_UPSTREAM:host.docker.internal:8082}
+	}
+	handle /api/* {
+		reverse_proxy {$ADMIN_UPSTREAM:host.docker.internal:8081}
+	}
+	handle /_auth/* {
+		reverse_proxy {$ADMIN_UPSTREAM:host.docker.internal:8081}
+	}
+	handle /auth/* {
+		reverse_proxy {$ADMIN_UPSTREAM:host.docker.internal:8081}
+	}
+
+	handle /admin/* {
+		reverse_proxy {$ADMIN_UPSTREAM:host.docker.internal:8081}
+	}
+	handle /ops/* {
+		reverse_proxy {$ADMIN_UPSTREAM:host.docker.internal:8081}
+	}
+
+	@operations path /audit /audit:* /audit/* /stats/* /webhooks /webhooks/*
+	handle @operations {
+		reverse_proxy {$ADMIN_UPSTREAM:host.docker.internal:8081}
+	}
+
+	# 其余路径是阅读页面：交给阅读前端（Astro SSR），它再向 Reader 取 JSON。
+	@reader expression `path('/sitemap.xml', '/robots.txt', '/llms.txt', '/healthz') || path_regexp('^/[^/]+/llms\\.txt$') || {http.request.uri.query.view} in ['markdown', 'source']`
+	handle @reader {
+		reverse_proxy {$CONTENT_UPSTREAM:host.docker.internal:8082}
+	}
+	handle {
+		reverse_proxy {$READING_UPSTREAM:host.docker.internal:8083}
+	}
+}
+
+:8088 {
+	import edge_routes
+}

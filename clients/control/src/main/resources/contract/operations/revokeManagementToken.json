@@ -1,0 +1,77 @@
+{
+  "example": {
+    "params": {
+      "tokenId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false
+  },
+  "operationId": "revokeManagementToken",
+  "apiCommand": "control.managementTokens.revoke",
+  "description": "Revoke own management credential; missing credentials are idempotent. Verify with control.managementTokens.list.",
+  "method": "DELETE",
+  "path": "/api/v1/me/access-tokens/{tokenId}",
+  "parameters": [
+    {
+      "name": "tokenId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "401": {
+      "description": "Credential invalid or expired",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Credential type, scope or current permission denied",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "503": {
+      "description": "Required dependency unavailable",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "204": {
+      "description": "Credential revoked or absent"
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session"
+  ],
+  "requiredScopes": [],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "explicit-single-attempt"
+}

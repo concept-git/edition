@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { columns } from "@/data/columns";
+import Datetime from "./Datetime.astro";
+type Props = { variant?: "h2" | "h3"; tone?: "list" | "feature" } & CollectionEntry<"posts">;
+const { variant: Heading = "h2", tone = "list", id, data, filePath } = Astro.props;
+const href = getPostUrl(id, filePath, Astro.currentLocale);
+const column = columns.find(column => column.slug === data.category);
+---
+<li class:list={[tone === "feature" ? "feature-post" : "post-card border-border border-b py-6 last:border-b-0"]}>
+  {tone === "list" && (
+    <div class="text-muted-foreground mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+      {data.kind === "post" && <Datetime pubDatetime={data.pubDatetime} />}
+      {column && <>{data.kind === "post" && <span aria-hidden="true">·</span>}<a class="hover:text-accent" href={`/${column.slug}`}>{column.name}</a></>}
+    </div>
+  )}
+  <a href={href} class={tone === "feature" ? "feature-link" : "post-title hover:text-accent"}>
+    <Heading class={tone === "feature" ? "feature-title" : "text-xl leading-relaxed font-semibold sm:text-2xl"}>{data.title}</Heading>
+    {tone === "feature" && <p class="feature-dek">{data.description}</p>}
+  </a>
+  {tone === "list" && <p class="text-muted-foreground mt-2 text-base leading-7">{data.description}</p>}
+  {tone === "feature" && <a class="read-more" href={href}>继续阅读</a>}
+</li>

@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "resource": {
+      "$ref": "#/components/schemas/ResourceView"
+    },
+    "principalKey": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "maintainer",
+        "author",
+        "reader",
+        "none"
+      ]
+    }
+  }
+}

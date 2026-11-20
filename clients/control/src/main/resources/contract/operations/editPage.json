@@ -1,0 +1,158 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "spaceId": "00000000-0000-0000-0000-000000000001",
+      "pageId": "00000000-0000-0000-0000-000000000001",
+      "If-Match": "\"ETAG_FROM_GET\""
+    },
+    "privateParams": false,
+    "json": {
+      "content": "VALUE",
+      "intent": "draft_only"
+    },
+    "privateBody": false
+  },
+  "operationId": "editPage",
+  "apiCommand": "control.spaces.pages.edit",
+  "description": "Replace Page content at a current strong ETag from pages.content.get / pages +inspect. Explicit intent draft_only saves only the authored working copy and suppresses automatic Release; intent hotfix is synced-only and promotes a new live Release. The server rejects a mode/intent mismatch before effects. Confirm with --yes; verify content/revision and hotfix live Release. Site delivery remains separate.",
+  "method": "PUT",
+  "path": "/api/v1/tenants/{tenantId}/spaces/{spaceId}/pages/{pageId}/content",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "spaceId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "pageId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "If-Match",
+      "in": "header",
+      "description": "Content ETag rev-N from GET /content. Legacy page-rev-N-SHA256 tags are accepted only as a deprecated content-baseline bridge.",
+      "required": true,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/EditPageRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/PageDetail"
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Bad Request",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "401": {
+      "description": "Unauthorized",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "404": {
+      "description": "Not Found",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "409": {
+      "description": "Conflict",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "422": {
+      "description": "Unprocessable Content",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "428": {
+      "description": "Precondition Required",
+      "content": {
+        "application/problem+json": {}
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token",
+    "space_token"
+  ],
+  "requiredScopes": [
+    "content:write"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "server-key",
+  "cliRequiredBodyFields": [
+    "intent"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false
+  },
+  "operationId": "health",
+  "apiCommand": "control.health.liveness",
+  "description": "Liveness probe.",
+  "method": "GET",
+  "path": "/healthz",
+  "parameters": [
+    {
+      "name": "fields",
+      "in": "query",
+      "description": "Optional response field mask. Select fields from this operation's response schema; omit for the full response. Keep nextCursor when paginating; select dynamic maps whole.",
+      "schema": {
+        "type": "string",
+        "maxLength": 4096,
+        "minLength": 1
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "*/*": {
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProbeResponse"
+              },
+              {
+                "$ref": "#/components/schemas/PartialProbeResponse"
+              }
+            ],
+            "description": "Full response when fields is absent; selected fields may be omitted when fields is supplied."
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "anonymous"
+  ],
+  "requiredScopes": [],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

@@ -1,0 +1,55 @@
+# Java / Gradle（根项目无源码；apps/libs 下的子项目各自产出 build/、jte-classes/、logs/）
+backend/build/
+backend/.gradle/
+backend/out/
+backend/*/*/build/
+backend/*/*/out/
+backend/*/*/logs/
+backend/*/*/jte-classes/
+*.class
+
+# Node
+node_modules/
+.pnpm-store/
+
+# 环境与密钥
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.idea/
+*.iml
+.DS_Store
+
+# 本地数据卷
+.docker-data/
+
+# Local delivery acceptance credentials and process logs
+.scratch/dw-v1/runtime/
+
+clients/**/__pycache__/
+clients/**/.venv/
+clients/**/*.egg-info/
+
+# Research caches and generated agent records; task specs remain visible
+.firecrawl/
+.claude/wyx-drift-history.jsonl
+.scratch/**/before/
+.scratch/**/runtime/
+.scratch/**/*.log
+.scratch/**/*.pid
+.scratch/**/__pycache__/
+.scratch/**/gradle-home/
+.scratch/**/skill-library/
+__pycache__/
+*.pyc
+
+# Local process material is outside the maintained source tree
+.scratch/
+
+# Local study sites. Not product source.
+/learning/
+.archify/
+output/
+**/prototypes/

@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "done": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "format": "int32"
+    },
+    "total": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "format": "int32"
+    }
+  }
+}

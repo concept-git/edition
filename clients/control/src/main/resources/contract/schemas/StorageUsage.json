@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "sourceObjects": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "sourceBytes": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "measuredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "databaseBytes": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "failedSourceObjects": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

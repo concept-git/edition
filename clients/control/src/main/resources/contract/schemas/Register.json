@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "contentType": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baseRevision": {
+      "type": "integer",
+      "format": "int32",
+      "minimum": 0
+    },
+    "definition": {
+      "$ref": "#/components/schemas/ContentTypeDefinition"
+    }
+  },
+  "required": [
+    "contentType",
+    "definition"
+  ]
+}

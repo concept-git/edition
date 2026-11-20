@@ -1,0 +1,9 @@
+---
+interface Props {
+  html: string;
+}
+const { html } = Astro.props;
+// html 只来自 renderContent：已净化的白名单输出，或转义后的插件宿主。
+---
+
+<div class="page-body" set:html={html} />

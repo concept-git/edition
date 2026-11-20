@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "description": "JSON Merge Patch: omitted keeps, null clears",
+  "properties": {
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 200
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "keywords": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "ogImage": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 2048
+    },
+    "noIndex": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    }
+  }
+}

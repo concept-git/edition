@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "putUrl": {
+      "type": "string"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "uploadKey": {
+      "type": "string"
+    }
+  }
+}

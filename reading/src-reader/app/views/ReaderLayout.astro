@@ -1,0 +1,55 @@
+---
+import "../styles/reader.css";
+import type { Site } from "../../features/site/index.ts";
+import { analyticsIdOf, languageOf, safeColor } from "../../features/site/index.ts";
+import SearchBox from "../../features/search/presentation/SearchBox.astro";
+import LogoutForm from "../../features/reader-session/presentation/LogoutForm.astro";
+import SiteHeader from "../../features/site/presentation/SiteHeader.astro";
+import ReaderBehavior from "./ReaderBehavior.astro";
+
+interface Props {
+  site: Site | null;
+  title: string;
+  noIndex?: boolean;
+  currentSpace?: string;
+  /** 搜索范围的默认值；缺省取当前空间。 */
+  scope?: string | null;
+}
+const { site, title, noIndex = false, currentSpace, scope } = Astro.props;
+const signedIn = Astro.locals.reader?.context.hasCredentials ?? false;
+const searchSpaces = site?.spaces.filter((space) => space.navigation.length > 0) ?? [];
+const lang = site ? languageOf(site) : "zh-CN";
+const analyticsId = site ? analyticsIdOf(site) : null;
+const gtag = analyticsId
+  ? `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${analyticsId}');`
+  : null;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {site?.favicon && <link rel="icon" href={site.favicon} />}
+    <slot name="head">
+      <title>{title}</title>
+      {noIndex && <meta name="robots" content="noindex,nofollow" />}
+    </slot>
+    {analyticsId && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${analyticsId}`}></script>}
+    {gtag && <script is:inline set:html={gtag} />}
+  </head>
+  <body style={`--site-primary:${safeColor(site?.primaryColor)}`}>
+    {
+      site && (
+        <SiteHeader site={site} currentSpace={currentSpace}>
+          <Fragment slot="tools">
+            <SearchBox zh={lang === "zh-CN"} spaces={searchSpaces} scope={scope ?? currentSpace ?? ""} />
+            {signedIn && <LogoutForm zh={lang === "zh-CN"} />}
+          </Fragment>
+        </SiteHeader>
+      )
+    }
+    <slot />
+    <ReaderBehavior />
+  </body>
+</html>

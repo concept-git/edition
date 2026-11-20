@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "files": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "manifest": {
+      "type": "string"
+    },
+    "configuration": {
+      "type": "string"
+    },
+    "fixtures": {
+      "type": "string"
+    },
+    "dependencyLock": {
+      "type": "string"
+    },
+    "baselineRef": {
+      "type": "string"
+    }
+  }
+}

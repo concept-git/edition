@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "host": {
+      "type": "string"
+    },
+    "verified": {
+      "type": "boolean"
+    },
+    "isPrimary": {
+      "type": "boolean"
+    }
+  }
+}

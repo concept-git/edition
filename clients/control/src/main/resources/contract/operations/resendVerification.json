@@ -1,0 +1,58 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false,
+    "json": {
+      "email": "agent@example.test"
+    },
+    "privateBody": false
+  },
+  "operationId": "resendVerification",
+  "apiCommand": "control.auth.email.resend",
+  "description": "Request a new verification email.",
+  "method": "POST",
+  "path": "/auth/email:resend",
+  "parameters": [],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ResendRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "202": {
+      "description": "Request accepted"
+    },
+    "429": {
+      "description": "Rate limited (rate_limited)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "anonymous"
+  ],
+  "requiredScopes": [],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "explicit-single-attempt"
+}

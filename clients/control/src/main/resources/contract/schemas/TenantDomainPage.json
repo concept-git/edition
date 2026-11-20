@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/TenantDomainSummary"
+      }
+    },
+    "nextCursor": {
+      "type": "string"
+    },
+    "total": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "sites": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/DomainSiteChoice"
+      }
+    }
+  },
+  "required": [
+    "items",
+    "sites"
+  ]
+}

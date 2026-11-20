@@ -1,0 +1,11 @@
+---
+import { readSearchRoute } from "../routes/search-route.ts";
+import RouteView from "../views/RouteView.astro";
+import { applyView } from "../views/apply.ts";
+
+const route = await readSearchRoute(Astro);
+if (route.response) return route.response;
+applyView(Astro.response, route);
+---
+
+<RouteView view={route.view} />

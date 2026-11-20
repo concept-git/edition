@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "responseCode": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "error": {
+      "type": "string"
+    },
+    "durationMs": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

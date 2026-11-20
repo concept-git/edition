@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "properties": {
+    "host": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "issuer": {
+      "type": "string"
+    },
+    "notBefore": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notAfter": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "checkedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "error": {
+      "type": "string"
+    }
+  }
+}

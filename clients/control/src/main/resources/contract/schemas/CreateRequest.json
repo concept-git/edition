@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "properties": {
+    "parentId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 0
+    },
+    "icon": {
+      "type": "string",
+      "pattern": "book|code|api|guide|reference",
+      "enum": [
+        "book",
+        "code",
+        "api",
+        "guide",
+        "reference"
+      ]
+    },
+    "position": {
+      "type": "integer",
+      "format": "int32",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

@@ -1,0 +1,41 @@
+---
+interface Props {
+  zh: boolean;
+  spaces: { slug: string; name: string }[];
+  /** 默认的搜索范围（空为全站）。 */
+  scope: string;
+  query?: string;
+}
+const { zh, spaces, scope, query = "" } = Astro.props;
+---
+
+<form class="site-search" method="get" action="/_search" role="search" aria-label={zh ? "站内搜索" : "Site search"}>
+  {
+    spaces.length > 1 && (
+      <select id="site-search-scope" name="spaceSlug" aria-label={zh ? "搜索范围" : "Search scope"}>
+        <option value="" selected={!scope}>{zh ? "全部空间" : "All spaces"}</option>
+        {spaces.map((space) => (
+          <option value={space.slug} selected={space.slug === scope}>{space.name}</option>
+        ))}
+      </select>
+    )
+  }
+  <div class="site-search-field">
+    <input
+      id="site-search-input"
+      name="q"
+      type="search"
+      role="combobox"
+      aria-label={zh ? "搜索内容" : "Search content"}
+      aria-autocomplete="list"
+      aria-controls="site-search-results"
+      aria-expanded="false"
+      autocomplete="off"
+      maxlength="200"
+      value={query}
+      placeholder={zh ? "搜索" : "Search"}
+    />
+    <div id="site-search-results" class="site-search-results" role="listbox" hidden></div>
+  </div>
+  <p id="site-search-status" class="sr-only" role="status"></p>
+</form>

@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "errors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/IssueView"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/IssueView"
+      }
+    },
+    "info": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/IssueView"
+      }
+    }
+  }
+}

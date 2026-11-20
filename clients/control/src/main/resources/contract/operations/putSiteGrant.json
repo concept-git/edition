@@ -1,0 +1,90 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "siteId": "00000000-0000-0000-0000-000000000001",
+      "principalKey": "user:00000000-0000-4000-8000-000000000001"
+    },
+    "privateParams": false,
+    "json": {
+      "role": "VALUE"
+    },
+    "privateBody": false
+  },
+  "operationId": "putSiteGrant",
+  "apiCommand": "control.sites.grants.set",
+  "description": "Create or replace a local Site grant. Verify with control.sites.get. Site permission explanation and public access agree with intent.",
+  "method": "PUT",
+  "path": "/api/v1/tenants/{tenantId}/sites/{siteId}/permissions/grants/{principalKey}",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "siteId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "principalKey",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "pattern": "(?:user|team|token):[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|anonymous"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/GrantRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "200": {
+      "description": "OK",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/GrantView"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "permissions:write"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "explicit-single-attempt"
+}

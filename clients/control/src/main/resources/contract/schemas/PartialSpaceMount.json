@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "siteId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "slug": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "service": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "instances": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/HealthInstance"
+      }
+    },
+    "details": {
+      "type": "object",
+      "additionalProperties": {}
+    }
+  }
+}

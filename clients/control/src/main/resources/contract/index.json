@@ -1,0 +1,1269 @@
+{
+  "version": "1",
+  "apiVersion": "1.0.0",
+  "contractSha256": "671439c72e6187a88f84396a49a5d0c58117ddd94aa864fb9aa43ce5aa9c160a",
+  "commands": {
+    "control.account.erase": {
+      "ref": "operations/eraseCurrentUser.json",
+      "description": "Irreversibly erase the authenticated user. Verify with control.account.get.",
+      "operationId": "eraseCurrentUser"
+    },
+    "control.account.get": {
+      "ref": "operations/getCurrentUser.json",
+      "description": "Read the authenticated user's profile. Verify with control.account.get.",
+      "operationId": "getCurrentUser"
+    },
+    "control.account.password.change": {
+      "ref": "operations/changePassword.json",
+      "description": "Change the authenticated user's password. Verify with control.account.get.",
+      "operationId": "changePassword"
+    },
+    "control.account.sessions.list": {
+      "ref": "operations/listSessions.json",
+      "description": "List the authenticated user's device sessions.",
+      "operationId": "listSessions"
+    },
+    "control.account.sessions.revoke": {
+      "ref": "operations/endSession.json",
+      "description": "Revoke one of the authenticated user's sessions.",
+      "operationId": "endSession"
+    },
+    "control.account.update": {
+      "ref": "operations/updateCurrentUser.json",
+      "description": "Deprecated merge-style user profile update for legacy consumers. New clients use control.account.replace and explicitly supply nullable locale/avatar fields. Verify with control.account.get.",
+      "operationId": "updateCurrentUser"
+    },
+    "control.admin.health.get": {
+      "ref": "operations/platformHealth.json",
+      "description": "Report liveness and lag of the management, reader and worker processes.",
+      "operationId": "platformHealth"
+    },
+    "control.admin.tenants.create": {
+      "ref": "operations/provisionTenant.json",
+      "description": "Provision a tenant and seat its first owner. Verify with control.tenants.capability.get.",
+      "operationId": "provisionTenant"
+    },
+    "control.admin.tenants.list": {
+      "ref": "operations/listTenants.json",
+      "description": "List tenants. Verify with control.tenants.capability.get.",
+      "operationId": "listTenants"
+    },
+    "control.admin.tenants.resume": {
+      "ref": "operations/resumeTenant.json",
+      "description": "Unfreeze a tenant. Verify with control.tenants.capability.get.",
+      "operationId": "resumeTenant"
+    },
+    "control.admin.tenants.suspend": {
+      "ref": "operations/suspendTenant.json",
+      "description": "Freeze a tenant. Verify with control.tenants.capability.get.",
+      "operationId": "suspendTenant"
+    },
+    "control.admin.user.deactivate": {
+      "ref": "operations/deactivateAdminUser.json",
+      "description": "Globally freeze a user and revoke credentials. Verify with control.admin.user.get.",
+      "operationId": "deactivateAdminUser"
+    },
+    "control.admin.user.erase": {
+      "ref": "operations/eraseAdminUser.json",
+      "description": "Irreversibly erase a deactivated global user. Verify with control.admin.user.get.",
+      "operationId": "eraseAdminUser"
+    },
+    "control.admin.user.get": {
+      "ref": "operations/getAdminUser.json",
+      "description": "Read global user lifecycle and membership details. Verify with control.admin.user.get.",
+      "operationId": "getAdminUser"
+    },
+    "control.admin.user.list": {
+      "ref": "operations/searchAdminUsers.json",
+      "description": "Search global users by email or name prefix. Verify with control.admin.user.get.",
+      "operationId": "searchAdminUsers"
+    },
+    "control.admin.user.reactivate": {
+      "ref": "operations/reactivateAdminUser.json",
+      "description": "Re-enable a deactivated user. Verify with control.admin.user.get.",
+      "operationId": "reactivateAdminUser"
+    },
+    "control.audit.exports.create": {
+      "ref": "operations/exportAudit.json",
+      "description": "Create a snapshot CSV export of all filtered audit records.",
+      "operationId": "exportAudit"
+    },
+    "control.audit.exports.download": {
+      "ref": "operations/downloadAuditExport.json",
+      "description": "Download an export after checking current authorization.",
+      "operationId": "downloadAuditExport"
+    },
+    "control.audit.exports.get": {
+      "ref": "operations/viewAuditExport.json",
+      "description": "Inspect export generation state.",
+      "operationId": "viewAuditExport"
+    },
+    "control.audit.list": {
+      "ref": "operations/listAudit.json",
+      "description": "Query tenant or platform audit facts.",
+      "operationId": "listAudit"
+    },
+    "control.auth.bootstrap.login": {
+      "ref": "operations/login.json",
+      "description": "Exchange credentials for an access token.",
+      "operationId": "login"
+    },
+    "control.auth.email.resend": {
+      "ref": "operations/resendVerification.json",
+      "description": "Request a new verification email.",
+      "operationId": "resendVerification"
+    },
+    "control.auth.email.verify": {
+      "ref": "operations/verifyEmail.json",
+      "description": "Redeem an email verification token.",
+      "operationId": "verifyEmail"
+    },
+    "control.auth.password.forgot": {
+      "ref": "operations/forgotPassword.json",
+      "description": "Request a password reset.",
+      "operationId": "forgotPassword"
+    },
+    "control.auth.password.reset": {
+      "ref": "operations/resetPassword.json",
+      "description": "Redeem a one-time password reset token.",
+      "operationId": "resetPassword"
+    },
+    "control.auth.register": {
+      "ref": "operations/register.json",
+      "description": "Register a new account.",
+      "operationId": "register"
+    },
+    "control.auth.status": {
+      "ref": "operations/authenticationContext.json",
+      "description": "Inspect current credential limits without returning any secret.",
+      "operationId": "authenticationContext"
+    },
+    "control.collections.create": {
+      "ref": "operations/createCollection.json",
+      "description": "Create a Collection. Verify with control.collections.list.",
+      "operationId": "createCollection"
+    },
+    "control.collections.delete": {
+      "ref": "operations/removeCollection.json",
+      "description": "Delete an empty Collection. Verify with control.collections.list.",
+      "operationId": "removeCollection"
+    },
+    "control.collections.list": {
+      "ref": "operations/viewCollections.json",
+      "description": "Read the tenant Collection forest in author order. Verify with control.collections.list.",
+      "operationId": "viewCollections"
+    },
+    "control.collections.move": {
+      "ref": "operations/moveCollection.json",
+      "description": "Move a Collection. Verify with control.collections.list.",
+      "operationId": "moveCollection"
+    },
+    "control.collections.spaces.remove": {
+      "ref": "operations/unplaceSpace.json",
+      "description": "Remove a Space from this Collection if present. Verify with control.collections.list.",
+      "operationId": "unplaceSpace"
+    },
+    "control.collections.spaces.set": {
+      "ref": "operations/placeSpace.json",
+      "description": "Place a Space into a Collection. Verify with control.collections.list.",
+      "operationId": "placeSpace"
+    },
+    "control.collections.update": {
+      "ref": "operations/patchCollection.json",
+      "description": "Rename a Collection or set its icon. Verify with control.collections.list.",
+      "operationId": "patchCollection"
+    },
+    "control.deletions.list": {
+      "ref": "operations/listDeletions.json",
+      "description": "Query deletion cleanup even after the resource is gone. Verify with control.deletions.list.",
+      "operationId": "listDeletions"
+    },
+    "control.deletions.retry": {
+      "ref": "operations/retryDeletion.json",
+      "description": "Retry the original cleanup and delivery intentions. Verify with control.deletions.list.",
+      "operationId": "retryDeletion"
+    },
+    "control.domains.certificate.get": {
+      "ref": "operations/domainCertificate.json",
+      "description": "Inspect the actual TLS certificate of a bound domain. Verify with control.domains.get.",
+      "operationId": "domainCertificate"
+    },
+    "control.domains.create": {
+      "ref": "operations/bindDomain.json",
+      "description": "Bind a custom domain to a Site. Verify with control.domains.get. Domain binding observed; verify domain ownership/TLS and routing as requested.",
+      "operationId": "bindDomain"
+    },
+    "control.domains.delete": {
+      "ref": "operations/unbindDomain.json",
+      "description": "Unbind a custom domain. Verify with control.domains.get.",
+      "operationId": "unbindDomain"
+    },
+    "control.domains.get": {
+      "ref": "operations/viewDomain.json",
+      "description": "Read a bound custom domain including the TXT challenge. Verify with control.domains.get.",
+      "operationId": "viewDomain"
+    },
+    "control.domains.list": {
+      "ref": "operations/listTenantDomains.json",
+      "description": "List custom domains across every readable Site of a tenant. Verify with control.domains.get.",
+      "operationId": "listTenantDomains"
+    },
+    "control.domains.primary.set": {
+      "ref": "operations/setPrimaryDomain.json",
+      "description": "Mark a verified custom domain as primary. Verify with control.domains.get.",
+      "operationId": "setPrimaryDomain"
+    },
+    "control.domains.verify": {
+      "ref": "operations/verifyDomain.json",
+      "description": "Verify a custom domain via DNS TXT. Verify with control.domains.get.",
+      "operationId": "verifyDomain"
+    },
+    "control.spaces.exports.create": {
+      "ref": "operations/requestBundleExport.json",
+      "description": "Queue a complete portable ZIP for a retained live or archived release. Verify with control.spaces.exports.get. Export job ready, then downloaded ZIP bytes exist and match intended release.",
+      "operationId": "requestBundleExport"
+    },
+    "control.spaces.exports.download": {
+      "ref": "operations/downloadBundleExport.json",
+      "description": "Reauthorize every current page before streaming the complete private ZIP. Verify with control.spaces.exports.get. Binary download saved atomically; verify expected release and file bytes.",
+      "operationId": "downloadBundleExport"
+    },
+    "control.spaces.exports.get": {
+      "ref": "operations/viewBundleExport.json",
+      "description": "Read export progress without exposing snapshot or object keys. Verify with control.spaces.exports.get.",
+      "operationId": "viewBundleExport"
+    },
+    "control.spaces.exports.list": {
+      "ref": "operations/listBundleExports.json",
+      "description": "List export tasks in this space. Verify with control.spaces.exports.get.",
+      "operationId": "listBundleExports"
+    },
+    "control.spaces.exports.retry": {
+      "ref": "operations/retryBundleExport.json",
+      "description": "Retry the same failed captured export after checking current permissions. Verify with control.spaces.exports.get. terminal wait target.",
+      "operationId": "retryBundleExport"
+    },
+    "control.health.liveness": {
+      "ref": "operations/health.json",
+      "description": "Liveness probe.",
+      "operationId": "health"
+    },
+    "control.health.readiness": {
+      "ref": "operations/readiness.json",
+      "description": "Readiness probe.",
+      "operationId": "readiness"
+    },
+    "control.spaces.imports.create": {
+      "ref": "operations/importRelease.json",
+      "description": "Import a zip or uploadKey into a synced Space and enqueue the job. Requires: 空间必须处于 active 状态; 此操作要求 synced 空间. Verify with control.spaces.imports.get. Import job is terminal and report/release status agrees with intended outcome; flagged is held, not reader-visible completion.",
+      "operationId": "importRelease"
+    },
+    "control.spaces.imports.get": {
+      "ref": "operations/viewImportJob.json",
+      "description": "Read one import job in this Space. Verify with control.spaces.imports.get.",
+      "operationId": "viewImportJob"
+    },
+    "control.spaces.imports.upload.create": {
+      "ref": "operations/startImportUpload.json",
+      "description": "Create a short-lived PUT URL for a large import zip. Verify with control.spaces.imports.get.",
+      "operationId": "startImportUpload"
+    },
+    "control.invitations.accept": {
+      "ref": "operations/acceptInvitation.json",
+      "description": "Accept an invitation.",
+      "operationId": "acceptInvitation"
+    },
+    "control.invitations.get": {
+      "ref": "operations/previewInvitation.json",
+      "description": "Read an invitation summary.",
+      "operationId": "previewInvitation"
+    },
+    "control.jobs.list": {
+      "ref": "operations/listJobs.json",
+      "description": "Inspect import work and recovery state. Verify with control.jobs.list.",
+      "operationId": "listJobs"
+    },
+    "control.jobs.retry": {
+      "ref": "operations/retryJob.json",
+      "description": "Retry a failed import with current publish authorization. Verify with control.jobs.list.",
+      "operationId": "retryJob"
+    },
+    "control.mailJobs.list": {
+      "ref": "operations/listMailJobs.json",
+      "description": "List masked mail delivery metadata. Verify with control.mailJobs.list.",
+      "operationId": "listMailJobs"
+    },
+    "control.mailJobs.retry": {
+      "ref": "operations/retryMailJob.json",
+      "description": "Replay the original failed mail intent. Verify with control.mailJobs.list.",
+      "operationId": "retryMailJob"
+    },
+    "control.managementTokens.create": {
+      "ref": "operations/issueManagementToken.json",
+      "description": "Issue a scoped personal management credential; session only. Verify with control.managementTokens.list. Metadata and one-time secret secured; authentication context verified without disclosing the bearer.",
+      "operationId": "issueManagementToken"
+    },
+    "control.managementTokens.list": {
+      "ref": "operations/listManagementTokens.json",
+      "description": "List own personal management credentials without secrets; session only. Verify with control.managementTokens.list.",
+      "operationId": "listManagementTokens"
+    },
+    "control.managementTokens.revoke": {
+      "ref": "operations/revokeManagementToken.json",
+      "description": "Revoke own management credential; missing credentials are idempotent. Verify with control.managementTokens.list.",
+      "operationId": "revokeManagementToken"
+    },
+    "control.operations.search.reindex": {
+      "ref": "operations/reindexSearch.json",
+      "description": "Queue a complete search rebuild as platform operator.",
+      "operationId": "reindexSearch"
+    },
+    "control.operations.storage.get": {
+      "ref": "operations/storageUsage.json",
+      "description": "Inspect platform physical source storage and database size.",
+      "operationId": "storageUsage"
+    },
+    "control.operations.storage.retry": {
+      "ref": "operations/retryStorage.json",
+      "description": "Requeue failed source cleanup without bypassing reference protection.",
+      "operationId": "retryStorage"
+    },
+    "control.operations.trash.purge": {
+      "ref": "operations/purgeTrash.json",
+      "description": "Scan expired trash without bypassing reference protection.",
+      "operationId": "purgeTrash"
+    },
+    "control.spaces.pages.attachments.download": {
+      "ref": "operations/downloadPageAttachment.json",
+      "description": "Download an attachment with current authorization. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "downloadPageAttachment"
+    },
+    "control.spaces.pages.attachments.get": {
+      "ref": "operations/viewPageAttachment.json",
+      "description": "Short-lived signed download URL for one attachment. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "viewPageAttachment"
+    },
+    "control.spaces.pages.attachments.remove": {
+      "ref": "operations/detachPageFile.json",
+      "description": "Detach one attachment (reference only; idempotent). Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "detachPageFile"
+    },
+    "control.spaces.pages.attachments.upload": {
+      "ref": "operations/attachPageFile.json",
+      "description": "Upload one attachment (≤10 MiB; png/jpeg/gif/webp/pdf detected from content). Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "attachPageFile"
+    },
+    "control.spaces.pages.edit": {
+      "ref": "operations/editPage.json",
+      "description": "Replace Page content at a current strong ETag from pages.content.get / pages +inspect. Explicit intent draft_only saves only the authored working copy and suppresses automatic Release; intent hotfix is synced-only and promotes a new live Release. The server rejects a mode/intent mismatch before effects. Confirm with --yes; verify content/revision and hotfix live Release. Site delivery remains separate.",
+      "operationId": "editPage"
+    },
+    "control.spaces.pages.create": {
+      "ref": "operations/createPage.json",
+      "description": "Create and place an authored Page. Requires: 空间必须处于 active 状态; 此操作要求 authored 空间. Verify with control.spaces.pages.get. Created page ID and current placement observed.",
+      "operationId": "createPage"
+    },
+    "control.spaces.pages.get": {
+      "ref": "operations/viewPage.json",
+      "description": "Read one Page. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "viewPage"
+    },
+    "control.spaces.pages.icon.set": {
+      "ref": "operations/setPageIcon.json",
+      "description": "Set or clear the Page icon URL. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "setPageIcon"
+    },
+    "control.spaces.pages.list": {
+      "ref": "operations/listPages.json",
+      "description": "List readable Pages in a Space. Verify with control.spaces.pages.get.",
+      "operationId": "listPages"
+    },
+    "control.spaces.pages.permissions.explain": {
+      "ref": "operations/explainPageRead.json",
+      "description": "Explain effective Page read access. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "explainPageRead"
+    },
+    "control.spaces.pages.permissions.get": {
+      "ref": "operations/viewPagePermission.json",
+      "description": "Read the Page restriction snapshot. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "viewPagePermission"
+    },
+    "control.spaces.pages.preview": {
+      "ref": "operations/previewPage.json",
+      "description": "Render a safe Page preview without persistence. Verify with control.spaces.pages.get.",
+      "operationId": "previewPage"
+    },
+    "control.spaces.pages.properties.remove": {
+      "ref": "operations/removePageProperty.json",
+      "description": "Remove one Page property (idempotent). Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "removePageProperty"
+    },
+    "control.spaces.pages.properties.set": {
+      "ref": "operations/setPageProperty.json",
+      "description": "Upsert one free-form Page property. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "setPageProperty"
+    },
+    "control.spaces.pages.publish": {
+      "ref": "operations/publishPage.json",
+      "description": "Mark a Page published and auto-promote when wiki mode is on. Requires: Page current placement must match the input space; 空间必须处于 active 状态; 此操作要求 authored 空间. Verify with control.spaces.pages.get. Working-page published status observed; build and delivery remain separate if reader visibility is the goal.",
+      "operationId": "publishPage"
+    },
+    "control.spaces.pages.rename": {
+      "ref": "operations/renamePage.json",
+      "description": "Rename a Page. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "renamePage"
+    },
+    "control.spaces.pages.restore": {
+      "ref": "operations/restorePage.json",
+      "description": "Restore a trashed Page without re-hanging the Toc. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "restorePage"
+    },
+    "control.spaces.pages.restrictions.remove": {
+      "ref": "operations/deletePageRestriction.json",
+      "description": "Remove the Page restriction. Requires: Use a current strong ETag; reconcile after conflict; Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "deletePageRestriction"
+    },
+    "control.spaces.pages.restrictions.set": {
+      "ref": "operations/putPageRestriction.json",
+      "description": "Replace the complete Page restriction. Requires: Use a current strong ETag; reconcile after conflict; Page current placement must match the input space. Verify with control.spaces.pages.get. Restriction principals/revision and effective permission explanation agree with intent.",
+      "operationId": "putPageRestriction"
+    },
+    "control.spaces.pages.revisions.diff": {
+      "ref": "operations/diffPageRevisions.json",
+      "description": "Compare two Page Revisions. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "diffPageRevisions"
+    },
+    "control.spaces.pages.revisions.get": {
+      "ref": "operations/viewPageRevision.json",
+      "description": "Read one Page Revision. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "viewPageRevision"
+    },
+    "control.spaces.pages.revisions.list": {
+      "ref": "operations/listPageRevisions.json",
+      "description": "List Page Revisions newest first. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "listPageRevisions"
+    },
+    "control.spaces.pages.revisions.revert": {
+      "ref": "operations/revertPage.json",
+      "description": "Save historical content as a new Revision. Requires: Use a current strong ETag; reconcile after conflict; Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "revertPage"
+    },
+    "control.spaces.pages.seo.update": {
+      "ref": "operations/setPageSeo.json",
+      "description": "Merge-patch Page SEO (TDK); omitted keeps, null clears. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "setPageSeo"
+    },
+    "control.spaces.pages.slug.set": {
+      "ref": "operations/reslugPage.json",
+      "description": "Change a Page slug and register redirects. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "reslugPage"
+    },
+    "control.spaces.pages.tags.remove": {
+      "ref": "operations/untagPage.json",
+      "description": "Remove a tag from a Page; missing labels are idempotent. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "untagPage"
+    },
+    "control.spaces.pages.tags.set": {
+      "ref": "operations/tagPage.json",
+      "description": "Tag a Page; idempotent; does not bump revision. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "tagPage"
+    },
+    "control.spaces.pages.transfer": {
+      "ref": "operations/transferPage.json",
+      "description": "Move a Page to another Space and register redirects. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get. Page is currently placed in the intended destination; inspect effective permission and public delivery when relevant.",
+      "operationId": "transferPage"
+    },
+    "control.spaces.pages.trash.list": {
+      "ref": "operations/listTrash.json",
+      "description": "List trashed Pages in a Space. Verify with control.spaces.pages.get.",
+      "operationId": "listTrash"
+    },
+    "control.spaces.pages.trash.set": {
+      "ref": "operations/trashPage.json",
+      "description": "Move a Page to trash without deleting it. Requires: Page current placement must match the input space. Verify with control.spaces.pages.get.",
+      "operationId": "trashPage"
+    },
+    "control.spaces.pages.unpublish": {
+      "ref": "operations/unpublishPage.json",
+      "description": "Mark a Page unpublished and auto-promote when wiki mode is on. Requires: Page current placement must match the input space; 空间必须处于 active 状态; 此操作要求 authored 空间. Verify with control.spaces.pages.get. Working-page status is draft; verify live release and site delivery separately for reader removal.",
+      "operationId": "unpublishPage"
+    },
+    "control.redirects.delete": {
+      "ref": "operations/deleteRedirect.json",
+      "description": "Delete a manual redirect.",
+      "operationId": "deleteRedirect"
+    },
+    "control.redirects.list": {
+      "ref": "operations/listRedirects.json",
+      "description": "List Site redirect rules.",
+      "operationId": "listRedirects"
+    },
+    "control.redirects.set": {
+      "ref": "operations/createRedirect.json",
+      "description": "Create or replace a redirect to a Space mounted on this Site, or a page in that Space. Verify with control.redirects.list.",
+      "operationId": "createRedirect"
+    },
+    "control.spaces.releases.approve": {
+      "ref": "operations/approveRelease.json",
+      "description": "Approve a flagged import Release and promote it. Verify with control.spaces.releases.get. Release promotion observed, followed by site delivery if external availability is intended.",
+      "operationId": "approveRelease"
+    },
+    "control.spaces.releases.build": {
+      "ref": "operations/buildRelease.json",
+      "description": "Build a Release from published Pages and promote when it differs. Requires: 空间必须处于 active 状态; 此操作要求 authored 空间. Verify with control.spaces.releases.get. Returned live release and its pages observed; site delivery is a separate boundary.",
+      "operationId": "buildRelease"
+    },
+    "control.spaces.releases.diff": {
+      "ref": "operations/diffReleases.json",
+      "description": "Diff two Releases in a Space. Verify with control.spaces.releases.get.",
+      "operationId": "diffReleases"
+    },
+    "control.spaces.releases.discard": {
+      "ref": "operations/discardRelease.json",
+      "description": "Discard a draft, flagged or validated Release. Verify with control.spaces.releases.get.",
+      "operationId": "discardRelease"
+    },
+    "control.spaces.releases.get": {
+      "ref": "operations/viewRelease.json",
+      "description": "Read one Release with its report and live diff. Verify with control.spaces.releases.get.",
+      "operationId": "viewRelease"
+    },
+    "control.spaces.releases.list": {
+      "ref": "operations/listReleases.json",
+      "description": "List Releases in a Space. Verify with control.spaces.releases.get.",
+      "operationId": "listReleases"
+    },
+    "control.spaces.releases.preview.get": {
+      "ref": "operations/previewRelease.json",
+      "description": "Render one snapshot page from a not-yet-live Release. Verify with control.spaces.releases.get.",
+      "operationId": "previewRelease"
+    },
+    "control.spaces.releases.preview.list": {
+      "ref": "operations/listReleasePreviewPages.json",
+      "description": "List snapshot pages available for preview. Verify with control.spaces.releases.get.",
+      "operationId": "listReleasePreviewPages"
+    },
+    "control.spaces.releases.promote": {
+      "ref": "operations/promoteRelease.json",
+      "description": "Promote a validated or archived Release. Verify with control.spaces.releases.get. Live release ID equals the intended retained release; then verify site delivery.",
+      "operationId": "promoteRelease"
+    },
+    "control.spaces.releases.rollback": {
+      "ref": "operations/rollbackRelease.json",
+      "description": "Promote an archived Release back to live. Verify with control.spaces.releases.get. Live release and content match rollback intent; verify external delivery separately.",
+      "operationId": "rollbackRelease"
+    },
+    "control.spaces.releases.update": {
+      "ref": "operations/patchRelease.json",
+      "description": "Merge-patch Release label and notes. Verify with control.spaces.releases.get.",
+      "operationId": "patchRelease"
+    },
+    "control.sites.create": {
+      "ref": "operations/createSite.json",
+      "description": "Create a tenant Site. Verify with control.sites.get.",
+      "operationId": "createSite"
+    },
+    "control.sites.delete": {
+      "ref": "operations/deleteSite.json",
+      "description": "Delete an unmounted Site and unbind its domains. Requires: Site must have no mounts before termination. Verify with control.sites.get. Deletion terminal state and intended public routing removal verified.",
+      "operationId": "deleteSite"
+    },
+    "control.sites.deletions.plan": {
+      "ref": "operations/planSiteTermination.json",
+      "description": "Validate current Site termination prerequisites and observe cascade impact without mutation. Requires: Site must have no mounts before termination. Verify with control.sites.get.",
+      "operationId": "planSiteTermination"
+    },
+    "control.sites.deliveries.get": {
+      "ref": "operations/siteDeliveryStatus.json",
+      "description": "Read actual per-site online version and publication state. Verify with control.sites.get. Observed target epoch, online epoch, delivery state and search state; this query does not itself advance delivery.",
+      "operationId": "siteDeliveryStatus"
+    },
+    "control.sites.deliveries.retry": {
+      "ref": "operations/retrySiteDelivery.json",
+      "description": "Retry the existing durable publication without republishing. Verify with control.sites.deliveries.get. Delivery state applied and online epoch reaches target epoch; inspect search status if search availability matters.",
+      "operationId": "retrySiteDelivery"
+    },
+    "control.sites.get": {
+      "ref": "operations/viewSite.json",
+      "description": "Read one Site by stable id. Verify with control.sites.get.",
+      "operationId": "viewSite"
+    },
+    "control.sites.grants.remove": {
+      "ref": "operations/deleteSiteGrant.json",
+      "description": "Delete a local Site grant. Verify with control.sites.get.",
+      "operationId": "deleteSiteGrant"
+    },
+    "control.sites.grants.set": {
+      "ref": "operations/putSiteGrant.json",
+      "description": "Create or replace a local Site grant. Verify with control.sites.get. Site permission explanation and public access agree with intent.",
+      "operationId": "putSiteGrant"
+    },
+    "control.sites.list": {
+      "ref": "operations/listSites.json",
+      "description": "List readable Sites with an opaque cursor. Verify with control.sites.get.",
+      "operationId": "listSites"
+    },
+    "control.sites.mounts.remove": {
+      "ref": "operations/unmountSpace.json",
+      "description": "Unmount a Space from a Site slug. Verify with control.sites.get.",
+      "operationId": "unmountSpace"
+    },
+    "control.sites.mounts.rename": {
+      "ref": "operations/remountSpace.json",
+      "description": "Change a Site mount slug and register a redirect. Verify with control.sites.get.",
+      "operationId": "remountSpace"
+    },
+    "control.sites.mounts.reorder": {
+      "ref": "operations/reorderMounts.json",
+      "description": "Reorder Site mounts. Verify with control.sites.get.",
+      "operationId": "reorderMounts"
+    },
+    "control.sites.mounts.set": {
+      "ref": "operations/mountSpace.json",
+      "description": "Mount a Space at a Site slug. Verify with control.sites.get. Fresh mount state matches intent and delivery has applied the target epoch.",
+      "operationId": "mountSpace"
+    },
+    "control.sites.permissions.explain": {
+      "ref": "operations/explainSiteAdmin.json",
+      "description": "Explain effective Site admin access. Verify with control.sites.get.",
+      "operationId": "explainSiteAdmin"
+    },
+    "control.sites.permissions.list": {
+      "ref": "operations/listSitePermissions.json",
+      "description": "List inherited and local Site grants. Verify with control.sites.get.",
+      "operationId": "listSitePermissions"
+    },
+    "control.sites.principals.teams.list": {
+      "ref": "operations/searchSitePermissionTeams.json",
+      "description": "Search tenant Teams for Site ACL. Verify with control.sites.get.",
+      "operationId": "searchSitePermissionTeams"
+    },
+    "control.sites.principals.user.list": {
+      "ref": "operations/searchSitePermissionUsers.json",
+      "description": "Search active tenant Users for Site ACL. Verify with control.sites.get.",
+      "operationId": "searchSitePermissionUsers"
+    },
+    "control.sites.search.get": {
+      "ref": "operations/searchConfiguration.json",
+      "description": "Read desired search field order. Verify with control.sites.get.",
+      "operationId": "searchConfiguration"
+    },
+    "control.sites.search.set": {
+      "ref": "operations/configureSearch.json",
+      "description": "Queue a search field order change. Verify with control.sites.get.",
+      "operationId": "configureSearch"
+    },
+    "control.sites.search.stats": {
+      "ref": "operations/siteSearchStats.json",
+      "description": "Submitted searches, zero results and observable click rate. Verify with control.sites.get.",
+      "operationId": "siteSearchStats"
+    },
+    "control.sites.traffic.get": {
+      "ref": "operations/siteTraffic.json",
+      "description": "Page views, daily estimated visitors and missing paths. Verify with control.sites.get.",
+      "operationId": "siteTraffic"
+    },
+    "control.sites.update": {
+      "ref": "operations/updateSite.json",
+      "description": "Merge-patch Site settings. Verify with control.sites.get.",
+      "operationId": "updateSite"
+    },
+    "control.spaces.archive": {
+      "ref": "operations/archiveSpace.json",
+      "description": "Archive a Space. Verify with control.spaces.get.",
+      "operationId": "archiveSpace"
+    },
+    "control.spaces.attachments.list": {
+      "ref": "operations/listSpaceAttachments.json",
+      "description": "Browse readable working attachments with bounded scanning. Verify with control.spaces.get.",
+      "operationId": "listSpaceAttachments"
+    },
+    "control.spaces.convert": {
+      "ref": "operations/convertSpace.json",
+      "description": "Convert a Space between authored and synced modes. Verify with control.spaces.get.",
+      "operationId": "convertSpace"
+    },
+    "control.spaces.create": {
+      "ref": "operations/createSpace.json",
+      "description": "Create a tenant Space. Verify with control.spaces.get.",
+      "operationId": "createSpace"
+    },
+    "control.spaces.delete": {
+      "ref": "operations/deleteSpace.json",
+      "description": "Permanently delete an archived Space with name confirmation. Requires: Space must be archived before termination. Verify with control.spaces.get. Deletion work reaches its intended terminal cleanup state; request acceptance alone is insufficient.",
+      "operationId": "deleteSpace"
+    },
+    "control.spaces.deletions.plan": {
+      "ref": "operations/planSpaceTermination.json",
+      "description": "Validate current Space termination prerequisites and observe cascade impact without mutation. Requires: Space must be archived before termination. Verify with control.spaces.get.",
+      "operationId": "planSpaceTermination"
+    },
+    "control.spaces.drift.get": {
+      "ref": "operations/viewDrift.json",
+      "description": "Read live vs last-import drift in this Space. Verify with control.spaces.get.",
+      "operationId": "viewDrift"
+    },
+    "control.spaces.get": {
+      "ref": "operations/viewSpace.json",
+      "description": "Read one Space by stable id. Verify with control.spaces.get.",
+      "operationId": "viewSpace"
+    },
+    "control.spaces.grants.remove": {
+      "ref": "operations/deleteSpaceGrant.json",
+      "description": "Delete a local Space grant. Verify with control.spaces.get.",
+      "operationId": "deleteSpaceGrant"
+    },
+    "control.spaces.grants.set": {
+      "ref": "operations/putSpaceGrant.json",
+      "description": "Create or replace a local Space grant. Verify with control.spaces.get. Fresh permission explanation agrees with the intended principal, layer and effective access.",
+      "operationId": "putSpaceGrant"
+    },
+    "control.spaces.list": {
+      "ref": "operations/listSpaces.json",
+      "description": "List readable Spaces with an opaque cursor. Verify with control.spaces.get.",
+      "operationId": "listSpaces"
+    },
+    "control.spaces.mounts.list": {
+      "ref": "operations/listSpaceMounts.json",
+      "description": "List delivery mounts for one Space. Verify with control.spaces.get.",
+      "operationId": "listSpaceMounts"
+    },
+    "control.spaces.permissions.list": {
+      "ref": "operations/listSpacePermissions.json",
+      "description": "List inherited and local Space grants. Verify with control.spaces.get.",
+      "operationId": "listSpacePermissions"
+    },
+    "control.spaces.permissions.pages.list": {
+      "ref": "operations/listPermissionPages.json",
+      "description": "List every Page for ACL administration. Verify with control.spaces.get.",
+      "operationId": "listPermissionPages"
+    },
+    "control.spaces.principals.teams.list": {
+      "ref": "operations/searchPermissionTeams.json",
+      "description": "Search tenant Teams for ACL editing. Verify with control.spaces.get.",
+      "operationId": "searchPermissionTeams"
+    },
+    "control.spaces.principals.user.list": {
+      "ref": "operations/searchPermissionUsers.json",
+      "description": "Search active tenant Users for ACL editing. Verify with control.spaces.get.",
+      "operationId": "searchPermissionUsers"
+    },
+    "control.spaces.restore": {
+      "ref": "operations/restoreSpace.json",
+      "description": "Restore an archived Space. Verify with control.spaces.get.",
+      "operationId": "restoreSpace"
+    },
+    "control.spaces.retention.set": {
+      "ref": "operations/setRetention.json",
+      "description": "Set how many archived Releases to keep. Verify with control.spaces.get.",
+      "operationId": "setRetention"
+    },
+    "control.spaces.stats.get": {
+      "ref": "operations/spaceUsage.json",
+      "description": "Space logical usage and activity. Verify with control.spaces.get.",
+      "operationId": "spaceUsage"
+    },
+    "control.spaces.update": {
+      "ref": "operations/updateSpace.json",
+      "description": "Merge-patch Space metadata. Verify with control.spaces.get.",
+      "operationId": "updateSpace"
+    },
+    "control.tags.list": {
+      "ref": "operations/listTags.json",
+      "description": "List visible tags in a tenant with observer-relative pageCount. Verify with control.tags.list.",
+      "operationId": "listTags"
+    },
+    "control.tags.pages.list": {
+      "ref": "operations/listTaggedPages.json",
+      "description": "List readable Pages that carry a tag. Verify with control.tags.list.",
+      "operationId": "listTaggedPages"
+    },
+    "control.tags.rename": {
+      "ref": "operations/renameTag.json",
+      "description": "Rename a tag across the tenant; merge if the target exists. Verify with control.tags.list.",
+      "operationId": "renameTag"
+    },
+    "control.teams.create": {
+      "ref": "operations/create.json",
+      "description": "team create. Verify with control.teams.get.",
+      "operationId": "create"
+    },
+    "control.teams.delete": {
+      "ref": "operations/delete.json",
+      "description": "team delete. Verify with control.teams.get.",
+      "operationId": "delete"
+    },
+    "control.teams.get": {
+      "ref": "operations/view.json",
+      "description": "team get. Verify with control.teams.get.",
+      "operationId": "view"
+    },
+    "control.teams.invitations.create": {
+      "ref": "operations/invite.json",
+      "description": "Invite an existing tenant member to a team as owner or member. Verify with control.teams.invitations.list.",
+      "operationId": "invite"
+    },
+    "control.teams.invitations.list": {
+      "ref": "operations/invitations.json",
+      "description": "team invitation list. Verify with control.teams.get.",
+      "operationId": "invitations"
+    },
+    "control.teams.invitations.revoke": {
+      "ref": "operations/revoke_1.json",
+      "description": "team invitation revoke. Verify with control.teams.get.",
+      "operationId": "revoke_1"
+    },
+    "control.teams.list": {
+      "ref": "operations/list_1.json",
+      "description": "team list. Verify with control.teams.get.",
+      "operationId": "list_1"
+    },
+    "control.teams.members.list": {
+      "ref": "operations/members.json",
+      "description": "team member list. Verify with control.teams.get.",
+      "operationId": "members"
+    },
+    "control.teams.members.remove": {
+      "ref": "operations/removeMember.json",
+      "description": "team member remove. Verify with control.teams.get.",
+      "operationId": "removeMember"
+    },
+    "control.teams.members.role.set": {
+      "ref": "operations/setRole.json",
+      "description": "team member role set. Verify with control.teams.get.",
+      "operationId": "setRole"
+    },
+    "control.teams.rename": {
+      "ref": "operations/rename.json",
+      "description": "team rename. Verify with control.teams.get.",
+      "operationId": "rename"
+    },
+    "control.tenants.capability.get": {
+      "ref": "operations/operationsCapabilities.json",
+      "description": "List the current actor's operational capabilities. Verify with control.tenants.capability.get.",
+      "operationId": "operationsCapabilities"
+    },
+    "control.tenants.invitations.create": {
+      "ref": "operations/inviteTenantMember.json",
+      "description": "Invite someone to the tenant. Verify with control.tenants.capability.get.",
+      "operationId": "inviteTenantMember"
+    },
+    "control.tenants.invitations.list": {
+      "ref": "operations/listTenantInvitations.json",
+      "description": "List pending invitations. Verify with control.tenants.capability.get.",
+      "operationId": "listTenantInvitations"
+    },
+    "control.tenants.invitations.revoke": {
+      "ref": "operations/revokeTenantInvitation.json",
+      "description": "Revoke a pending invitation. Verify with control.tenants.capability.get.",
+      "operationId": "revokeTenantInvitation"
+    },
+    "control.tenants.members.list": {
+      "ref": "operations/listTenantMembers.json",
+      "description": "List the tenant's members. Verify with control.tenants.capability.get.",
+      "operationId": "listTenantMembers"
+    },
+    "control.tenants.members.remove": {
+      "ref": "operations/removeTenantMember.json",
+      "description": "Remove a member. Verify with control.tenants.capability.get.",
+      "operationId": "removeTenantMember"
+    },
+    "control.tenants.members.role.set": {
+      "ref": "operations/setTenantMemberRole.json",
+      "description": "Change a member's role. Verify with control.tenants.capability.get.",
+      "operationId": "setTenantMemberRole"
+    },
+    "control.tenants.releases.list": {
+      "ref": "operations/listTenantReleases.json",
+      "description": "List Releases across every readable Space of a tenant. Verify with control.tenants.capability.get.",
+      "operationId": "listTenantReleases"
+    },
+    "control.tenants.stats.get": {
+      "ref": "operations/tenantUsage.json",
+      "description": "Tenant logical usage and activity. Verify with control.tenants.capability.get.",
+      "operationId": "tenantUsage"
+    },
+    "control.spaces.toc.create": {
+      "ref": "operations/addTocEntry.json",
+      "description": "Add a directory entry. Verify with control.spaces.toc.list.",
+      "operationId": "addTocEntry"
+    },
+    "control.spaces.toc.delete": {
+      "ref": "operations/removeTocEntry.json",
+      "description": "Remove a directory entry and its descendants. Verify with control.spaces.toc.list.",
+      "operationId": "removeTocEntry"
+    },
+    "control.spaces.toc.list": {
+      "ref": "operations/viewToc.json",
+      "description": "Read the Space directory tree in author order. Verify with control.spaces.toc.list.",
+      "operationId": "viewToc"
+    },
+    "control.spaces.toc.move": {
+      "ref": "operations/moveTocEntry.json",
+      "description": "Move a directory entry. Verify with control.spaces.toc.list.",
+      "operationId": "moveTocEntry"
+    },
+    "control.spaces.toc.rename": {
+      "ref": "operations/relabelTocEntry.json",
+      "description": "Rename a directory entry. Verify with control.spaces.toc.list.",
+      "operationId": "relabelTocEntry"
+    },
+    "control.tokens.create": {
+      "ref": "operations/issue.json",
+      "description": "token create. Verify with control.tokens.list.",
+      "operationId": "issue"
+    },
+    "control.tokens.list": {
+      "ref": "operations/list.json",
+      "description": "token list. Verify with control.tokens.list.",
+      "operationId": "list"
+    },
+    "control.tokens.revoke": {
+      "ref": "operations/revoke.json",
+      "description": "token revoke. Verify with control.tokens.list.",
+      "operationId": "revoke"
+    },
+    "control.webhooks.create": {
+      "ref": "operations/createWebhook.json",
+      "description": "Create a signed webhook subscription. Verify with control.webhooks.list.",
+      "operationId": "createWebhook"
+    },
+    "control.webhooks.deliveries.list": {
+      "ref": "operations/listWebhookDeliveries.json",
+      "description": "Inspect delivery state and attempts. Verify with control.webhooks.list.",
+      "operationId": "listWebhookDeliveries"
+    },
+    "control.webhooks.deliveries.retry": {
+      "ref": "operations/redeliverWebhook.json",
+      "description": "Redeliver the same event with a new attempt. Verify with control.webhooks.list.",
+      "operationId": "redeliverWebhook"
+    },
+    "control.webhooks.list": {
+      "ref": "operations/listWebhooks.json",
+      "description": "List tenant webhook subscriptions without secrets. Verify with control.webhooks.list.",
+      "operationId": "listWebhooks"
+    },
+    "control.webhooks.secret.rotate": {
+      "ref": "operations/rotateWebhook.json",
+      "description": "Rotate the signing secret; returned once. Verify with control.webhooks.list.",
+      "operationId": "rotateWebhook"
+    },
+    "control.webhooks.update": {
+      "ref": "operations/updateWebhook.json",
+      "description": "Edit or disable a webhook subscription. Verify with control.webhooks.list.",
+      "operationId": "updateWebhook"
+    },
+    "control.spaces.pages.content.get": {
+      "ref": "operations/viewPageContent.json",
+      "description": "Read one bounded content snapshot and its strong ETag together. Use this content baseline for edit/revert; summary and full-detail responses are not the new editing baseline.",
+      "operationId": "viewPageContent"
+    },
+    "control.spaces.pages.batchGet": {
+      "ref": "operations/batchGetPages.json",
+      "description": "Read 1..100 selected Pages in one Space without business writes, despite POST. Choose summary or content; inaccessible and absent IDs both return not_found. Content results carry per-page baseline ETags. Duplicate IDs and responses above 4 MiB are rejected; reduce the batch or use summary.",
+      "operationId": "batchGetPages"
+    },
+    "control.spaces.pages.batchPublish": {
+      "ref": "operations/publishPages.json",
+      "description": "Publish 1..100 selected authored Pages in one atomic Space operation, with at most one automatic Release. Any authorization failure rejects the whole batch. Outcome held means page selection committed but the live Release did not advance; Site delivery remains separate.",
+      "operationId": "publishPages"
+    },
+    "control.spaces.pages.batchUnpublish": {
+      "ref": "operations/unpublishPages.json",
+      "description": "Unpublish 1..100 selected authored Pages in one atomic Space operation, with at most one automatic Release. Any authorization failure rejects the whole batch. Verify selected Page states, actual Release outcome, and Site delivery only when requested.",
+      "operationId": "unpublishPages"
+    },
+    "control.account.replace": {
+      "ref": "operations/replaceCurrentUser.json",
+      "description": "Replace the authenticated user profile with a complete representation. Every declared profile field, including nullable locale and avatar, must be supplied; null clears the value. Verify with control.account.get.",
+      "operationId": "replaceCurrentUser"
+    }
+  },
+  "operationIds": {
+    "eraseCurrentUser": "control.account.erase",
+    "getCurrentUser": "control.account.get",
+    "changePassword": "control.account.password.change",
+    "listSessions": "control.account.sessions.list",
+    "endSession": "control.account.sessions.revoke",
+    "updateCurrentUser": "control.account.update",
+    "platformHealth": "control.admin.health.get",
+    "provisionTenant": "control.admin.tenants.create",
+    "listTenants": "control.admin.tenants.list",
+    "resumeTenant": "control.admin.tenants.resume",
+    "suspendTenant": "control.admin.tenants.suspend",
+    "deactivateAdminUser": "control.admin.user.deactivate",
+    "eraseAdminUser": "control.admin.user.erase",
+    "getAdminUser": "control.admin.user.get",
+    "searchAdminUsers": "control.admin.user.list",
+    "reactivateAdminUser": "control.admin.user.reactivate",
+    "exportAudit": "control.audit.exports.create",
+    "downloadAuditExport": "control.audit.exports.download",
+    "viewAuditExport": "control.audit.exports.get",
+    "listAudit": "control.audit.list",
+    "login": "control.auth.bootstrap.login",
+    "resendVerification": "control.auth.email.resend",
+    "verifyEmail": "control.auth.email.verify",
+    "forgotPassword": "control.auth.password.forgot",
+    "resetPassword": "control.auth.password.reset",
+    "register": "control.auth.register",
+    "authenticationContext": "control.auth.status",
+    "createCollection": "control.collections.create",
+    "removeCollection": "control.collections.delete",
+    "viewCollections": "control.collections.list",
+    "moveCollection": "control.collections.move",
+    "unplaceSpace": "control.collections.spaces.remove",
+    "placeSpace": "control.collections.spaces.set",
+    "patchCollection": "control.collections.update",
+    "listDeletions": "control.deletions.list",
+    "retryDeletion": "control.deletions.retry",
+    "domainCertificate": "control.domains.certificate.get",
+    "bindDomain": "control.domains.create",
+    "unbindDomain": "control.domains.delete",
+    "viewDomain": "control.domains.get",
+    "listTenantDomains": "control.domains.list",
+    "setPrimaryDomain": "control.domains.primary.set",
+    "verifyDomain": "control.domains.verify",
+    "requestBundleExport": "control.spaces.exports.create",
+    "downloadBundleExport": "control.spaces.exports.download",
+    "viewBundleExport": "control.spaces.exports.get",
+    "listBundleExports": "control.spaces.exports.list",
+    "retryBundleExport": "control.spaces.exports.retry",
+    "health": "control.health.liveness",
+    "readiness": "control.health.readiness",
+    "importRelease": "control.spaces.imports.create",
+    "viewImportJob": "control.spaces.imports.get",
+    "startImportUpload": "control.spaces.imports.upload.create",
+    "acceptInvitation": "control.invitations.accept",
+    "previewInvitation": "control.invitations.get",
+    "listJobs": "control.jobs.list",
+    "retryJob": "control.jobs.retry",
+    "listMailJobs": "control.mailJobs.list",
+    "retryMailJob": "control.mailJobs.retry",
+    "issueManagementToken": "control.managementTokens.create",
+    "listManagementTokens": "control.managementTokens.list",
+    "revokeManagementToken": "control.managementTokens.revoke",
+    "reindexSearch": "control.operations.search.reindex",
+    "storageUsage": "control.operations.storage.get",
+    "retryStorage": "control.operations.storage.retry",
+    "purgeTrash": "control.operations.trash.purge",
+    "downloadPageAttachment": "control.spaces.pages.attachments.download",
+    "viewPageAttachment": "control.spaces.pages.attachments.get",
+    "detachPageFile": "control.spaces.pages.attachments.remove",
+    "attachPageFile": "control.spaces.pages.attachments.upload",
+    "editPage": "control.spaces.pages.edit",
+    "createPage": "control.spaces.pages.create",
+    "viewPage": "control.spaces.pages.get",
+    "setPageIcon": "control.spaces.pages.icon.set",
+    "listPages": "control.spaces.pages.list",
+    "explainPageRead": "control.spaces.pages.permissions.explain",
+    "viewPagePermission": "control.spaces.pages.permissions.get",
+    "previewPage": "control.spaces.pages.preview",
+    "removePageProperty": "control.spaces.pages.properties.remove",
+    "setPageProperty": "control.spaces.pages.properties.set",
+    "publishPage": "control.spaces.pages.publish",
+    "renamePage": "control.spaces.pages.rename",
+    "restorePage": "control.spaces.pages.restore",
+    "deletePageRestriction": "control.spaces.pages.restrictions.remove",
+    "putPageRestriction": "control.spaces.pages.restrictions.set",
+    "diffPageRevisions": "control.spaces.pages.revisions.diff",
+    "viewPageRevision": "control.spaces.pages.revisions.get",
+    "listPageRevisions": "control.spaces.pages.revisions.list",
+    "revertPage": "control.spaces.pages.revisions.revert",
+    "setPageSeo": "control.spaces.pages.seo.update",
+    "reslugPage": "control.spaces.pages.slug.set",
+    "untagPage": "control.spaces.pages.tags.remove",
+    "tagPage": "control.spaces.pages.tags.set",
+    "transferPage": "control.spaces.pages.transfer",
+    "listTrash": "control.spaces.pages.trash.list",
+    "trashPage": "control.spaces.pages.trash.set",
+    "unpublishPage": "control.spaces.pages.unpublish",
+    "deleteRedirect": "control.redirects.delete",
+    "listRedirects": "control.redirects.list",
+    "createRedirect": "control.redirects.set",
+    "approveRelease": "control.spaces.releases.approve",
+    "buildRelease": "control.spaces.releases.build",
+    "diffReleases": "control.spaces.releases.diff",
+    "discardRelease": "control.spaces.releases.discard",
+    "viewRelease": "control.spaces.releases.get",
+    "listReleases": "control.spaces.releases.list",
+    "previewRelease": "control.spaces.releases.preview.get",
+    "listReleasePreviewPages": "control.spaces.releases.preview.list",
+    "promoteRelease": "control.spaces.releases.promote",
+    "rollbackRelease": "control.spaces.releases.rollback",
+    "patchRelease": "control.spaces.releases.update",
+    "createSite": "control.sites.create",
+    "deleteSite": "control.sites.delete",
+    "planSiteTermination": "control.sites.deletions.plan",
+    "siteDeliveryStatus": "control.sites.deliveries.get",
+    "retrySiteDelivery": "control.sites.deliveries.retry",
+    "viewSite": "control.sites.get",
+    "deleteSiteGrant": "control.sites.grants.remove",
+    "putSiteGrant": "control.sites.grants.set",
+    "listSites": "control.sites.list",
+    "unmountSpace": "control.sites.mounts.remove",
+    "remountSpace": "control.sites.mounts.rename",
+    "reorderMounts": "control.sites.mounts.reorder",
+    "mountSpace": "control.sites.mounts.set",
+    "explainSiteAdmin": "control.sites.permissions.explain",
+    "listSitePermissions": "control.sites.permissions.list",
+    "searchSitePermissionTeams": "control.sites.principals.teams.list",
+    "searchSitePermissionUsers": "control.sites.principals.user.list",
+    "searchConfiguration": "control.sites.search.get",
+    "configureSearch": "control.sites.search.set",
+    "siteSearchStats": "control.sites.search.stats",
+    "siteTraffic": "control.sites.traffic.get",
+    "updateSite": "control.sites.update",
+    "archiveSpace": "control.spaces.archive",
+    "listSpaceAttachments": "control.spaces.attachments.list",
+    "convertSpace": "control.spaces.convert",
+    "createSpace": "control.spaces.create",
+    "deleteSpace": "control.spaces.delete",
+    "planSpaceTermination": "control.spaces.deletions.plan",
+    "viewDrift": "control.spaces.drift.get",
+    "viewSpace": "control.spaces.get",
+    "deleteSpaceGrant": "control.spaces.grants.remove",
+    "putSpaceGrant": "control.spaces.grants.set",
+    "listSpaces": "control.spaces.list",
+    "listSpaceMounts": "control.spaces.mounts.list",
+    "listSpacePermissions": "control.spaces.permissions.list",
+    "listPermissionPages": "control.spaces.permissions.pages.list",
+    "searchPermissionTeams": "control.spaces.principals.teams.list",
+    "searchPermissionUsers": "control.spaces.principals.user.list",
+    "restoreSpace": "control.spaces.restore",
+    "setRetention": "control.spaces.retention.set",
+    "spaceUsage": "control.spaces.stats.get",
+    "updateSpace": "control.spaces.update",
+    "listTags": "control.tags.list",
+    "listTaggedPages": "control.tags.pages.list",
+    "renameTag": "control.tags.rename",
+    "create": "control.teams.create",
+    "delete": "control.teams.delete",
+    "view": "control.teams.get",
+    "invite": "control.teams.invitations.create",
+    "invitations": "control.teams.invitations.list",
+    "revoke_1": "control.teams.invitations.revoke",
+    "list_1": "control.teams.list",
+    "members": "control.teams.members.list",
+    "removeMember": "control.teams.members.remove",
+    "setRole": "control.teams.members.role.set",
+    "rename": "control.teams.rename",
+    "operationsCapabilities": "control.tenants.capability.get",
+    "inviteTenantMember": "control.tenants.invitations.create",
+    "listTenantInvitations": "control.tenants.invitations.list",
+    "revokeTenantInvitation": "control.tenants.invitations.revoke",
+    "listTenantMembers": "control.tenants.members.list",
+    "removeTenantMember": "control.tenants.members.remove",
+    "setTenantMemberRole": "control.tenants.members.role.set",
+    "listTenantReleases": "control.tenants.releases.list",
+    "tenantUsage": "control.tenants.stats.get",
+    "addTocEntry": "control.spaces.toc.create",
+    "removeTocEntry": "control.spaces.toc.delete",
+    "viewToc": "control.spaces.toc.list",
+    "moveTocEntry": "control.spaces.toc.move",
+    "relabelTocEntry": "control.spaces.toc.rename",
+    "issue": "control.tokens.create",
+    "list": "control.tokens.list",
+    "revoke": "control.tokens.revoke",
+    "createWebhook": "control.webhooks.create",
+    "listWebhookDeliveries": "control.webhooks.deliveries.list",
+    "redeliverWebhook": "control.webhooks.deliveries.retry",
+    "listWebhooks": "control.webhooks.list",
+    "rotateWebhook": "control.webhooks.secret.rotate",
+    "updateWebhook": "control.webhooks.update",
+    "viewPageContent": "control.spaces.pages.content.get",
+    "batchGetPages": "control.spaces.pages.batchGet",
+    "publishPages": "control.spaces.pages.batchPublish",
+    "unpublishPages": "control.spaces.pages.batchUnpublish",
+    "replaceCurrentUser": "control.account.replace"
+  },
+  "groups": {
+    "control.account": "Read and manage the signed-in account.",
+    "control.account.password": "Change the signed-in account password using a Session.",
+    "control.account.sessions": "List and revoke account sessions.",
+    "control.admin": "Operate platform tenants, users, and health with platform authorization.",
+    "control.admin.health": "Inspect platform dependency health.",
+    "control.admin.tenants": "Provision, suspend, and resume platform tenants.",
+    "control.admin.user": "Inspect, deactivate, or erase platform users.",
+    "control.audit": "Read tenant audit records and request exports.",
+    "control.audit.exports": "Track and download tenant audit exports.",
+    "control.auth": "Inspect authentication or use Session-only credential lifecycle operations.",
+    "control.auth.bootstrap": "Exchange account credentials for an access token.",
+    "control.auth.email": "Request and confirm email verification.",
+    "control.auth.password": "Request and complete password reset.",
+    "control.collections": "Organize Spaces into collections.",
+    "control.collections.spaces": "Assign or remove a Space collection membership.",
+    "control.deletions": "Inspect deletion records and retry the original cleanup intents.",
+    "control.domains": "Bind, verify, and inspect site domains.",
+    "control.domains.certificate": "Inspect certificate provisioning for a domain.",
+    "control.domains.primary": "Select a verified site primary domain.",
+    "control.health": "Inspect the public service health.",
+    "control.invitations": "Inspect and accept membership invitations.",
+    "control.jobs": "List tenant import jobs and retry failed imports.",
+    "control.mailJobs": "List masked mail jobs and replay failed delivery intents.",
+    "control.managementTokens": "Issue, list, and revoke personal management PATs using a Session.",
+    "control.operations": "Inspect platform storage and queue operator maintenance.",
+    "control.operations.search": "Queue a full search rebuild as platform operator.",
+    "control.operations.storage": "Inspect object storage health and usage.",
+    "control.operations.trash": "Queue expired-trash cleanup with reference protection.",
+    "control.redirects": "Manage site reader URL redirects.",
+    "control.sites": "Configure reader sites, delivery, domains, and public access.",
+    "control.sites.deletions": "Preview site termination prerequisites and cascade impact.",
+    "control.sites.deliveries": "Observe a site delivery target and reader availability.",
+    "control.sites.grants": "Set and remove site access grants.",
+    "control.sites.mounts": "Mount, unmount, and order Spaces on a site.",
+    "control.sites.permissions": "Read effective site permissions.",
+    "control.sites.principals": "Discover principals eligible for site grants.",
+    "control.sites.principals.teams": "Find teams eligible for a site grant.",
+    "control.sites.principals.user": "Search active tenant users eligible for a site grant.",
+    "control.sites.search": "Inspect site search configuration and usage.",
+    "control.sites.traffic": "Read site reader traffic metrics.",
+    "control.spaces": "Create and manage Spaces, working pages, and releases.",
+    "control.spaces.attachments": "Browse readable working attachments in a Space.",
+    "control.spaces.deletions": "Preview Space termination prerequisites and cascade impact.",
+    "control.spaces.drift": "Read live content drift against the last synced import.",
+    "control.spaces.exports": "Request, track, and download release ZIP exports.",
+    "control.spaces.grants": "Set and remove Space access grants.",
+    "control.spaces.imports": "Import a full synced Space snapshot and track its original job.",
+    "control.spaces.imports.upload": "Prepare a direct import ZIP upload.",
+    "control.spaces.mounts": "Read the sites mounting a Space.",
+    "control.spaces.pages": "Create, edit, publish, and organize working pages.",
+    "control.spaces.pages.attachments": "Upload and attach files to a page.",
+    "control.spaces.pages.content": "Read the page content snapshot and its strong ETag.",
+    "control.spaces.pages.icon": "Set or remove a page icon.",
+    "control.spaces.pages.permissions": "Read effective page permissions.",
+    "control.spaces.pages.properties": "Set or remove page metadata properties.",
+    "control.spaces.pages.restrictions": "Set or remove page access restrictions.",
+    "control.spaces.pages.revisions": "Inspect and restore working-page revisions.",
+    "control.spaces.pages.seo": "Merge-patch page SEO metadata.",
+    "control.spaces.pages.slug": "Change a page resource path.",
+    "control.spaces.pages.tags": "Add and remove page tags.",
+    "control.spaces.pages.trash": "Recycle or restore working pages.",
+    "control.spaces.permissions": "Read effective Space permissions.",
+    "control.spaces.permissions.pages": "Inspect page permissions within a Space.",
+    "control.spaces.principals": "Discover principals eligible for Space grants.",
+    "control.spaces.principals.teams": "Find teams eligible for a Space grant.",
+    "control.spaces.principals.user": "Search active tenant users eligible for a Space grant.",
+    "control.spaces.releases": "Build, inspect, and promote immutable Space releases.",
+    "control.spaces.releases.preview": "Read a release preview before reader delivery.",
+    "control.spaces.retention": "Configure how many Space releases to retain.",
+    "control.spaces.stats": "Read Space content and usage statistics.",
+    "control.spaces.toc": "Create, move, and reorder reader navigation entries.",
+    "control.tags": "List or rename tenant tags and find tagged pages.",
+    "control.tags.pages": "Find pages assigned a tag.",
+    "control.teams": "Manage tenant teams and memberships.",
+    "control.teams.invitations": "Invite users to a team.",
+    "control.teams.members": "List and remove team members.",
+    "control.teams.members.role": "Change a team member role.",
+    "control.tenants": "Inspect tenant capabilities, memberships, releases, and usage.",
+    "control.tenants.capability": "Read the current actor operational capabilities.",
+    "control.tenants.invitations": "Invite and manage tenant membership invitations.",
+    "control.tenants.members": "List and manage tenant members.",
+    "control.tenants.members.role": "Change a tenant member role.",
+    "control.tenants.releases": "List releases across the tenant.",
+    "control.tenants.stats": "Read tenant usage and resource statistics.",
+    "control.tokens": "Issue and revoke Space-scoped machine tokens using a Session.",
+    "control.webhooks": "Configure outbound tenant event callbacks.",
+    "control.webhooks.deliveries": "Inspect webhook delivery attempts.",
+    "control.webhooks.secret": "Rotate a webhook signing secret."
+  }
+}

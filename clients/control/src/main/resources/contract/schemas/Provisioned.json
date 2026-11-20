@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "tenant": {
+      "$ref": "#/components/schemas/TenantView"
+    },
+    "ownerInviteToken": {
+      "type": "string"
+    }
+  }
+}

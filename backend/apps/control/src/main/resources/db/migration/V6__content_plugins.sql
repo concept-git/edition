@@ -1,0 +1,26 @@
+ALTER TABLE authoring.pages ADD COLUMN content_profile jsonb;
+UPDATE authoring.pages SET content_profile=jsonb_build_object('contentType',format);
+ALTER TABLE authoring.revisions ADD COLUMN content_profile jsonb;
+ALTER TABLE releases.release_pages ADD COLUMN content_profile jsonb;
+
+CREATE TABLE shared.plugin_developments(id uuid PRIMARY KEY,tenant_id uuid NOT NULL REFERENCES shared.tenants(id),payload jsonb NOT NULL,deleted_at timestamptz,UNIQUE(tenant_id,id));
+CREATE TABLE shared.plugin_candidates(id uuid PRIMARY KEY,tenant_id uuid NOT NULL REFERENCES shared.tenants(id),development_id uuid NOT NULL,payload jsonb NOT NULL,FOREIGN KEY(tenant_id,development_id) REFERENCES shared.plugin_developments(tenant_id,id));
+CREATE TABLE shared.plugin_verifications(id uuid PRIMARY KEY,tenant_id uuid NOT NULL REFERENCES shared.tenants(id),development_id uuid NOT NULL,payload jsonb NOT NULL);
+ALTER TABLE shared.plugin_developments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE shared.plugin_developments FORCE ROW LEVEL SECURITY;
+ALTER TABLE shared.plugin_candidates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE shared.plugin_candidates FORCE ROW LEVEL SECURITY;
+ALTER TABLE shared.plugin_verifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE shared.plugin_verifications FORCE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation ON shared.plugin_developments TO space_app USING(tenant_id=shared.require_tenant_id()) WITH CHECK(tenant_id=shared.require_tenant_id());
+CREATE POLICY tenant_isolation ON shared.plugin_candidates TO space_app USING(tenant_id=shared.require_tenant_id()) WITH CHECK(tenant_id=shared.require_tenant_id());
+CREATE POLICY tenant_isolation ON shared.plugin_verifications TO space_app USING(tenant_id=shared.require_tenant_id()) WITH CHECK(tenant_id=shared.require_tenant_id());
+CREATE INDEX plugin_candidates_development ON shared.plugin_candidates(tenant_id,development_id,id);
+CREATE INDEX plugin_verifications_development ON shared.plugin_verifications(tenant_id,development_id,id);
+CREATE TRIGGER forbid_update BEFORE UPDATE ON shared.plugin_candidates FOR EACH ROW EXECUTE FUNCTION shared.forbid_update();
+CREATE TRIGGER forbid_update BEFORE UPDATE ON shared.plugin_verifications FOR EACH ROW EXECUTE FUNCTION shared.forbid_update();
+GRANT SELECT,INSERT,UPDATE,DELETE ON shared.plugin_developments TO space_app;
+GRANT SELECT,INSERT,DELETE ON shared.plugin_candidates,shared.plugin_verifications TO space_app;
+COMMENT ON TABLE shared.plugin_developments IS 'rls:tenant/direct; PluginDevelopment owns editable source and baseline';
+COMMENT ON TABLE shared.plugin_candidates IS 'rls:tenant/direct; PluginDevelopment owns immutable browser-built candidates';
+COMMENT ON TABLE shared.plugin_verifications IS 'rls:tenant/direct; PluginVerification owns immutable evidence';

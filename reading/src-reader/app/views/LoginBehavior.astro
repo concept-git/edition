@@ -1,0 +1,31 @@
+---
+// 登录交互的装配：由 app 把 data 层网关注入 reader-session 用例（presentation 不碰 data）。
+---
+
+<script>
+  import { signIn, signOut } from "../../features/reader-session/index.ts";
+  import { createHttpSessionGateway } from "../../features/reader-session/data/http-session-gateway.ts";
+
+  const gateway = createHttpSessionGateway();
+  const form = document.querySelector<HTMLFormElement>("form.login-form");
+  if (form) {
+    const messages = JSON.parse(form.dataset.messages ?? "{}");
+    const error = form.querySelector<HTMLElement>(".login-error")!;
+    if (form.dataset.clearStale) void signOut(gateway);
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const result = await signIn(
+        gateway,
+        { email: String(data.get("email") ?? ""), password: String(data.get("password") ?? "") },
+        form.dataset.returnTo,
+      );
+      if (result.ok) {
+        location.assign(result.redirectTo);
+        return;
+      }
+      error.textContent = messages[result.reason] ?? messages.unavailable;
+      error.hidden = false;
+    });
+  }
+</script>

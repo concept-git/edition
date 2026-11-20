@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "properties": {
+    "oldStart": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "oldLines": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "newStart": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "newLines": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialDiffLineResponse"
+      }
+    }
+  }
+}

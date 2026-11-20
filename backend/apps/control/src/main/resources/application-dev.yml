@@ -1,0 +1,22 @@
+# 本机开发 profile。非 CI 的 `./gradlew :control:bootRun` 默认启用。
+# LocalDevelopmentSeed 只在此 profile 写入 @dev.local 夹具；生产与 e2e 不得激活。
+# 以下邮件配置仅供本机开发：Mailpit 由根 docker-compose.yml 提供，不得复制到生产 profile。
+spring:
+  flyway:
+    # 基线不匹配必须停止；本机开发同样保留已有数据，验收使用新的隔离卷。
+    clean-disabled: true
+  mail:
+    host: localhost
+    port: 1025
+    properties:
+      mail.smtp.starttls.enable: false
+      mail.smtp.starttls.required: false
+
+io:
+  space:
+    mail-outbox:
+      enabled: true
+      from: noreply@space.local
+    dns:
+      resolver: fake
+      auto-prove: true

@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialTenantDomainSummary"
+      }
+    },
+    "nextCursor": {
+      "type": "string"
+    },
+    "total": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "sites": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialDomainSiteChoice"
+      }
+    }
+  }
+}

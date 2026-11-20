@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "description": "JSON Merge Patch: omitted keeps",
+  "properties": {
+    "label": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 32
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false,
+    "json": {
+      "expiry": "2027-01-01T00:00:00Z",
+      "name": "VALUE",
+      "role": "VALUE",
+      "scopes": [
+        "read"
+      ],
+      "spaceId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateBody": false
+  },
+  "operationId": "issue",
+  "apiCommand": "control.tokens.create",
+  "description": "token create. Verify with control.tokens.list.",
+  "method": "POST",
+  "path": "/api/v1/tenants/{tenantId}/tokens",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/IssueTokenRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "201": {
+      "description": "Token issued; secret appears only in this response",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/IssuedToken"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": true
+  },
+  "credentialTypes": [
+    "session"
+  ],
+  "requiredScopes": [],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

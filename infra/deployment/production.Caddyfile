@@ -1,0 +1,36 @@
+# The management API and the published sites use separate hosts; upstreams stay on the private network.
+# Published sites (ADR-0035): Reader serves machine resources, Control serves the reader session resource,
+# and the reading frontend renders every page, login and search view.
+(reader_routes) {
+	@reader expression `path('/api/content/*', '/sitemap.xml', '/robots.txt', '/llms.txt') || path_regexp('^/[^/]+/llms\\.txt$') || {http.request.uri.query.view} in ['markdown', 'source']`
+	handle @reader {
+		reverse_proxy {$CONTENT_UPSTREAM:127.0.0.1:18095}
+	}
+}
+
+{$CONSOLE_DOMAIN} {
+	encode zstd gzip
+	@control path /api/v1/* /auth/* /_auth/* /admin/* /ops/* /audit /audit:* /audit/* /stats/* /webhooks /webhooks/*
+	handle @control {
+		reverse_proxy {$ADMIN_UPSTREAM:127.0.0.1:18094}
+	}
+	handle {
+		respond 404
+	}
+}
+
+{$DOCS_DOMAIN} {
+	encode zstd gzip
+	# Operational endpoints are never public. Matching inside handle keeps them ahead of the catch-all.
+	@internal path /metrics /api-docs /api-docs/* /healthz
+	handle @internal {
+		respond 404
+	}
+	handle /_auth/* {
+		reverse_proxy {$ADMIN_UPSTREAM:127.0.0.1:18094}
+	}
+	import reader_routes
+	handle {
+		reverse_proxy {$READING_UPSTREAM:127.0.0.1:18096}
+	}
+}

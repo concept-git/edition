@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "accepted": {
+      "type": "integer",
+      "format": "int32"
+    }
+  }
+}

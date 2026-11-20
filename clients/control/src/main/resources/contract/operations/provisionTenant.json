@@ -1,0 +1,89 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false,
+    "json": {
+      "name": "VALUE",
+      "ownerEmail": "agent@example.test"
+    },
+    "privateBody": false
+  },
+  "operationId": "provisionTenant",
+  "apiCommand": "control.admin.tenants.create",
+  "description": "Provision a tenant and seat its first owner. Verify with control.tenants.capability.get.",
+  "method": "POST",
+  "path": "/admin/tenants",
+  "parameters": [],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ProvisionTenantRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "201": {
+      "description": "Tenant provisioned",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/Provisioned"
+          }
+        }
+      }
+    },
+    "422": {
+      "description": "Blank or over-long name (tenant_name_invalid)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "401": {
+      "description": "Missing, expired or revoked session (authentication_required)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Caller is not a platform operator (platform_operator_required)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": true
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "platform:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "explicit-single-attempt"
+}

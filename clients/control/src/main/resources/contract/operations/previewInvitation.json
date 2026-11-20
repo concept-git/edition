@@ -1,0 +1,100 @@
+{
+  "example": {
+    "params": {
+      "token": "VALUE"
+    },
+    "privateParams": true
+  },
+  "operationId": "previewInvitation",
+  "apiCommand": "control.invitations.get",
+  "description": "Read an invitation summary.",
+  "method": "GET",
+  "path": "/api/v1/invitations/{token}",
+  "parameters": [
+    {
+      "name": "token",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "fields",
+      "in": "query",
+      "description": "Optional response field mask. Select fields from this operation's response schema; omit for the full response. Keep nextCursor when paginating; select dynamic maps whole.",
+      "schema": {
+        "type": "string",
+        "maxLength": 4096,
+        "minLength": 1
+      }
+    }
+  ],
+  "requestBody": {},
+  "responses": {
+    "200": {
+      "description": "Invitation summary",
+      "content": {
+        "*/*": {
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InvitePreview"
+              },
+              {
+                "$ref": "#/components/schemas/PartialInvitePreview"
+              }
+            ],
+            "description": "Full response when fields is absent; selected fields may be omitted when fields is supplied."
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Invalid, expired or already used (invite_invalid)",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "429": {
+      "description": "IP or invitation fingerprint rate limit (rate_limited)",
+      "headers": {
+        "Retry-After": {
+          "style": "simple",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": false,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": false,
+    "secretInput": true,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "anonymous"
+  ],
+  "requiredScopes": [],
+  "mutates": false,
+  "highImpact": false,
+  "idempotencyMode": "read-only"
+}

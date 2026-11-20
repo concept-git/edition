@@ -1,0 +1,43 @@
+---
+interface Props {
+  returnTo: string;
+  zh: boolean;
+  /** 401：凭据已失效，先退出清掉旧会话。 */
+  clearStale?: boolean;
+  /** 无脚本提交失败后由服务端渲染的原因。 */
+  error?: { reason: string; traceId: string | null; requestId: string | null };
+}
+const { returnTo, zh, clearStale = false, error } = Astro.props;
+const messages = {
+  "invalid-credentials": zh ? "邮箱或密码不正确。" : "Incorrect email or password.",
+  "invalid-input": zh ? "请填写邮箱和密码。" : "Enter your email and password.",
+  "cross-site": zh ? "请求来源不被允许。" : "Request origin not allowed.",
+  "rate-limited": zh ? "尝试次数过多，请稍后再试。" : "Too many attempts. Try again later.",
+  unavailable: zh ? "暂时无法登录，请稍后再试。" : "Sign-in is unavailable. Try again later.",
+};
+---
+
+<form
+  class="login-form"
+  data-return-to={returnTo}
+  data-clear-stale={clearStale ? "true" : undefined}
+  data-messages={JSON.stringify(messages)}
+  method="post"
+  action="/_login"
+>
+  <input type="hidden" name="returnTo" value={returnTo} />
+  <label>
+    <span>{zh ? "邮箱" : "Email"}</span>
+    <input name="email" type="email" autocomplete="username" required />
+  </label>
+  <label>
+    <span>{zh ? "密码" : "Password"}</span>
+    <input name="password" type="password" autocomplete="current-password" required />
+  </label>
+  <p class="login-error" role="alert" hidden={!error}>
+    {error && (messages[error.reason as keyof typeof messages] ?? messages.unavailable)}
+    {error?.traceId && <small> {zh ? "请求编号：" : "Trace ID: "}<code>{error.traceId}</code></small>}
+    {error?.requestId && <small> {zh ? "请求标识：" : "Request ID: "}<code>{error.requestId}</code></small>}
+  </p>
+  <button type="submit">{zh ? "登录" : "Sign in"}</button>
+</form>

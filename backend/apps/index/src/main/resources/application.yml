@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: space-index
+  main:
+    web-application-type: none
+  datasource:
+    url: ${DELIVERY_DB_URL}
+    username: ${DELIVERY_WRITER_USER}
+    password: ${DELIVERY_WRITER_PASSWORD}
+    hikari:
+      maximum-pool-size: 8
+      data-source-properties:
+        reWriteBatchedInserts: true
+        connectTimeout: 3
+        socketTimeout: 30
+      connection-timeout: 3000
+  task:
+    scheduling:
+      pool:
+        size: 3
+      thread-name-prefix: space-search-
+index:
+  search:
+    url: ${MEILI_URL}
+    key: ${MEILI_WRITER_KEY}

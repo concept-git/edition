@@ -1,0 +1,21 @@
+---
+import {
+  loginPageRoute,
+  loginSubmitRoute,
+  methodNotAllowed,
+} from "../routes/session-route.ts";
+import RouteView from "../views/RouteView.astro";
+import { applyView } from "../views/apply.ts";
+
+const method = Astro.request.method;
+const route =
+  method === "GET" || method === "HEAD"
+    ? await loginPageRoute(Astro)
+    : method === "POST"
+      ? await loginSubmitRoute(Astro)
+      : methodNotAllowed("GET, HEAD, POST");
+if (route.response) return route.response;
+applyView(Astro.response, route);
+---
+
+<RouteView view={route.view} />

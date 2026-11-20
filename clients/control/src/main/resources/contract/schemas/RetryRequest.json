@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "tenantId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "platform": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "tenantId"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false,
+    "json": {
+      "filter": {}
+    },
+    "privateBody": false
+  },
+  "operationId": "exportAudit",
+  "apiCommand": "control.audit.exports.create",
+  "description": "Create a snapshot CSV export of all filtered audit records.",
+  "method": "POST",
+  "path": "/audit:export",
+  "parameters": [
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ExportRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "202": {
+      "description": "Accepted",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/ExportStatus"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "audit:read"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

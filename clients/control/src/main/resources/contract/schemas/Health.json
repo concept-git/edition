@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lossDetected": {
+      "type": "boolean"
+    },
+    "staleSources": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "retainedFrom": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

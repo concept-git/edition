@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "properties": {
+    "contentType": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "revision": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "activeVersionRef": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "format": {
+      "type": "string"
+    },
+    "mediaType": {
+      "type": "string"
+    },
+    "builtin": {
+      "type": "boolean"
+    }
+  }
+}

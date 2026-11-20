@@ -1,0 +1,61 @@
+# Import beside the existing www/IP redirects and document-space.caddy.
+# rate_limit_static is defined by the host Caddyfile.
+beautyclaw.cn {
+	import rate_limit_static
+	root * /var/www/beautyclaw-blog/current
+	encode gzip zstd
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+	}
+	@immutable path /_astro/* /media/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+	@revalidate not path /_astro/* /media/*
+	header @revalidate Cache-Control "no-cache"
+	@diagram path /media/*.svg
+	header @diagram Content-Security-Policy "sandbox; default-src 'none'; style-src 'unsafe-inline'; font-src data:; img-src data:"
+	@category path_regexp category ^/category/(human|systems|software-new-science|practical-philosophy|learning-ai)(/[0-9]+)?/?$
+	redir @category /{re.category.1} permanent
+	redir /blog/5 /blog/4 permanent
+	redir /blog/6 /blog/4 permanent
+	redir /tag/agents/2 /tag/agents permanent
+	handle /api/content/* {
+		reverse_proxy 127.0.0.1:18095
+	}
+	handle /v1/* {
+		reverse_proxy 127.0.0.1:47102 {
+			header_up Host {host}
+			header_up x-api-key {env.MANAGED_USER_API_KEY}
+		}
+	}
+	# These are active business applications, not a fallback for old blog HTML.
+	@legacy path /assistant /assistant/* /assistant-business /assistant-business/* /assistant-website /assistant-website/* /services /services/* /pricing /pricing/* /contact /contact/* /privacy /privacy/* /terms /terms/* /logo.svg /favicon-512.png
+	handle @legacy {
+		root * /var/www/beautyclaw-superweb/html
+		try_files {path}/index.html {path} =404
+		file_server
+	}
+	handle /_astro/* {
+		@current file
+		handle @current {
+			file_server
+		}
+		handle {
+			root * /var/www/beautyclaw-superweb/html
+			file_server
+		}
+	}
+	handle {
+		route {
+			@unavailable file /.unavailable
+			respond @unavailable "内容更新中，请稍后重试。" 503
+			try_files {path}/index.html {path} =404
+			file_server
+		}
+	}
+	handle_errors 404 {
+		rewrite * /404.html
+		file_server
+	}
+}

@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialSubscription"
+      }
+    },
+    "nextCursor": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "eventTypes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  }
+}

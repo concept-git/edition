@@ -1,0 +1,111 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "format": {
+      "type": "string"
+    },
+    "icon": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "driftFlag": {
+      "type": "boolean"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedBy": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "publishedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "deprecated": true,
+      "description": "Unknown page-level publication time; use Release.promotedAt and site delivery facts"
+    },
+    "allowedActions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "content": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "seo": {
+      "$ref": "#/components/schemas/PartialSeo"
+    },
+    "properties": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialAttachment"
+      }
+    },
+    "trashedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revisionCount": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "wordCount": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "readingTime": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "contentType": {
+      "type": "string"
+    },
+    "versionRef": {
+      "type": "string"
+    },
+    "interpretation": {
+      "type": "object",
+      "additionalProperties": {}
+    }
+  }
+}

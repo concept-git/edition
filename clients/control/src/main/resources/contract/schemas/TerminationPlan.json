@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "properties": {
+    "resourceType": {
+      "type": "string"
+    },
+    "resourceId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "validationLevel": {
+      "type": "string"
+    },
+    "observedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "format": "int64"
+      }
+    },
+    "effects": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

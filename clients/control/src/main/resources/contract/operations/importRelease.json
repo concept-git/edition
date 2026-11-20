@@ -1,0 +1,142 @@
+{
+  "example": {
+    "params": {
+      "tenantId": "00000000-0000-0000-0000-000000000001",
+      "spaceId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateParams": false,
+    "json": {},
+    "privateBody": false
+  },
+  "operationId": "importRelease",
+  "apiCommand": "control.spaces.imports.create",
+  "description": "Import a zip or uploadKey into a synced Space and enqueue the job. Requires: 空间必须处于 active 状态; 此操作要求 synced 空间. Verify with control.spaces.imports.get. Import job is terminal and report/release status agrees with intended outcome; flagged is held, not reader-visible completion.",
+  "method": "POST",
+  "path": "/api/v1/tenants/{tenantId}/spaces/{spaceId}/releases:import",
+  "parameters": [
+    {
+      "name": "tenantId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "spaceId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/zip": {
+        "schema": {
+          "type": "string",
+          "format": "binary"
+        }
+      },
+      "application/octet-stream": {
+        "schema": {
+          "type": "string",
+          "format": "binary"
+        }
+      },
+      "multipart/form-data": {
+        "schema": {
+          "$ref": "#/components/schemas/ImportZipFilePart"
+        }
+      },
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/ImportFromUploadRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "202": {
+      "description": "Accepted",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/ImportAccepted"
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Bad Request",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "401": {
+      "description": "Unauthorized",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "404": {
+      "description": "Not Found",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "409": {
+      "description": "Conflict",
+      "content": {
+        "application/problem+json": {}
+      }
+    },
+    "422": {
+      "description": "Unprocessable Content",
+      "content": {
+        "application/problem+json": {}
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": true,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": true,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "content:publish"
+  ],
+  "mutates": true,
+  "highImpact": true,
+  "idempotencyMode": "server-key"
+}

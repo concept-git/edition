@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "eventId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "rootId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "actorType": {
+      "type": "string"
+    },
+    "actorId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "actorName": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "targetType": {
+      "type": "string"
+    },
+    "targetId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "outcome": {
+      "type": "string"
+    },
+    "ip": {
+      "type": "string"
+    },
+    "requestId": {
+      "type": "string"
+    },
+    "credentialId": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

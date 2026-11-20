@@ -1,0 +1,41 @@
+// Applied by both Java builds. Production class directories include unexecuted classes.
+apply plugin: 'jacoco'
+jacoco { toolVersion = '0.8.14' }
+tasks.withType(Test).configureEach {
+    def coverageAgent = extensions.getByType(org.gradle.testing.jacoco.plugins.JacocoTaskExtension)
+    // Framework bytecode is not part of this repository's denominator. Do not instrument it.
+    coverageAgent.includes = ['io.space.*']
+    def children = layout.buildDirectory.file('jacoco/test-children.exec').get().asFile
+    doFirst {
+        // Native CLI/MCP tests launch another JVM. Give it its own append-only data file.
+        def argument = coverageAgent.asJvmArg
+        children.delete()
+        systemProperty 'space.test.coverage.arg', argument.replaceFirst(/destfile=[^,]*/, "destfile=${children.absolutePath}")
+    }
+}
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.addAll(['-Xlint:deprecation', '-Xlint:unchecked', '-Werror'])
+}
+tasks.named('jacocoTestReport', JacocoReport) {
+    // A library is exercised by its own tests and by its consumers' integration tests.
+    // Merge executions, but retain this project's classes as the denominator.
+    dependsOn rootProject.subprojects.isEmpty() ? [tasks.named('test')] : rootProject.subprojects.collect { "${it.path}:test" }
+    executionData.setFrom(rootProject.allprojects.collect { it.fileTree('build/jacoco') { include '*.exec' } })
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    classDirectories.setFrom(sourceSets.main.output.classesDirs)
+}
+tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
+    dependsOn tasks.named('jacocoTestReport')
+    classDirectories.setFrom(tasks.named('jacocoTestReport').get().classDirectories)
+    executionData.setFrom(tasks.named('jacocoTestReport').get().executionData)
+    violationRules {
+        rule {
+            ['LINE', 'BRANCH', 'METHOD'].each { metric ->
+                limit { counter = metric; value = 'COVEREDRATIO'; minimum = 0.90 }
+            }
+        }
+    }
+}

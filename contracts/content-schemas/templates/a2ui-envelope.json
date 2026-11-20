@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://space.invalid/content-schemas/a2ui-envelope.json",
+  "type": "object",
+  "required": [
+    "content",
+    "interpretation"
+  ],
+  "properties": {
+    "content": {
+      "$ref": "https://a2ui.org/specification/v0_9/server_to_client_list.json",
+      "minItems": 1,
+      "maxItems": 512,
+      "items": {
+        "properties": {
+          "createSurface": {
+            "properties": {
+              "catalogId": {
+                "const": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    "interpretation": {
+      "type": "object",
+      "required": [
+        "protocolVersion",
+        "catalogId"
+      ],
+      "properties": {
+        "protocolVersion": {
+          "const": "v0.9.1"
+        },
+        "catalogId": {
+          "const": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "type": "object",
+  "description": "JSON Merge Patch: omitted keeps, null clears",
+  "properties": {
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 120
+    },
+    "titleTemplate": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Contains exactly one %s placeholder; null restores the default.",
+      "maxLength": 120,
+      "pattern": "^(?:(?!%s)[\\s\\S])*%s(?:(?!%s)[\\s\\S])*$"
+    },
+    "branding": {
+      "anyOf": [
+        {
+          "$ref": "#/components/schemas/UpdateSiteBranding"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "locale": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "analyticsId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "robotsPolicy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "index",
+        "noindex",
+        null
+      ]
+    },
+    "home": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "rule": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,43 @@
+name: Independent delivery acceptance
+on:
+  workflow_call:
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '25' }
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: '11.10.0' }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: acceptance/pnpm-lock.yaml
+      - working-directory: acceptance
+        run: pnpm install --frozen-lockfile
+      - working-directory: reading
+        run: pnpm install --frozen-lockfile
+      - working-directory: infra
+        run: pnpm install --frozen-lockfile
+      - name: Build acceptance artifacts
+        run: ./backend/gradlew --project-dir backend --no-daemon --max-workers=2 :control:bootJar :content:bootJar :index:bootJar
+      - working-directory: acceptance
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Published search and independent content delivery
+        run: node infra/space.ts verify delivery
+      - name: Caddy HTTPS private reader and short credential recovery
+        run: node infra/space.ts verify private
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: independent-delivery-evidence
+          path: |
+            .scratch/dw-v1/runtime/private-reader/28-delivery-*-browser.log
+            .scratch/dw-v1/runtime/private-reader/28-private-*-browser.log
+            .scratch/dw-v1/runtime/private-reader/28-*-results.json
+            acceptance/test-results
+          if-no-files-found: error

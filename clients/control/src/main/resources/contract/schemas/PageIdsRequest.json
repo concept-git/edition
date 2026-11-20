@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "maxItems": 100,
+      "minItems": 1
+    }
+  },
+  "required": [
+    "ids"
+  ]
+}

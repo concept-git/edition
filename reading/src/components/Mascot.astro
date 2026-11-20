@@ -1,0 +1,23 @@
+---
+import { getAssetPath } from "@/utils/withBase";
+
+const light = getAssetPath("ip/mascot-light.webp");
+const dark = getAssetPath("ip/mascot-dark.webp");
+---
+
+<div class="mascot">
+  <img
+    class="mascot-light"
+    src={light}
+    alt=""
+    width="631"
+    height="1058"
+  />
+  <img
+    class="mascot-dark"
+    src={dark}
+    alt=""
+    width="631"
+    height="1058"
+  />
+</div>

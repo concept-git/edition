@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "owner",
+        "member"
+      ],
+      "minLength": 1
+    }
+  },
+  "required": [
+    "role"
+  ]
+}

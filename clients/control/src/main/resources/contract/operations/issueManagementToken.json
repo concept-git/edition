@@ -1,0 +1,131 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false,
+    "json": {
+      "expiry": "2027-01-01T00:00:00Z",
+      "name": "VALUE",
+      "scopes": [
+        "content:read"
+      ]
+    },
+    "privateBody": false
+  },
+  "operationId": "issueManagementToken",
+  "apiCommand": "control.managementTokens.create",
+  "description": "Issue a scoped personal management credential; session only. Verify with control.managementTokens.list. Metadata and one-time secret secured; authentication context verified without disclosing the bearer.",
+  "method": "POST",
+  "path": "/api/v1/me/access-tokens",
+  "parameters": [
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/IssueRequest"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "400": {
+      "description": "Input or idempotency key invalid",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "409": {
+      "description": "Idempotency key reused for another request",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "422": {
+      "description": "Token scope or expiry rejected",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "401": {
+      "description": "Credential invalid or expired",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Credential type, scope or current permission denied",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "503": {
+      "description": "Required dependency unavailable",
+      "content": {
+        "application/problem+json": {
+          "schema": {
+            "$ref": "#/components/schemas/ApiProblem"
+          }
+        }
+      }
+    },
+    "201": {
+      "description": "Secret returned only in this logical issuance response",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/IssuedManagementToken"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": true
+  },
+  "credentialTypes": [
+    "session"
+  ],
+  "requiredScopes": [],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

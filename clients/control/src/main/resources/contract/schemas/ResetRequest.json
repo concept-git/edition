@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "token": {
+      "type": "string",
+      "minLength": 1
+    },
+    "newPassword": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "newPassword",
+    "token"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "title",
+          "headings",
+          "body"
+        ],
+        "minLength": 1
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "fields"
+  ]
+}

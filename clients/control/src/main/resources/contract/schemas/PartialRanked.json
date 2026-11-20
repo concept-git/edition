@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "label": {
+      "type": "string"
+    },
+    "count": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

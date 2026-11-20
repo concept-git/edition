@@ -1,0 +1,71 @@
+{
+  "example": {
+    "params": {},
+    "privateParams": false,
+    "json": {
+      "siteId": "00000000-0000-0000-0000-000000000001",
+      "tenantId": "00000000-0000-0000-0000-000000000001"
+    },
+    "privateBody": false
+  },
+  "operationId": "reindexSearch",
+  "apiCommand": "control.operations.search.reindex",
+  "description": "Queue a complete search rebuild as platform operator.",
+  "method": "POST",
+  "path": "/ops/search:reindex",
+  "parameters": [
+    {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9._:-]+$"
+      }
+    }
+  ],
+  "requestBody": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/Target"
+        }
+      }
+    },
+    "required": true
+  },
+  "responses": {
+    "202": {
+      "description": "Accepted",
+      "content": {
+        "*/*": {
+          "schema": {
+            "$ref": "#/components/schemas/Configuration"
+          }
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "jsonInput": true,
+    "binaryInput": false,
+    "binaryOutput": false,
+    "pagination": false,
+    "confirmation": false,
+    "invocation": true,
+    "secretInput": false,
+    "secretOutput": false
+  },
+  "credentialTypes": [
+    "session",
+    "management_token"
+  ],
+  "requiredScopes": [
+    "operations:write"
+  ],
+  "mutates": true,
+  "highImpact": false,
+  "idempotencyMode": "server-key"
+}

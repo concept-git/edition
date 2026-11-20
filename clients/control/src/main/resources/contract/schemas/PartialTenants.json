@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "tenants": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialTenantView"
+      }
+    },
+    "nextCursor": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,118 @@
+@import "tailwindcss";
+@import "./theme.css";
+@import "./motion.css";
+@import "./typography.css";
+@import "rehype-callouts/theme/obsidian";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@layer base {
+  * {
+    @apply border-border outline-accent/75;
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-muted) transparent;
+  }
+  a,
+  button,
+  #main-content {
+    @apply outline-accent outline-offset-1 focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility max-w-app {
+  @apply max-w-3xl;
+}
+
+@utility app-layout {
+  @apply max-w-app mx-auto w-full px-4;
+}
+
+@utility active-nav {
+  @apply underline decoration-wavy decoration-2 underline-offset-8;
+}
+
+:target {
+  scroll-margin-block: 1rem;
+}
+
+html {
+  font-size: 16px;
+}
+body {
+  line-height: 1.7;
+  overflow-x: clip;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+.active-nav {
+  text-decoration-style: solid;
+  text-underline-offset: 0.55rem;
+}
+.app-prose {
+  font-size: 1.0625rem;
+  line-height: 1.95;
+  overflow-wrap: anywhere;
+}
+.app-prose pre {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+.app-prose :is(pre, code) {
+  font-family: var(--font-mono);
+}
+.app-prose :is(img, svg) {
+  max-width: 100%;
+  height: auto;
+}
+.app-prose figure {
+  margin-inline: 0;
+}
+.app-prose details {
+  margin-block: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+.app-prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+@media (min-width: 640px) {
+  .app-prose {
+    font-size: 1.125rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+img[src^="/media/"][src$=".svg"] {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}

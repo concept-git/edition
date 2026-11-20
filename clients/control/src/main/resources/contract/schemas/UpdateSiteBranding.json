@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "logo": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "favicon": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "primaryColor": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

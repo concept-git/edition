@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialGrantView"
+      }
+    },
+    "nextCursor": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "allowedActions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "grant",
+          "override",
+          "set_none",
+          "change_role",
+          "revoke",
+          "explain",
+          "restrict",
+          "replace_restriction",
+          "narrow_restriction",
+          "unrestrict"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "job": {
+      "$ref": "#/components/schemas/ImportJob"
+    },
+    "release": {
+      "$ref": "#/components/schemas/ReleaseDetail"
+    }
+  }
+}

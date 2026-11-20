@@ -1,0 +1,78 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "tenantId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "type": "string"
+    },
+    "rule": {
+      "type": "string"
+    },
+    "home": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "robotsPolicy": {
+      "type": "string",
+      "enum": [
+        "index",
+        "noindex"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PartialSiteDomain"
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "createdBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "allowedActions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "create",
+          "read",
+          "update",
+          "mount",
+          "unmount",
+          "remount",
+          "reorder",
+          "delete",
+          "manage_permissions"
+        ]
+      }
+    }
+  }
+}

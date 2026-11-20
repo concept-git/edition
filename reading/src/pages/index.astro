@@ -1,0 +1,71 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Card from "@/components/Card.astro";
+import Mascot from "@/components/Mascot.astro";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { columns } from "@/data/columns";
+import config from "@/config";
+const posts = getSortedPosts(await getCollection("posts", ({ data }) => !data.noIndex));
+const latest = posts.slice(0, config.posts.perIndex);
+---
+<Layout>
+  <div class="sky">
+    <Header />
+    <div class="sky-stage">
+      <svg class="rainbow" viewBox="0 160 820 320" aria-hidden="true">
+        <path d="M-40 250C150 20 400 -20 860 120" />
+        <path d="M-40 270C150 40 400 0 860 140" />
+        <path d="M-40 290C150 60 400 20 860 160" />
+        <path d="M-40 310C150 80 400 40 860 180" />
+        <path d="M-40 330C150 100 400 60 860 200" />
+        <path d="M-40 350C150 120 400 80 860 220" />
+        <path d="M-40 370C150 140 400 100 860 240" />
+        <path d="M-40 390C150 160 400 120 860 260" />
+        <path d="M-40 410C150 180 400 140 860 280" />
+        <path d="M-40 430C150 200 400 160 860 300" />
+        <path d="M-40 450C150 220 400 180 860 320" />
+        <path d="M-40 470C150 240 400 200 860 340" />
+      </svg>
+      <svg class="cloud cloud-back" viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 120C80 78 140 150 250 128C360 106 400 48 530 62C660 76 700 150 830 132C960 114 1010 40 1150 58C1270 74 1340 130 1440 108V200H0Z" />
+      </svg>
+      <div class="hero-mascot">
+        <Mascot />
+      </div>
+      <svg class="cloud cloud-front" viewBox="0 0 1440 150" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 78C90 40 150 108 270 86C390 64 430 22 560 40C700 60 740 112 880 92C1020 72 1070 18 1210 40C1320 58 1380 96 1440 78V150H0Z" />
+      </svg>
+    </div>
+  </div>
+  <main id="main-content" class="home-grid">
+    <section class="home-latest" aria-labelledby="latest-posts">
+      <article class="intro-card">
+        <h1>智能时代研究员</h1>
+        <p>分享概念设计、软件本体论、AI 编程与软件架构的研究和实践</p>
+        <a class="hero-cta" href="/blog">
+          <span class="hero-cta-label">继续阅读</span>
+          <span class="hero-cta-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </span>
+        </a>
+      </article>
+      <h2 id="latest-posts" class="kicker">文章</h2>
+      <ul>{latest.map(post => <Card tone="feature" variant="h3" {...post} />)}</ul>
+    </section>
+    <div class="home-rail">
+      <section aria-labelledby="browse-columns">
+        <h2 id="browse-columns" class="kicker">按栏目浏览</h2>
+        <ul class="pills">
+          {columns.map(column => <li><a href={`/${column.slug}`}>{column.name}</a></li>)}
+        </ul>
+      </section>
+    </div>
+  </main>
+  <Footer />
+</Layout>

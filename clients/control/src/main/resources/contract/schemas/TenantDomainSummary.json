@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "properties": {
+    "host": {
+      "type": "string"
+    },
+    "verified": {
+      "type": "boolean"
+    },
+    "isPrimary": {
+      "type": "boolean"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "siteId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "siteName": {
+      "type": "string"
+    },
+    "allowedActions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "allowedActions",
+    "createdAt",
+    "host",
+    "isPrimary",
+    "siteId",
+    "siteName",
+    "verified"
+  ]
+}

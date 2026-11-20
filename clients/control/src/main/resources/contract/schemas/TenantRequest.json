@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "tenantId": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
+  "required": [
+    "tenantId"
+  ]
+}

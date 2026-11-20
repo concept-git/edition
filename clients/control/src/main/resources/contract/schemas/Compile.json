@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "properties": {
+    "baseRevision": {
+      "type": "integer",
+      "format": "int32",
+      "minimum": 1
+    },
+    "sourceDigest": {
+      "type": "string",
+      "minLength": 1
+    },
+    "entryPoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bundle": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "bundle",
+    "entryPoint",
+    "environment",
+    "sourceDigest"
+  ]
+}

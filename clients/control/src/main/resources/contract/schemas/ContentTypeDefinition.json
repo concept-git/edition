@@ -1,0 +1,58 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "format": {
+      "type": "string"
+    },
+    "mediaType": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    },
+    "renderHost": {
+      "type": "string"
+    },
+    "defaultInterpretation": {
+      "type": "object",
+      "additionalProperties": {}
+    },
+    "validation": {
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/Validation"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "schemaResources": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "editors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Contribution"
+      }
+    },
+    "renderers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Contribution"
+      }
+    }
+  }
+}

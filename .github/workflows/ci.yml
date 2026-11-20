@@ -1,0 +1,137 @@
+# CI 门禁（TESTING.md §4）：build + 模块边界 verify + 架构守护 + 契约 + 规格漂移 + 阅读与交付验收
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  launcher-portability:
+    name: Launcher (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - working-directory: infra
+        run: corepack pnpm install --frozen-lockfile
+      - working-directory: infra
+        run: corepack pnpm check
+      - working-directory: infra
+        run: corepack pnpm test:coverage
+      - run: node infra/space.ts platform --help
+
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      SPACE_OBJECT_IMAGE: space-objectstore:2025-09-07
+      SPACE_MINIO_TEST_IMAGE: space-objectstore:2025-09-07
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_DB: space
+          POSTGRES_USER: space
+          POSTGRES_PASSWORD: space
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U space"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - working-directory: infra
+        run: corepack pnpm install --frozen-lockfile
+      - name: 文档链接、脚本入口与 PRD 组合一致性
+        run: node infra/space.ts repository
+      - name: 架构护栏（模块模型 / 静态分层 / SQL 归属 / 规格对齐 / 库表边界）
+        working-directory: backend
+        run: >-
+          ./gradlew :control:test
+          --tests 'io.space.ModularityTests'
+          --tests 'io.space.ArchitectureTests'
+          --tests 'io.space.SqlSchemaOwnershipTest'
+          --tests 'io.space.SyncSpecParityTest'
+          --tests 'io.space.ConceptSpecParityTest'
+          --tests 'io.space.DdlContextBoundaryTest'
+          --tests 'io.space.PrdModuleInventoryTest'
+          --tests 'io.space.ProblemContractParityTest'
+
+      - name: Build pinned object-store image before full tests
+        run: docker compose -p dw-remaining -f infra/deployment/compose.yml build objects
+      - name: Build（编译 + 全量测试 + Testcontainers 真库）
+        working-directory: backend
+        run: ./gradlew --no-daemon --max-workers=2 --warning-mode=fail build jacocoTestCoverageVerification
+      - name: Prepare complete contract-generation dependencies
+        run: docker compose -p dw-remaining -f infra/deployment/compose.yml up --wait --wait-timeout 180 source search objects
+      - name: Generate current management contract
+        working-directory: backend
+        env:
+          DB_URL: jdbc:postgresql://localhost:5412/space
+          OBJECT_STORE_ENDPOINT: http://localhost:9012
+          MEILI_URL: http://localhost:7712
+          MEILI_API_KEY: acceptance-master-key
+        run: ./gradlew --no-daemon --max-workers=2 generateOpenApiDocs && git diff --exit-code -- ../contracts/openapi.json
+      - name: 上传 Modulith 模块文档（与 PRD 对账素材）
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spring-modulith-docs
+          path: backend/apps/control/build/spring-modulith-docs
+          if-no-files-found: ignore
+
+  python-quality:
+    name: Python quality (${{ matrix.scope }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scope: [vfs, compiler]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - working-directory: infra
+        run: corepack pnpm install --frozen-lockfile
+      - run: python -m pip install -r infra/requirements.txt -e 'clients/space/python[mirage,fuse]'
+      - run: node infra/space.ts quality static --scope ${{ matrix.scope }}
+      - run: node infra/space.ts quality coverage --scope ${{ matrix.scope }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: python-quality-${{ matrix.scope }}
+          path: .scratch/dw-v1/runtime/quality/
+
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate new-platform contract surfaces
+        run: |
+          jq -e '.openapi == "3.1.0" and (.paths | type == "object")' contracts/openapi.json
+          jq -e '.openapi == "3.1.0" and (.paths | type == "object")' contracts/delivery-openapi.json
+
+  independent-delivery:
+    name: 独立交付 Gherkin
+    needs: backend
+    uses: ./.github/workflows/delivery.yml
