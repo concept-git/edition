@@ -28,11 +28,11 @@ jobs:
       - run: python scripts/generate_contract.py --check
       - run: ./gradlew --no-daemon --max-workers=2 --warning-mode=fail check jacocoTestCoverageVerification installDist distZip
         shell: bash
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: editionctl-${{ matrix.os }}
           path: clients/control/build/distributions/*.zip
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: editionctl-test-results-${{ matrix.os }}
