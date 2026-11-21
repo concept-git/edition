@@ -178,7 +178,7 @@ class SiteController {
             @Valid @RequestBody RemountRequest body,
             @Parameter(hidden = true) HttpServletRequest request) {
         return IdempotentReplay.of(remountUseCase.remount(
-                bearer.require(), tenantId, siteId, slug, body.newSlug(), IdempotencyKeyFilter.require(request)));
+                bearer.require(), tenantId, siteId, slug, null, body.newSlug(), IdempotencyKeyFilter.require(request)));
     }
 
     @DeleteMapping("/{siteId}/mounts/{slug}")
@@ -191,7 +191,7 @@ class SiteController {
             @PathVariable String slug,
             @Parameter(hidden = true) HttpServletRequest request) {
         return IdempotentReplay.of(unmountSpaceUseCase.unmountSpace(
-                bearer.require(), tenantId, siteId, slug, IdempotencyKeyFilter.require(request)));
+                bearer.require(), tenantId, siteId, slug, null, IdempotencyKeyFilter.require(request)));
     }
 
     @PutMapping("/{siteId}/mounts:order")
@@ -204,8 +204,58 @@ class SiteController {
             @Valid @RequestBody OrderRequest body,
             @Parameter(hidden = true) HttpServletRequest request) {
         return IdempotentReplay.of(reorderMountsUseCase.reorderMounts(
-                bearer.require(), tenantId, siteId, body.slugs(), IdempotencyKeyFilter.require(request)));
+                bearer.require(), tenantId, siteId, body.slugs(), null, IdempotencyKeyFilter.require(request)));
     }
+
+    @PostMapping("/{siteId}/space-mounts/{spaceId}:remount")
+    @Operation(operationId = "remountSpaceById", summary = "Change the mount address of a Space identified by ID")
+    @Parameter(name = "Idempotency-Key", in = ParameterIn.HEADER, required = true)
+    @MutationResponses
+    ResponseEntity<String> remountById(
+            @PathVariable UUID tenantId,
+            @PathVariable UUID siteId,
+            @PathVariable UUID spaceId,
+            @Valid @RequestBody RemountRequest body,
+            @Parameter(hidden = true) HttpServletRequest request) {
+        return IdempotentReplay.of(remountUseCase.remount(
+                bearer.require(),
+                tenantId,
+                siteId,
+                null,
+                spaceId,
+                body.newSlug(),
+                IdempotencyKeyFilter.require(request)));
+    }
+
+    @DeleteMapping("/{siteId}/space-mounts/{spaceId}")
+    @Operation(operationId = "unmountSpaceById", summary = "Unmount the Space identified by ID")
+    @Parameter(name = "Idempotency-Key", in = ParameterIn.HEADER, required = true)
+    @MutationResponses
+    ResponseEntity<String> unmountById(
+            @PathVariable UUID tenantId,
+            @PathVariable UUID siteId,
+            @PathVariable UUID spaceId,
+            @Parameter(hidden = true) HttpServletRequest request) {
+        return IdempotentReplay.of(unmountSpaceUseCase.unmountSpace(
+                bearer.require(), tenantId, siteId, null, spaceId, IdempotencyKeyFilter.require(request)));
+    }
+
+    @PutMapping("/{siteId}/space-mounts:order")
+    @Operation(
+            operationId = "reorderMountsBySpaceId",
+            summary = "Reorder mounts using the complete sequence of Space IDs")
+    @Parameter(name = "Idempotency-Key", in = ParameterIn.HEADER, required = true)
+    @MutationResponses
+    ResponseEntity<String> reorderById(
+            @PathVariable UUID tenantId,
+            @PathVariable UUID siteId,
+            @Valid @RequestBody SpaceOrderRequest body,
+            @Parameter(hidden = true) HttpServletRequest request) {
+        return IdempotentReplay.of(reorderMountsUseCase.reorderMounts(
+                bearer.require(), tenantId, siteId, null, body.spaceIds(), IdempotencyKeyFilter.require(request)));
+    }
+
+    record SpaceOrderRequest(@NotNull List<@NotNull UUID> spaceIds) {}
 
     record CreateSiteRequest(@NotBlank @Size(max = 120) String name) {}
 

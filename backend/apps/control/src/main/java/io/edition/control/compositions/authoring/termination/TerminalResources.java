@@ -95,7 +95,7 @@ public class TerminalResources {
         for (var occurrence : sites.mountsOf(id).stream()
                 .sorted(Comparator.comparing(o -> o.site().value()))
                 .toList()) {
-            sites.unmount(new SiteApi.ActorId(actor), occurrence.site(), occurrence.slug());
+            sites.unmountBySpace(new SiteApi.ActorId(actor), occurrence.site(), id);
             affected.add(occurrence.site().value());
         }
         exports.terminateSpace(id);

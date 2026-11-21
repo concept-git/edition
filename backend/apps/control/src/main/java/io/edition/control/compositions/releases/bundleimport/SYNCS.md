@@ -94,7 +94,7 @@ pageId 映射：`Release/_lastOf(kind=import)` 快照 `(externalId → pageId)`�
 命中 → edit / rename / 附件 / 进版标记；未命中 → `Page/create`（预分配 id + 初始正文/SEO/属性，一次写入 revision=1）+ `Space/place`；
 快照有、bundle 无 → `Page/trash`。slug 变了调用 `Space/reslug`（无管理面 HTTP）。format 变更 →
 该页阻断错误，不重建 id。属性经 `Page/replaceProperties` 整体校验并替换，失败回滚同一导入事务；
-已相同的属性不重复写入。不把 `externalId` 升进 Page 概念。不导入标签。
+已相同的属性不重复写入。附件按文件名与内容哈希逐个配对，保留未变引用的附件 ID，先移除未配对的旧引用，再添加缺少的引用。不把 `externalId` 升进 Page 概念。不导入标签。
 
 ```text
 sync continuousImport
@@ -204,6 +204,8 @@ then {
   尚无 import → driftCount=0
 }
 
+冻结预览列表提供 Page ID。按 Page ID 渲染始终限定在同一 Release 内；旧 slug 预览入口兼容保留。
+
 sync listPreviewPages
 // implementation: ListPreviewPagesUseCase#listPreviewPages
 when {
@@ -219,7 +221,7 @@ then {
   Release/_pagesOf: [rel: ?releaseId] => [pages: ?pages]
   Requesting/respond: [request: ?request; pages: ?pages]
 }
-// 只返回快照页面标题与地址供选择；空快照返回空列表，权限与状态边界同 previewRelease。
+// 返回快照 Page ID、标题与地址供选择；空快照返回空列表，权限与状态边界同 previewRelease。
 
 sync previewRelease
 // implementation: PreviewReleaseUseCase#previewRelease
@@ -388,7 +390,7 @@ ImportJob 的 status/outcome/phase 使用当前 wire 值的枚举合同；termin
 | `ApproveReleaseUseCase.approveRelease` | `credential: String, tenant: UUID, space: UUID, releaseId: UUID, key: String` | `FlowResponse<BundleImportTypes.ApproveResult>` |
 | `ContinuousImportUseCase.continuousImport` | `credential: String, tenant: UUID, space: UUID, source: BundleImportTypes.ImportSource, key: String` | `FlowResponse<BundleImportTypes.ImportAccepted>` |
 | `ListPreviewPagesUseCase.listPreviewPages` | `credential: String, tenant: UUID, space: UUID, releaseId: UUID` | `List<BundleImportTypes.PreviewPage>` |
-| `PreviewReleaseUseCase.previewRelease` | `credential: String, tenant: UUID, space: UUID, releaseId: UUID, slug: String` | `BundleImportTypes.SnapshotPreview` |
+| `PreviewReleaseUseCase.previewRelease` | `credential: String, tenant: UUID, space: UUID, releaseId: UUID, slug: String, pageId: UUID` | `BundleImportTypes.SnapshotPreview` |
 | `PromoteOnApprove.promoteOnApprove` | `binding: BundleImportSignals.PromoteOnApprove` | `void` |
 | `StartImportUploadUseCase.startImportUpload` | `credential: String, tenant: UUID, space: UUID` | `BundleImportTypes.ImportUpload` |
 | `ViewDriftUseCase.viewDrift` | `credential: String, tenant: UUID, space: UUID` | `BundleImportTypes.DriftBoard` |
@@ -409,7 +411,7 @@ ImportJob 的 status/outcome/phase 使用当前 wire 值的枚举合同；termin
 | `BundleImportTypes.ImportSource` | `BundleImportTypes.ImportSource.RemoteZip / BundleImportTypes.ImportSource.StoredUpload / BundleImportTypes.ImportSource.ZipStream` |
 | `BundleImportTypes.ImportUpload` | `putUrl: String, expiresAt: Instant, uploadKey: String` |
 | `BundleImportTypes.JobView` | `id: UUID, status: String, phase: String, progressDone: Integer, progressTotal: Integer, attempt: int, nextRunAt: Instant, traceId: String, outcome: String, releaseId: UUID, sourceUrl: String, adapterId: String, report: BundleImportTypes.ImportReport` |
-| `BundleImportTypes.PreviewPage` | `slug: String, title: String` |
+| `BundleImportTypes.PreviewPage` | `pageId: UUID, slug: String, title: String` |
 | `BundleImportTypes.SnapshotPreview` | `html: String, title: String, slug: String, format: String, content: String, contentType: String, versionRef: String, interpretation: Map<String, Object>, contentTypeDefinition: ContentTypeSnapshot` |
 
 <!-- interface-contract:end -->

@@ -17,7 +17,7 @@ where {
   Space/_view: [space: ?space] => [name: ?name]
 }
 then {
-  Site/unmount: [site: ?site; slug: ?slug]
+  Site/unmountBySpace: [site: ?site; target: ?space]
   ImportJob/terminateSpace: [space: ?space]
   ApiToken/revoke: [token: ?token]
   Permission/clearPrincipal: [principal: ?token]

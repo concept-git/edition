@@ -144,14 +144,28 @@ class SiteService implements SiteApi {
                     .<MutationResult>map(value -> new MutationResult.Changed(value.view()))
                     .orElseGet(MutationResult.NotFound::new);
         }
+        return unmountLocked(actor, site, current -> current.unmount(normalized, actor));
+    }
+
+    @Override
+    public MutationResult unmountBySpace(ActorId actor, SiteId site, UUID target) {
+        return unmountLocked(actor, site, current -> current.unmountBySpace(target, actor));
+    }
+
+    private MutationResult unmountLocked(ActorId actor, SiteId site, java.util.function.Predicate<Site> remove) {
         var current = repository.lock(site);
         if (current.isEmpty()) return new MutationResult.NotFound();
-        boolean changed = current.orElseThrow().unmount(normalized, actor);
+        boolean changed = remove.test(current.orElseThrow());
         var view = changed
                 ? repository.save(current.orElseThrow()).view()
                 : current.orElseThrow().view();
         if (changed) events.publishEvent(new SiteEvents.Unmounted(actor, view));
         return new MutationResult.Changed(view);
+    }
+
+    @Override
+    public MutationResult reorderBySpace(ActorId actor, SiteId site, List<UUID> order) {
+        return mutate(actor, site, current -> current.reorderBySpace(order, actor), false);
     }
 
     @Override

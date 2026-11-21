@@ -455,6 +455,10 @@
     "name": "control.spaces.releases.preview.get",
     "description": "Render one snapshot page from a not-yet-live Release. Verify with control.spaces.releases.get."
   },
+  "previewReleaseByPageId": {
+    "name": "control.spaces.releases.preview.getById",
+    "description": "Render one frozen snapshot page using the Page ID from the preview list."
+  },
   "listReleasePreviewPages": {
     "name": "control.spaces.releases.preview.list",
     "description": "List snapshot pages available for preview. Verify with control.spaces.releases.get."
@@ -526,6 +530,21 @@
   "reorderMounts": {
     "name": "control.sites.mounts.reorder",
     "description": "Reorder Site mounts. Verify with control.sites.get.",
+    "confirm": true
+  },
+  "unmountSpaceById": {
+    "name": "control.sites.mounts.removeById",
+    "description": "Unmount a Space by ID. Verify with control.sites.get.",
+    "confirm": true
+  },
+  "remountSpaceById": {
+    "name": "control.sites.mounts.renameById",
+    "description": "Change a Space's mount address by ID and register a redirect. Verify with control.sites.get.",
+    "confirm": true
+  },
+  "reorderMountsBySpaceId": {
+    "name": "control.sites.mounts.reorderById",
+    "description": "Set the complete mount order using Space IDs. Verify with control.sites.get.",
     "confirm": true
   },
   "mountSpace": {

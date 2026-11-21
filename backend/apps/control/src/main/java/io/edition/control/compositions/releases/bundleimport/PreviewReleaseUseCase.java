@@ -31,7 +31,8 @@ public class PreviewReleaseUseCase {
     }
 
     @Transactional(readOnly = true)
-    public SnapshotPreview previewRelease(String credential, UUID tenant, UUID space, UUID releaseId, String slug) {
+    public SnapshotPreview previewRelease(
+            String credential, UUID tenant, UUID space, UUID releaseId, String slug, UUID pageId) {
         try (var requestScope = io.edition.control.compositions.RequestAuditContext.entry()) {
             access.space(tenant, space);
             access.require(credential, tenant, space, TenantAccess.PUBLISH);
@@ -46,7 +47,9 @@ public class PreviewReleaseUseCase {
                 ReleaseApi.Bundle bundle =
                         releases.export(new ReleaseApi.ReleaseId(releaseId)).orElseThrow(ReleaseNotFoundException::new);
                 ReleaseApi.PageSnapshot page = bundle.pages().stream()
-                        .filter(item -> item.slug().equals(slug))
+                        .filter(item -> pageId == null
+                                ? item.slug().equals(slug)
+                                : item.pageId().equals(pageId))
                         .findFirst()
                         .orElseThrow(PageNotFoundException::new);
                 String format = page.format().name().toLowerCase(Locale.ROOT);

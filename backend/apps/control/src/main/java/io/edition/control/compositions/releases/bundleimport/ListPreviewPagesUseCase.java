@@ -39,7 +39,7 @@ public class ListPreviewPagesUseCase {
                     throw new ReleaseNotFoundException();
                 }
                 return releases.pagesOf(new ReleaseApi.ReleaseId(releaseId)).stream()
-                        .map(page -> new PreviewPage(page.slug(), page.title()))
+                        .map(page -> new PreviewPage(page.pageId(), page.slug(), page.title()))
                         .toList();
             });
         }

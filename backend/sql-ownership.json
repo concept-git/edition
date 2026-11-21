@@ -70,6 +70,7 @@
     "shared.plugin_verifications": "pluginverification",
     "reader_state.sessions": "readersecurity",
     "reader_state.history": "readersecurity",
+    "reader_state.page_history": "readersecurity",
     "shared.record_service_heartbeat": "servicehealth",
     "shared.renew_audit_export": "audit",
     "shared.retain_audit": "audit",

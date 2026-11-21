@@ -161,8 +161,19 @@ public final class Site {
     }
 
     public boolean unmount(String slug, SiteApi.ActorId actor) {
+        return unmountAt(indexOf(slug), actor);
+    }
+
+    public boolean unmountBySpace(UUID target, SiteApi.ActorId actor) {
+        var slug = mounts.stream()
+                .filter(mount -> mount.target().equals(target))
+                .map(SiteApi.Mount::slug)
+                .findFirst();
+        return slug.isPresent() && unmount(slug.orElseThrow(), actor);
+    }
+
+    private boolean unmountAt(int index, SiteApi.ActorId actor) {
         Objects.requireNonNull(actor, "actor");
-        int index = indexOf(slug);
         if (index < 0) return false;
         UUID target = mounts.remove(index).target();
         reindex();
@@ -188,6 +199,14 @@ public final class Site {
         mounts.addAll(next);
         touch(actor);
         return true;
+    }
+
+    public boolean reorderBySpace(List<UUID> order, SiteApi.ActorId actor) {
+        var slugs = new java.util.HashMap<UUID, String>();
+        for (var mount : mounts) {
+            slugs.put(mount.target(), mount.slug());
+        }
+        return reorder(order.stream().map(slugs::get).toList(), actor);
     }
 
     public void requireEmpty() {

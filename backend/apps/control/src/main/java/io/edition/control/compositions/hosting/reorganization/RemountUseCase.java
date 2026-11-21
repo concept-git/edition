@@ -45,7 +45,7 @@ public class RemountUseCase {
 
     @Transactional
     public FlowResponse<SiteTypes.SiteDetail> remount(
-            String credential, UUID tenant, UUID site, String oldSlug, String newSlug, String key) {
+            String credential, UUID tenant, UUID site, String oldSlug, UUID spaceId, String newSlug, String key) {
         try (var requestScope = io.edition.control.compositions.RequestAuditContext.entry()) {
             SiteApi.View existing = resources.site(tenant, site).orElseThrow(SiteNotFoundException::new);
             Resolution resolution = siteAccess.require(credential, tenant, existing, TenantAccess.ADMIN);
@@ -54,15 +54,23 @@ public class RemountUseCase {
                     resolution.principal(),
                     key,
                     "site.remount",
-                    IdempotentFlowExecutor.canonical(tenant, site, oldSlug.strip(), newSlug.strip()),
+                    spaceId == null
+                            ? IdempotentFlowExecutor.canonical(tenant, site, oldSlug.strip(), newSlug.strip())
+                            : IdempotentFlowExecutor.canonical(tenant, site, "space", spaceId, newSlug.strip()),
                     200,
                     SiteTypes.SiteDetail.class,
                     () -> tenants.inTenant(tenant, () -> {
                         var siteId = new SiteApi.SiteId(site);
-                        UUID target = sites.targetAt(siteId, oldSlug).orElseThrow(MountNotFoundException::new);
+                        UUID target = spaceId == null
+                                ? sites.targetAt(siteId, oldSlug).orElseThrow(MountNotFoundException::new)
+                                : spaceId;
                         authoringWrites.requireActive(locks.space(tenant, target));
                         locks.site(tenant, site);
-                        sites.targetAt(siteId, oldSlug).filter(target::equals).orElseThrow(MountNotFoundException::new);
+                        if (spaceId == null) {
+                            sites.targetAt(siteId, oldSlug)
+                                    .filter(target::equals)
+                                    .orElseThrow(MountNotFoundException::new);
+                        }
                         String from = sites.slugOf(siteId, target).orElseThrow(MountNotFoundException::new);
                         SiteApi.View changed =
                                 switch (sites.remount(actor, new SiteApi.SiteId(site), from, newSlug)) {

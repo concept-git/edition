@@ -9,9 +9,9 @@ import io.edition.concepts.toc.api.TocApi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -209,14 +209,23 @@ class ImportedWorkspaceMirror {
     }
 
     private void applyAttachments(PageApi.PageId id, PageApi.View current, ReleaseApi.PageSnapshot snapshot) {
-        Map<String, PageApi.Attachment> have = new HashMap<>();
+        Map<AttachmentKey, ArrayDeque<PageApi.Attachment>> unmatched = new HashMap<>();
         for (PageApi.Attachment attachment : current.attachments()) {
-            have.put(attachment.storageKey(), attachment);
+            var key = new AttachmentKey(attachment.filename(), attachment.storageKey());
+            unmatched.computeIfAbsent(key, ignored -> new ArrayDeque<>()).addLast(attachment);
         }
-        Set<String> want = new HashSet<>();
+        List<ReleaseApi.AttachmentRef> added = new ArrayList<>();
         for (ReleaseApi.AttachmentRef ref : snapshot.attachments()) {
-            want.add(ref.storageKey());
-            if (have.containsKey(ref.storageKey())) continue;
+            var key = new AttachmentKey(filename(ref.path()).strip(), ref.storageKey());
+            var candidates = unmatched.get(key);
+            if (candidates == null || candidates.pollFirst() == null) added.add(ref);
+        }
+        for (var candidates : unmatched.values()) {
+            for (var attachment : candidates) {
+                pages.detach(id, attachment.ref(), SYSTEM_PAGE);
+            }
+        }
+        for (ReleaseApi.AttachmentRef ref : added) {
             byte[] bytes = read(ref.storageKey());
             switch (pages.attach(id, new PageApi.FileUpload(filename(ref.path()), bytes), SYSTEM_PAGE)) {
                 case PageApi.AttachResult.Attached ignored -> {}
@@ -231,12 +240,9 @@ class ImportedWorkspaceMirror {
                     throw new IllegalStateException("import attachment invalid " + invalid.field());
             }
         }
-        for (PageApi.Attachment attachment : current.attachments()) {
-            if (!want.contains(attachment.storageKey())) {
-                pages.detach(id, attachment.ref(), SYSTEM_PAGE);
-            }
-        }
     }
+
+    private record AttachmentKey(String filename, String storageKey) {}
 
     private void replaceToc(UUID space, ReleaseApi.Bundle bundle) {
         Map<String, UUID> extToId = new HashMap<>();

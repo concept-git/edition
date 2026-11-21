@@ -82,7 +82,7 @@ public final class BundleImportTypes {
 
     public record DriftItem(UUID pageId, String slug, String title, String externalId) {}
 
-    public record PreviewPage(String slug, String title) {}
+    public record PreviewPage(UUID pageId, String slug, String title) {}
 
     public record SnapshotPreview(
             String html,

@@ -1252,6 +1252,124 @@
         ]
       }
     },
+    "/api/v1/tenants/{tenantId}/sites/{siteId}/space-mounts:order": {
+      "put": {
+        "tags": [
+          "site-controller"
+        ],
+        "summary": "Reorder mounts using the complete sequence of Space IDs",
+        "operationId": "reorderMountsBySpaceId",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9._:-]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpaceOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        },
+        "x-management-scope": "hosting:write",
+        "x-read-only": false,
+        "x-credential-types": [
+          "session",
+          "management_token"
+        ]
+      }
+    },
     "/api/v1/tenants/{tenantId}/sites/{siteId}/search": {
       "get": {
         "tags": [
@@ -7270,6 +7388,133 @@
           },
           "403": {
             "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        },
+        "x-management-scope": "hosting:write",
+        "x-read-only": false,
+        "x-credential-types": [
+          "session",
+          "management_token"
+        ]
+      }
+    },
+    "/api/v1/tenants/{tenantId}/sites/{siteId}/space-mounts/{spaceId}:remount": {
+      "post": {
+        "tags": [
+          "site-controller"
+        ],
+        "summary": "Change the mount address of a Space identified by ID",
+        "operationId": "remountSpaceById",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "spaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9._:-]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemountRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -13993,6 +14238,107 @@
         ]
       }
     },
+    "/api/v1/tenants/{tenantId}/spaces/{spaceId}/releases/{releaseId}/preview/by-id/{pageId}": {
+      "get": {
+        "tags": [
+          "import-controller"
+        ],
+        "summary": "Render one frozen snapshot page by Page ID",
+        "operationId": "previewReleaseByPageId",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "spaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "releaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Optional response field mask. Select fields from this operation\u0027s response schema; omit for the full response. Keep nextCursor when paginating; select dynamic maps whole.",
+            "schema": {
+              "type": "string",
+              "maxLength": 4096,
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/SnapshotPreview"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PartialSnapshotPreview"
+                    }
+                  ],
+                  "description": "Full response when fields is absent; selected fields may be omitted when fields is supplied."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {}
+            }
+          }
+        },
+        "x-management-scope": "content:read",
+        "x-read-only": true,
+        "x-credential-types": [
+          "session",
+          "management_token"
+        ]
+      }
+    },
     "/api/v1/tenants/{tenantId}/spaces/{spaceId}/permissions": {
       "get": {
         "tags": [
@@ -17671,6 +18017,123 @@
         ]
       }
     },
+    "/api/v1/tenants/{tenantId}/sites/{siteId}/space-mounts/{spaceId}": {
+      "delete": {
+        "tags": [
+          "site-controller"
+        ],
+        "summary": "Unmount the Space identified by ID",
+        "operationId": "unmountSpaceById",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "spaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9._:-]+$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        },
+        "x-management-scope": "hosting:write",
+        "x-read-only": false,
+        "x-credential-types": [
+          "session",
+          "management_token"
+        ]
+      }
+    },
     "/api/v1/tenants/{tenantId}/invitations/{inviteId}": {
       "delete": {
         "tags": [
@@ -18785,57 +19248,19 @@
           "content"
         ]
       },
-      "Fields": {
+      "SpaceOrderRequest": {
         "type": "object",
         "properties": {
-          "fields": {
+          "spaceIds": {
             "type": "array",
             "items": {
               "type": "string",
-              "enum": [
-                "title",
-                "headings",
-                "body"
-              ],
-              "minLength": 1
-            },
-            "maxItems": 3,
-            "minItems": 3,
-            "uniqueItems": true
-          }
-        },
-        "required": [
-          "fields"
-        ]
-      },
-      "Configuration": {
-        "type": "object",
-        "properties": {
-          "fields": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "revision": {
-            "type": "integer",
-            "format": "int64"
-          }
-        }
-      },
-      "OrderRequest": {
-        "type": "object",
-        "properties": {
-          "slugs": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
+              "format": "uuid"
             }
           }
         },
         "required": [
-          "slugs"
+          "spaceIds"
         ]
       },
       "SiteBranding": {
@@ -19023,6 +19448,59 @@
         "required": [
           "slug",
           "spaceId"
+        ]
+      },
+      "Fields": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "title",
+                "headings",
+                "body"
+              ],
+              "minLength": 1
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "fields"
+        ]
+      },
+      "Configuration": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "OrderRequest": {
+        "type": "object",
+        "properties": {
+          "slugs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "slugs"
         ]
       },
       "MountRequest": {
@@ -20799,6 +21277,19 @@
           "name"
         ]
       },
+      "RemountRequest": {
+        "type": "object",
+        "properties": {
+          "newSlug": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "newSlug"
+        ]
+      },
       "CreateRedirectRequest": {
         "type": "object",
         "properties": {
@@ -20857,19 +21348,6 @@
             "type": "boolean"
           }
         }
-      },
-      "RemountRequest": {
-        "type": "object",
-        "properties": {
-          "newSlug": {
-            "type": "string",
-            "maxLength": 80,
-            "minLength": 0
-          }
-        },
-        "required": [
-          "newSlug"
-        ]
       },
       "BindRequest": {
         "type": "object",
@@ -23128,6 +23606,10 @@
       "SnapshotPreviewPage": {
         "type": "object",
         "properties": {
+          "pageId": {
+            "type": "string",
+            "format": "uuid"
+          },
           "slug": {
             "type": "string"
           },
@@ -27539,6 +28021,10 @@
       "PartialSnapshotPreviewPage": {
         "type": "object",
         "properties": {
+          "pageId": {
+            "type": "string",
+            "format": "uuid"
+          },
           "slug": {
             "type": "string"
           },

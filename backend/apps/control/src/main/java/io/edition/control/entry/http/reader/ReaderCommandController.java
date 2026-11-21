@@ -78,7 +78,7 @@ public class ReaderCommandController {
     @ApiResponse(responseCode = "401", description = "No valid session")
     ResponseEntity<ReaderSessionState> current(HttpServletRequest request) {
         var host = site(request, false).host();
-        commands.history(host, access(request)).orElseThrow(() -> new Failure(401, "reader_session_invalid"));
+        if (!commands.authenticated(host, access(request))) throw new Failure(401, "reader_session_invalid");
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(new ReaderSessionState(true));
     }
 
@@ -173,8 +173,7 @@ public class ReaderCommandController {
         } catch (IllegalArgumentException invalid) {
             throw new Failure(422, "validation_failed");
         }
-        if (!commands.visit(host, access(request), visit.spaceSlug(), visit.pagePath()))
-            throw new Failure(401, "reader_session_invalid");
+        if (!commands.visit(host, access(request), visit.pagePath())) throw new Failure(401, "reader_session_invalid");
         return ResponseEntity.noContent().cacheControl(CacheControl.noStore()).build();
     }
 

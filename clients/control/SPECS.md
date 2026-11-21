@@ -1,5 +1,7 @@
 # editionctl 1.0 原生 CLI 规格
 
+站点挂载管理和冻结页面预览提供 `*ById` 命令。站点详情提供 `spaceId`，预览列表提供 `pageId`。已有 slug 命令继续可用。
+
 2026-11-19 修正：发行包只提供 `edition-ops/SKILL.md` 技能正文，不包含 references 或 agents 附属文件，安装检查必须覆盖真实技能包。命令组的用途由命令元数据声明，`--help` 和 `schema GROUP --brief` 从实际命令树展示直属命令及后续发现路径，不展开所有后代或类型。方法地图显式返回 `credentialTypes`、`scopes`、`idempotencyMode` 与 `confirmationRequired`，不要求调用方从描述文字推断身份和写入条件。
 有限选项形式的字符串 pattern（如 `authored|synced`）在 CLI 契约中同时生成精确 enum，匹配服务端整值校验；不收窄一般正则或改动原始 OpenAPI。
 本地输入校验返回有界 `error.violations[{field,code}]`，字段只由契约生成；动态 map 键以 `*` 代替，不回显用户值或秘密。CLI、MCP 和批量共用同一预校验。动态字段与数组中的秘密值也必须通过文件/stdin 输入，预演始终脱敏。分页只有 null 游标证明结束；错误类型、空字符串或循环游标均报错，不能误报完整读取。

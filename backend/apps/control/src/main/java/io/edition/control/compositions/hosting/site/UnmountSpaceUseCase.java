@@ -31,7 +31,8 @@ public class UnmountSpaceUseCase {
     }
 
     @Transactional
-    public FlowResponse<SiteDetail> unmountSpace(String credential, UUID tenant, UUID site, String slug, String key) {
+    public FlowResponse<SiteDetail> unmountSpace(
+            String credential, UUID tenant, UUID site, String slug, UUID spaceId, String key) {
         SiteApi.View existing = resources.site(tenant, site).orElseThrow(SiteNotFoundException::new);
         var resolution = access.require(credential, tenant, existing, TenantAccess.ADMIN);
         SiteApi.ActorId actor = access.actor(resolution);
@@ -39,13 +40,18 @@ public class UnmountSpaceUseCase {
                 resolution.principal(),
                 key,
                 "site.unmount",
-                IdempotentFlowExecutor.canonical(tenant, site, slug),
+                spaceId == null
+                        ? IdempotentFlowExecutor.canonical(tenant, site, slug)
+                        : IdempotentFlowExecutor.canonical(tenant, site, "space", spaceId),
                 200,
                 SiteDetail.class,
                 () -> tenants.inTenant(
                         tenant,
                         () -> projection.detail(
-                                SiteResults.changed(sites.unmount(actor, new SiteApi.SiteId(site), slug)),
+                                SiteResults.changed(
+                                        spaceId == null
+                                                ? sites.unmount(actor, new SiteApi.SiteId(site), slug)
+                                                : sites.unmountBySpace(actor, new SiteApi.SiteId(site), spaceId)),
                                 resolution,
                                 tenant)));
     }

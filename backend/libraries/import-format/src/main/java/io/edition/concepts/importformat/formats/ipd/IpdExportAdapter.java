@@ -154,6 +154,12 @@ public final class IpdExportAdapter implements ImportFormatAdapter {
         List<AdaptedPack.TocNode> toc = manifest.toc(titles);
         attachments.scanLeftovers(consumed);
         if (attachments.fatal() != null) return new Outcome.Invalid(List.of(attachments.fatal()));
+        if (!pages.isEmpty()) {
+            sink.info(
+                    "path_based_page_identity",
+                    null,
+                    "IPD page identities use package paths. To keep identity when moving a page, provide its existing externalId in a Bundle v1 manifest.");
+        }
         return new Outcome.Adapted(new AdaptedPack(ID, pages, toc, attachments.checksums(), sink.issues()));
     }
 

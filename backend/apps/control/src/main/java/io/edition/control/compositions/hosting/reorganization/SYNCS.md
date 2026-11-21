@@ -22,6 +22,8 @@ transfer先按稳定UUID顺序锁源/目标Space，再锁Page，确认当前归�
 原键重放使用请求参数指纹，不要求旧slug或旧页面归属仍存在；权限仍每次验证。
 
 ```text
+按 Space ID 改址时，先锁 Space，再锁 Site，并从当前挂载读取旧地址以登记重定向。slug 入口保持原有复核。
+
 sync remount
 // implementation: RemountUseCase#remount
 when {
@@ -205,7 +207,7 @@ then {
 | `RedirectOnRemount.redirectOnRemount` | `site: UUID, oldSlug: String, space: UUID` | `RedirectApi.Rule` |
 | `RedirectOnReslug.redirectOnReslug` | `binding: ReorganizationSignals.RedirectOnReslug` | `void` |
 | `RedirectOnReslug.redirectOnReslug` | `oldSpace: UUID, oldPageSlug: String, page: UUID` | `List<RedirectApi.Rule>` |
-| `RemountUseCase.remount` | `credential: String, tenant: UUID, site: UUID, oldSlug: String, newSlug: String, key: String` | `FlowResponse<SiteTypes.SiteDetail>` |
+| `RemountUseCase.remount` | `credential: String, tenant: UUID, site: UUID, oldSlug: String, spaceId: UUID, newSlug: String, key: String` | `FlowResponse<SiteTypes.SiteDetail>` |
 | `ReslugPageUseCase.reslugPage` | `credential: String, tenant: UUID, space: UUID, page: UUID, newSlug: String, key: String` | `FlowResponse<PageEditingTypes.PageDetail>` |
 | `TransferPageUseCase.transferPage` | `credential: String, tenant: UUID, sourceSpace: UUID, page: UUID, targetSpace: UUID, slug: String, key: String` | `FlowResponse<PageEditingTypes.PageDetail>` |
 

@@ -34,13 +34,15 @@ public final class ManagementCapabilities {
             handlers("BundleExportController", "create,list,view,retry,download"),
             handlers(
                     "ImportController",
-                    "importZip,importStored,startImportUpload,viewImportJob,approveRelease,viewDrift,listPreviewPages,previewRelease"),
+                    "importZip,importStored,startImportUpload,viewImportJob,approveRelease,viewDrift,listPreviewPages,previewRelease,previewReleaseByPageId"),
             handlers("ReleaseController", "build,list,diff,view,discard,rollback,promote,patch,retention"),
             handlers("TenantReleaseController", "list"),
             handlers("DeliveryStatusController", "status,retry"),
             handlers("DomainController", "bind,view,verify,setPrimary,unbind"),
             handlers("RedirectController", "list,create,delete"),
-            handlers("SiteController", "create,list,view,update,mount,remount,unmount,reorder"),
+            handlers(
+                    "SiteController",
+                    "create,list,view,update,mount,remount,unmount,reorder,remountById,unmountById,reorderById"),
             handlers("TenantDomainController", "list"),
             handlers("SpaceController", "create,list,view,mounts,update,archive,restore,convert"),
             handlers("TerminationController", "space,site,list,retry,planSpace,planSite"),

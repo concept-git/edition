@@ -17,7 +17,7 @@ public interface ReaderStateApi {
         }
     }
 
-    record History(String spaceSlug, String pagePath, Instant viewedAt) {}
+    record History(UUID spaceId, UUID pageId, Instant viewedAt) {}
 
     enum Proof {
         ACCESS,
@@ -34,7 +34,7 @@ public interface ReaderStateApi {
 
     List<History> history(Site site, UUID user);
 
-    void visit(Site site, UUID user, String slug, String path);
+    void visit(Site site, UUID user, UUID spaceId, UUID pageId);
 
     void erase(UUID user);
 }

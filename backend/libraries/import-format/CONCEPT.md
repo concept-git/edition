@@ -92,6 +92,10 @@ CLASS 无 uri 为分组；两份清单的页面并集可缺 SEO 或不入目录�
 `AdaptSink` 由调用方实现；本模块测试用内存 sink，生产 sync 再包 ObjectStore。
 
 
+### 来源身份与路径回退
+
+IPD、OKF 与缺少显式 ID 的目录树文档继续以包内路径派生 externalId。适配报告为这类包提供一次 `path_based_page_identity`，提醒改址可能被识别为删除再新增。已导入的 Markdown 可先把原 externalId 写入 frontmatter `id`，再移动文件。其他来源可以通过 Bundle v1 的显式 `externalId` 提供稳定身份。无明确来源身份时不靠标题、正文或文件名猜测继承关系。
+
 ### IPD 完整性与适配问题
 
 过滤后零有效页面拒绝，不能用空 IPD 包清空工作区。页面 slug 根据规范包内路径确定，

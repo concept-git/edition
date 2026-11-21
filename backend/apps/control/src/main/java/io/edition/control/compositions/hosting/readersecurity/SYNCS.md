@@ -9,7 +9,7 @@ ReaderSessionRevocation 接收 PasswordSet、PasswordChanged、PasswordReset 与
 
 读者命令由 Control 处理，Reader 只持有读取凭据。阅读协议见 [Reader SYNCS](../../../../../../../../../../content/src/main/java/io/edition/contentapp/SYNCS.md)。共享主库故障域已被用户接受，不再保留独立身份库离线登录的验收。
 
-Control 的 ReaderCommands 在同一主库事务内解析已验证的主域，锁定 User 并验证凭据后签发站点会话。续期与历史在锁内复核当前会话与账号版本，退出按站点和 refresh 证明结束会话。历史写入与账号擦除共用 User 锁。
+Control 的 ReaderCommands 在同一主库事务内解析已验证的主域，锁定 User 并验证凭据后签发站点会话。续期与历史在锁内复核当前会话与账号版本，退出按站点和 refresh 证明结束会话。历史写入与账号擦除共用 User 锁。历史写入在当前发布视图中把地址解析为已授权的 Space ID / Page ID；未能解析的访问保持 204，不写历史。历史读取按 ID 查询当前发布地址，隐藏已不可读或离开原空间的页面。请求和响应保留原地址字段。
 
 读者会话是一个资源（[ADR-0035](../../../../../../../../../../../../docs/adr/README.md#adr-0035)）。`GET /_auth/session` 会话有效为 200 `{authenticated:true}`，否则 401；`POST /_auth/session` 以 JSON `{email,password}` 登录，成功 201 并设置 Cookie，响应体只含 `expiresAt`；`POST /_auth/session/refresh` 续期，成功 204；`DELETE /_auth/session` 退出，204。失败返回 `problem+json`（`invalid_credentials`、`reader_session_invalid`、`cross_site_request_rejected`、`validation_failed`、`rate_limited`），限流给出 `Retry-After: 60`。`returnTo` 由阅读前端只接受站内相对路径。Cookie 保持 `__Host-space_reader`、`Secure`、`HttpOnly`、`SameSite=Lax`；写操作要求 https，校验 `Origin`，缺失时仅接受 `Sec-Fetch-Site: same-origin`。登录页由阅读前端提供。Control 不提供 `/_auth/login`、`/_auth/refresh`、`/_auth/logout`。
 

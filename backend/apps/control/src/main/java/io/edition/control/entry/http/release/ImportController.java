@@ -179,7 +179,19 @@ class ImportController {
             @PathVariable UUID releaseId,
             @PathVariable String slug) {
         return ImportContract.PreviewResponse.from(
-                previewReleaseUseCase.previewRelease(bearer.require(), tenantId, spaceId, releaseId, slug));
+                previewReleaseUseCase.previewRelease(bearer.require(), tenantId, spaceId, releaseId, slug, null));
+    }
+
+    @GetMapping("/releases/{releaseId}/preview/by-id/{pageId}")
+    @Operation(operationId = "previewReleaseByPageId", summary = "Render one frozen snapshot page by Page ID")
+    @PreviewResponses
+    ImportContract.PreviewResponse previewReleaseByPageId(
+            @PathVariable UUID tenantId,
+            @PathVariable UUID spaceId,
+            @PathVariable UUID releaseId,
+            @PathVariable UUID pageId) {
+        return ImportContract.PreviewResponse.from(
+                previewReleaseUseCase.previewRelease(bearer.require(), tenantId, spaceId, releaseId, null, pageId));
     }
 
     static long declaredSize(HttpServletRequest request) {

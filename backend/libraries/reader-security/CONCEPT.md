@@ -7,9 +7,9 @@
 ## state
 
 readerSessions: SessionId -> (site: SiteId, user: UserId, host: Host, accessHash: Hash, refreshHash: Hash, accessExpiry: Time, expiry: Time, readerEpoch: Long, endedAt: lone Time)
-readerHistory: (SiteId, UserId, SpaceSlug) -> (pagePath: Path, viewedAt: Time)
+readerHistory: (SiteId, UserId, SpaceId) -> (page: PageId, viewedAt: Time)
 
-Control 唯一写入主库 reader_state 会话和历史；User 与 Site 是不透明 ID。组合在 User 锁内验证当前账号状态/版本和站点，随后操作本概念；本概念不读取 User/Password/Site 状态。读取视图在同一快照中核对规范 User 和本概念的会话，不依赖 user_security 表或跨库查询函数。历史清理与账号擦除同事务，既有会话的迟到历史写入必须拒绝。
+Control 唯一写入主库 reader_state 会话和历史；User、Site、Space 与 Page 是不透明 ID。组合在 User 锁内验证当前账号状态/版本和站点，随后操作本概念；本概念不读取 User/Password/Site 状态。读取视图在同一快照中核对规范 User 和本概念的会话，不依赖 user_security 表或跨库查询函数。历史清理与账号擦除同事务，既有会话的迟到历史写入必须拒绝。
 
 ReaderState/open 以已验证的账号版本签发站点与主域绑定的会话。access 与 refresh 只以哈希落库，轮换同时替换两个值，绝对期限不延长。ReaderState/lookup 只接受不透明凭据与站点绑定。历史按站点、用户和空间保留最新访问，最多返回 100 条。ReaderState/erase 清理该用户所有站点的会话和历史。
 
@@ -21,7 +21,7 @@ rotate [session: Session; refresh: Credential] => [credentials: lone Credentials
   ensures 仅当前有效 refresh 能一次性替换两份凭据，绝对期限不变
 end [site: Site; refresh: Credential] => []
   ensures 结束匹配该站点和凭据的会话；重复执行无额外效果
-visit [site: Site; user: UserId; slug: SpaceSlug; path: Path] => []
+visit [site: Site; user: UserId; space: SpaceId; page: PageId] => []
   ensures 原子更新该空间的最近访问
 erase [user: UserId] => []
   ensures 同一事务删除所有站点的该用户会话与历史
@@ -39,6 +39,8 @@ history [site: Site; user: UserId] => [entries: seq History]
 
 ## notes
 
+升级保留无 ID 的历史记录供后续核对，记录不进入正常历史投影。旧地址即便今天仍可解析，也无法证明访问时对应同一目标。账号擦除同时清理旧记录。
+
 身份的当前事实及撤销版本由 User 拥有。
 
 <!-- interface-contract:start -->
@@ -55,12 +57,12 @@ history [site: Site; user: UserId] => [entries: seq History]
 | `ReaderStateApi.lookup` | `site: ReaderStateApi.Site, kind: ReaderStateApi.Proof, credential: String` | `Optional<ReaderStateApi.Session>` |
 | `ReaderStateApi.open` | `site: ReaderStateApi.Site, user: UUID, epoch: long` | `ReaderStateApi.Credentials` |
 | `ReaderStateApi.rotate` | `session: ReaderStateApi.Session, refresh: String` | `Optional<ReaderStateApi.Credentials>` |
-| `ReaderStateApi.visit` | `site: ReaderStateApi.Site, user: UUID, slug: String, path: String` | `void` |
+| `ReaderStateApi.visit` | `site: ReaderStateApi.Site, user: UUID, spaceId: UUID, pageId: UUID` | `void` |
 
 | 类型 | 字段／封闭分支 |
 | --- | --- |
 | `ReaderStateApi.Credentials` | `access: String, refresh: String, expiresAt: Instant` |
-| `ReaderStateApi.History` | `spaceSlug: String, pagePath: String, viewedAt: Instant` |
+| `ReaderStateApi.History` | `spaceId: UUID, pageId: UUID, viewedAt: Instant` |
 | `ReaderStateApi.Proof` | `ACCESS / REFRESH` |
 | `ReaderStateApi.Session` | `id: UUID, site: ReaderStateApi.Site, user: UUID, epoch: long, expiresAt: Instant` |
 | `ReaderStateApi.Site` | `id: UUID, host: String` |

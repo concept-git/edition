@@ -245,9 +245,9 @@ final class ImportContract {
     }
 
     @Schema(name = "SnapshotPreviewPage")
-    record PreviewPageResponse(String slug, String title) {
+    record PreviewPageResponse(UUID pageId, String slug, String title) {
         static PreviewPageResponse from(BundleImportTypes.PreviewPage page) {
-            return new PreviewPageResponse(page.slug(), page.title());
+            return new PreviewPageResponse(page.pageId(), page.slug(), page.title());
         }
     }
 }

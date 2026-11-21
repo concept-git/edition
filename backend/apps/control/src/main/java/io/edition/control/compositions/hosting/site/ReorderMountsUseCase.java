@@ -33,7 +33,7 @@ public class ReorderMountsUseCase {
 
     @Transactional
     public FlowResponse<SiteDetail> reorderMounts(
-            String credential, UUID tenant, UUID site, List<String> slugs, String key) {
+            String credential, UUID tenant, UUID site, List<String> slugs, List<UUID> spaceIds, String key) {
         SiteApi.View existing = resources.site(tenant, site).orElseThrow(SiteNotFoundException::new);
         var resolution = access.require(credential, tenant, existing, TenantAccess.ADMIN);
         SiteApi.ActorId actor = access.actor(resolution);
@@ -42,13 +42,18 @@ public class ReorderMountsUseCase {
                 resolution.principal(),
                 key,
                 "site.reorder",
-                IdempotentFlowExecutor.canonical(tenant, site, String.join(",", order)),
+                spaceIds == null
+                        ? IdempotentFlowExecutor.canonical(tenant, site, String.join(",", order))
+                        : IdempotentFlowExecutor.canonical(tenant, site, "spaces", spaceIds),
                 200,
                 SiteDetail.class,
                 () -> tenants.inTenant(
                         tenant,
                         () -> projection.detail(
-                                SiteResults.changed(sites.reorder(actor, new SiteApi.SiteId(site), order)),
+                                SiteResults.changed(
+                                        spaceIds == null
+                                                ? sites.reorder(actor, new SiteApi.SiteId(site), order)
+                                                : sites.reorderBySpace(actor, new SiteApi.SiteId(site), spaceIds)),
                                 resolution,
                                 tenant)));
     }

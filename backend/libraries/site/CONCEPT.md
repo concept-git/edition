@@ -19,6 +19,8 @@ robotsPolicy: Site -> {index, noindex}
 
 PathRule 唯一合法值 `/{slug}/{itemPath}`。挂载表站内唯一。同一目标在同一站点只能出现一次。home 必须是当前挂载之一。非空 titleTemplate 恰好一个 `%s`。
 
+按空间 ID 解除挂载和排序。站点锁内以 mount.target 定位；解除不存在的目标是幂等空操作，排序必须提供当前所有目标各一次。slug 入口用于兼容现有调用者。
+
 ## actions
 create [actor: ActorId; tenant: Tenant; name: String] => [site: Site]
   ensures 创建站点。名称不合法是编程错误，不进本动作 error case
@@ -172,6 +174,7 @@ Java 模块不得依赖其他概念。
 | `SiteApi.pageByTenant` | `tenantId: UUID, cursor: String, limit: int` | `SiteApi.Page` |
 | `SiteApi.remount` | `actor: SiteApi.ActorId, site: SiteApi.SiteId, slug: String, newSlug: String` | `SiteApi.MountResult` |
 | `SiteApi.rename` | `actor: SiteApi.ActorId, site: SiteApi.SiteId, name: String` | `SiteApi.MutationResult` |
+| `SiteApi.reorderBySpace` | `actor: SiteApi.ActorId, site: SiteApi.SiteId, order: List<UUID>` | `SiteApi.MutationResult` |
 | `SiteApi.reorder` | `actor: SiteApi.ActorId, site: SiteApi.SiteId, order: List<String>` | `SiteApi.MutationResult` |
 | `SiteApi.setAnalytics` | `actor: SiteApi.ActorId, site: SiteApi.SiteId, analyticsId: Optional<String>` | `SiteApi.MutationResult` |
 | `SiteApi.setBranding` | `actor: SiteApi.ActorId, site: SiteApi.SiteId, branding: SiteApi.Branding` | `SiteApi.MutationResult` |
@@ -183,6 +186,7 @@ Java 模块不得依赖其他概念。
 | `SiteApi.slugOf` | `site: SiteApi.SiteId, target: UUID` | `Optional<String>` |
 | `SiteApi.targetAt` | `site: SiteApi.SiteId, slug: String` | `Optional<UUID>` |
 | `SiteApi.tenantOf` | `site: SiteApi.SiteId` | `Optional<UUID>` |
+| `SiteApi.unmountBySpace` | `actor: SiteApi.ActorId, site: SiteApi.SiteId, target: UUID` | `SiteApi.MutationResult` |
 | `SiteApi.unmount` | `actor: SiteApi.ActorId, site: SiteApi.SiteId, slug: String` | `SiteApi.MutationResult` |
 | `SiteApi.view` | `site: SiteApi.SiteId` | `Optional<SiteApi.View>` |
 

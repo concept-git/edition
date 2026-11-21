@@ -9,6 +9,8 @@ import io.edition.concepts.tenantregistry.api.TenantScopeApi;
 import io.edition.concepts.user.api.UserApi;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ public class ReaderCommands {
     private final UserApi users;
     private final PasswordApi passwords;
     private final ReaderStateApi state;
+    private final ReaderHistoryPages historyPages;
 
     ReaderCommands(
             CustomDomainApi domains,
@@ -28,13 +31,15 @@ public class ReaderCommands {
             TenantScopeApi scope,
             UserApi users,
             PasswordApi passwords,
-            ReaderStateApi state) {
+            ReaderStateApi state,
+            ReaderHistoryPages historyPages) {
         this.domains = domains;
         this.sites = sites;
         this.scope = scope;
         this.users = users;
         this.passwords = passwords;
         this.state = state;
+        this.historyPages = historyPages;
     }
 
     public record Destination(java.util.UUID siteId, String host, String name) {
@@ -98,16 +103,38 @@ public class ReaderCommands {
         });
     }
 
-    public Optional<List<History>> history(String host, String proof) {
-        return authorized(host, ReaderStateApi.Proof.ACCESS, proof)
-                .map(session -> state.history(session.site(), session.user()).stream()
-                        .map(row -> new History(row.spaceSlug(), row.pagePath(), row.viewedAt()))
-                        .toList());
+    public boolean authenticated(String host, String proof) {
+        return authorized(host, ReaderStateApi.Proof.ACCESS, proof).isPresent();
     }
 
-    public boolean visit(String host, String proof, String slug, String path) {
+    public Optional<List<History>> history(String host, String proof) {
+        return authorized(host, ReaderStateApi.Proof.ACCESS, proof).map(session -> {
+            var recent = state.history(session.site(), session.user());
+            if (recent.isEmpty()) return List.of();
+            var pages = historyPages
+                    .lookup(
+                            session.site(),
+                            proof,
+                            null,
+                            recent.stream().map(ReaderStateApi.History::pageId).toList())
+                    .stream()
+                    .collect(Collectors.toMap(ReaderHistoryPages.Page::pageId, Function.identity()));
+            var visible = new java.util.ArrayList<History>();
+            for (var row : recent) {
+                var current = pages.get(row.pageId());
+                if (current != null && current.spaceId().equals(row.spaceId())) {
+                    visible.add(new History(current.slug(), current.path(), row.viewedAt()));
+                }
+            }
+            return List.copyOf(visible);
+        });
+    }
+
+    public boolean visit(String host, String proof, String path) {
         var session = authorized(host, ReaderStateApi.Proof.ACCESS, proof);
-        session.ifPresent(value -> state.visit(value.site(), value.user(), slug, path));
+        session.ifPresent(value -> historyPages.lookup(value.site(), proof, path, List.of()).stream()
+                .findFirst()
+                .ifPresent(page -> state.visit(value.site(), value.user(), page.spaceId(), page.pageId())));
         return session.isPresent();
     }
 

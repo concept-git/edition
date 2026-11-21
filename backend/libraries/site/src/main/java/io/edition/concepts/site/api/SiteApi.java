@@ -34,6 +34,10 @@ public interface SiteApi {
 
     MutationResult unmount(ActorId actor, SiteId site, String slug);
 
+    MutationResult unmountBySpace(ActorId actor, SiteId site, UUID target);
+
+    MutationResult reorderBySpace(ActorId actor, SiteId site, List<UUID> order);
+
     MutationResult reorder(ActorId actor, SiteId site, List<String> order);
 
     DeleteResult delete(ActorId actor, SiteId site);

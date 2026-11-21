@@ -1,7 +1,7 @@
 {
   "version": "1",
   "apiVersion": "1.0.0",
-  "contractSha256": "d0670cf2d929c459992b289a7216cccb0c0d8518c3d8a4f22b1fb89b48303896",
+  "contractSha256": "eabfe7e2e74221ad355c3041a1dc8b2248a9c4fabf289d82220c7765411acc99",
   "commands": {
     "control.account.erase": {
       "ref": "operations/eraseCurrentUser.json",
@@ -538,6 +538,11 @@
       "description": "Render one snapshot page from a not-yet-live Release. Verify with control.spaces.releases.get.",
       "operationId": "previewRelease"
     },
+    "control.spaces.releases.preview.getById": {
+      "ref": "operations/previewReleaseByPageId.json",
+      "description": "Render one frozen snapshot page using the Page ID from the preview list.",
+      "operationId": "previewReleaseByPageId"
+    },
     "control.spaces.releases.preview.list": {
       "ref": "operations/listReleasePreviewPages.json",
       "description": "List snapshot pages available for preview. Verify with control.spaces.releases.get.",
@@ -617,6 +622,21 @@
       "ref": "operations/reorderMounts.json",
       "description": "Reorder Site mounts. Verify with control.sites.get.",
       "operationId": "reorderMounts"
+    },
+    "control.sites.mounts.removeById": {
+      "ref": "operations/unmountSpaceById.json",
+      "description": "Unmount a Space by ID. Verify with control.sites.get.",
+      "operationId": "unmountSpaceById"
+    },
+    "control.sites.mounts.renameById": {
+      "ref": "operations/remountSpaceById.json",
+      "description": "Change a Space's mount address by ID and register a redirect. Verify with control.sites.get.",
+      "operationId": "remountSpaceById"
+    },
+    "control.sites.mounts.reorderById": {
+      "ref": "operations/reorderMountsBySpaceId.json",
+      "description": "Set the complete mount order using Space IDs. Verify with control.sites.get.",
+      "operationId": "reorderMountsBySpaceId"
     },
     "control.sites.mounts.set": {
       "ref": "operations/mountSpace.json",
@@ -1087,6 +1107,7 @@
     "viewRelease": "control.spaces.releases.get",
     "listReleases": "control.spaces.releases.list",
     "previewRelease": "control.spaces.releases.preview.get",
+    "previewReleaseByPageId": "control.spaces.releases.preview.getById",
     "listReleasePreviewPages": "control.spaces.releases.preview.list",
     "promoteRelease": "control.spaces.releases.promote",
     "rollbackRelease": "control.spaces.releases.rollback",
@@ -1103,6 +1124,9 @@
     "unmountSpace": "control.sites.mounts.remove",
     "remountSpace": "control.sites.mounts.rename",
     "reorderMounts": "control.sites.mounts.reorder",
+    "unmountSpaceById": "control.sites.mounts.removeById",
+    "remountSpaceById": "control.sites.mounts.renameById",
+    "reorderMountsBySpaceId": "control.sites.mounts.reorderById",
     "mountSpace": "control.sites.mounts.set",
     "explainSiteAdmin": "control.sites.permissions.explain",
     "listSitePermissions": "control.sites.permissions.list",

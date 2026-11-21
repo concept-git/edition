@@ -98,26 +98,29 @@ class JdbcReaderState implements ReaderStateApi {
         scope(site.id().toString(), user, false);
         return jdbc.query(
                 """
-                select space_slug,page_path,viewed_at from reader_state.history
-                 where site_id=? and user_id=? order by viewed_at desc,space_slug limit 100
+                select space_id,page_id,viewed_at from reader_state.page_history
+                 where site_id=? and user_id=? order by viewed_at desc,space_id limit 100
                 """,
                 (row, ignored) -> new History(
-                        row.getString(1), row.getString(2), row.getTimestamp(3).toInstant()),
+                        row.getObject(1, UUID.class),
+                        row.getObject(2, UUID.class),
+                        row.getTimestamp(3).toInstant()),
                 site.id(),
                 user);
     }
 
-    public void visit(Site site, UUID user, String slug, String path) {
+    public void visit(Site site, UUID user, UUID spaceId, UUID pageId) {
         scope(site.id().toString(), user, false);
         jdbc.update("""
-                insert into reader_state.history(site_id,user_id,space_slug,page_path) values(?,?,?,?)
-                on conflict(site_id,user_id,space_slug) do update
-                 set page_path=excluded.page_path,viewed_at=statement_timestamp()
-                """, site.id(), user, slug, path);
+                insert into reader_state.page_history(site_id,user_id,space_id,page_id) values(?,?,?,?)
+                on conflict(site_id,user_id,space_id) do update
+                 set page_id=excluded.page_id,viewed_at=statement_timestamp()
+                """, site.id(), user, spaceId, pageId);
     }
 
     public void erase(UUID user) {
         scope("", user, true);
+        jdbc.update("delete from reader_state.page_history where user_id=?", user);
         jdbc.update("delete from reader_state.history where user_id=?", user);
         jdbc.update("delete from reader_state.sessions where user_id=?", user);
     }

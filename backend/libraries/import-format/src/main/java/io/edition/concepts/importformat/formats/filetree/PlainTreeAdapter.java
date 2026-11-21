@@ -156,6 +156,12 @@ public final class PlainTreeAdapter implements ImportFormatAdapter {
         attachments.scanLeftovers(consumed);
         if (attachments.fatal() != null) return new Outcome.Invalid(List.of(attachments.fatal()));
         List<AdaptedPack.TocNode> toc = DirectoryToc.build(placed, groupLabels);
+        if (docsByExternalId.values().stream().anyMatch(Doc::pathIdentity)) {
+            sink.info(
+                    "path_based_page_identity",
+                    null,
+                    "Some page identities use package paths. To keep identity when moving a page, set its existing externalId as the Markdown frontmatter id or in a Bundle v1 manifest.");
+        }
         return new Outcome.Adapted(new AdaptedPack(ID, pages, toc, attachments.checksums(), sink.issues()));
     }
 
@@ -184,7 +190,14 @@ public final class PlainTreeAdapter implements ImportFormatAdapter {
         String externalId = id != null ? id : pathWithoutExtension(name);
         if (title == null) title = filenameLabel(name);
         return new Doc(
-                name, format, externalId, title, stringOf(data.get("description")), body, properties(data, name, sink));
+                name,
+                format,
+                externalId,
+                id == null,
+                title,
+                stringOf(data.get("description")),
+                body,
+                properties(data, name, sink));
     }
 
     private static Map<String, String> properties(Map<String, Object> data, String name, AdaptSink sink) {
@@ -259,6 +272,7 @@ public final class PlainTreeAdapter implements ImportFormatAdapter {
             String zipName,
             DocumentFormat format,
             String externalId,
+            boolean pathIdentity,
             String title,
             String description,
             String body,

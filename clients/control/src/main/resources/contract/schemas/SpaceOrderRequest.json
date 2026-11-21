@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "spaceIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    }
+  },
+  "required": [
+    "spaceIds"
+  ]
+}

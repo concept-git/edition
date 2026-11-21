@@ -113,6 +113,8 @@ then {
   Site/mount: [actor: ?actor; site: ?site; target: ?space; slug: ?slug]
 }
 
+管理写入可以使用 Space ID。解除挂载按已锁定站点的目标 ID 定位；排序提交完整的目标 ID 顺序，成员集合已变化时拒绝。slug 写入保留旧调用语义。
+
 sync unmountSpace
 // implementation: UnmountSpaceUseCase#unmountSpace
 when {
@@ -183,8 +185,8 @@ then {
 | `ListSitesUseCase.listSites` | `credential: String, tenant: UUID, cursor: String, limit: int` | `SiteTypes.SitePage` |
 | `ListSpaceMountsUseCase.listSpaceMounts` | `credential: String, tenant: UUID, space: UUID` | `List<SiteTypes.SpaceMount>` |
 | `MountSpaceUseCase.mountSpace` | `credential: String, tenant: UUID, site: UUID, slug: String, space: UUID, key: String` | `FlowResponse<SiteTypes.SiteDetail>` |
-| `ReorderMountsUseCase.reorderMounts` | `credential: String, tenant: UUID, site: UUID, slugs: List<String>, key: String` | `FlowResponse<SiteTypes.SiteDetail>` |
-| `UnmountSpaceUseCase.unmountSpace` | `credential: String, tenant: UUID, site: UUID, slug: String, key: String` | `FlowResponse<SiteTypes.SiteDetail>` |
+| `ReorderMountsUseCase.reorderMounts` | `credential: String, tenant: UUID, site: UUID, slugs: List<String>, spaceIds: List<UUID>, key: String` | `FlowResponse<SiteTypes.SiteDetail>` |
+| `UnmountSpaceUseCase.unmountSpace` | `credential: String, tenant: UUID, site: UUID, slug: String, spaceId: UUID, key: String` | `FlowResponse<SiteTypes.SiteDetail>` |
 | `UpdateSiteUseCase.updateSite` | `credential: String, tenant: UUID, site: UUID, patch: SiteTypes.UpdatePatch, key: String` | `FlowResponse<SiteTypes.SiteDetail>` |
 | `ViewSiteUseCase.viewSite` | `credential: String, tenant: UUID, site: UUID` | `SiteTypes.SiteDetail` |
 
