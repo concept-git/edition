@@ -111,6 +111,7 @@ flowchart TB
 | --- | --- |
 | 演示账号 | `owner@dev.local` / `password1` |
 | 公开阅读示例 | [http://docs.localhost:8095/docs/intro](http://docs.localhost:8095/docs/intro) |
+| 管理控制台 | [http://localhost:8095/console/](http://localhost:8095/console/) |
 | 管理 API | `http://localhost:8094` |
 
 Reader 按站点 Host 选择内容。打开阅读示例时，使用表中的 `docs.localhost` 地址。演示账号和本地配置用于开发。正式部署要求见[部署契约](infra/README.md)。
@@ -130,7 +131,7 @@ Reader 按站点 Host 选择内容。打开阅读示例时，使用表中的 `do
 
 ## 基本使用
 
-通过 [Control CLI](clients/control/USAGE.md) 或管理 API 维护空间、提交发版，并从站点域名检查阅读页面和搜索结果。
+通过[管理控制台](clients/control-console/README.md)、[Control CLI](clients/control/USAGE.md) 或管理 API 维护空间、提交发版，并从站点域名检查阅读页面和搜索结果。
 
 检查结果时，区分以下三个状态。
 
@@ -144,6 +145,7 @@ Reader 按站点 Host 选择内容。打开阅读示例时，使用表中的 `do
 
 | 任务 | 文档 |
 | --- | --- |
+| 通过浏览器维护与运营 | [管理控制台](clients/control-console/README.md) |
 | 通过 CLI 或智能体维护内容 | [Control CLI](clients/control/README.md)、[操作指南](clients/control/USAGE.md) |
 | 将线上空间作为只读文件树读取 | [EditionVFS](clients/edition/README.md) |
 | 集成管理或阅读接口 | [生成契约](contracts/README.md)、[Reader 资源接口](clients/edition/README.md) |
@@ -320,6 +322,7 @@ ContentType 保存定义与可信实现引用。新可执行实现需经过审�
 | `backend/apps/content` | 提供已发布内容 |
 | `backend/libraries/contract` | 定义被动跨进程契约 |
 | `acceptance` | 阅读和交付的浏览器验收 |
+| `clients/control-console` | 提供 React 管理控制台，消费后台唯一契约 |
 | `clients/control` | 提供独立管理 CLI |
 | `clients/edition` | 提供 Python EditionVFS 消费适配 |
 | `contracts` | 保存生成的 OpenAPI 和正文格式契约 |
@@ -349,15 +352,16 @@ corepack pnpm exec playwright install chromium
 cd ..
 ```
 
-在仓库根目录依次执行三组验收。三组验收共用端口和数据，不能并行运行。
+在仓库根目录依次执行四组验收。四组验收共用端口和数据，不能并行运行。
 
 ```bash
 node infra/edition.ts verify delivery
 node infra/edition.ts verify private
 node infra/edition.ts verify vfs
+node infra/edition.ts verify console
 ```
 
-已有本地平台运行时，先设置[隔离验收配置](infra/quality.md)。三组验收使用相同的项目名、端口偏移、存储命名空间和运行目录。故障场景与结果位置见 [TESTING](infra/quality.md)。
+已有本地平台运行时，先设置[隔离验收配置](infra/quality.md)。四组验收使用相同的项目名、端口偏移、存储命名空间和运行目录。故障场景与结果位置见 [TESTING](infra/quality.md)。
 
 修改文档、目录或脚本入口后，执行仓库检查。
 

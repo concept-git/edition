@@ -10,6 +10,16 @@
 
 {$CONSOLE_DOMAIN} {
 	encode zstd gzip
+	redir /console /console/ 308
+	handle /console/assets/* {
+		root * /srv
+		file_server
+	}
+	handle /console/* {
+		root * /srv
+		try_files {path} /console/index.html
+		file_server
+	}
 	@control path /api/v1/* /auth/* /_auth/* /admin/* /ops/* /audit /audit:* /audit/* /stats/* /webhooks /webhooks/*
 	handle @control {
 		reverse_proxy {$ADMIN_UPSTREAM:127.0.0.1:18094}

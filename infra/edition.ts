@@ -68,9 +68,9 @@ export const project = process.env.EDITION_COMPOSE_PROJECT ?? 'dw-remaining';
 export const ports = { source: 5412, search: 7712, objects: 9012,
   smtp: 1035, mailpit: 8035, ingress: 8446, control: 8094, content: 8095, browser: 4176,
   // Reading frontend (Astro SSR) and the plain-HTTP edge that routes between Reader, Control and the frontend.
-  reading: 8096, edge: 8097 };
+  reading: 8096, edge: 8097, console: 8098 };
 type Service = keyof typeof ports;
-export type Role = 'control' | 'content' | 'index' | 'reading' | 'edge';
+export type Role = 'control' | 'content' | 'index' | 'reading' | 'edge' | 'console';
 type JavaRole = 'control' | 'content' | 'index';
 export type Mode = 'local' | 'acceptance';
 export type Flags = { shortReaderAccess?: boolean; port?: string };
@@ -231,6 +231,7 @@ export async function provision(mode: Mode = 'acceptance') {
 const upstreamOrigin = (service: Service, mode: Mode) => container() ? origin(service, mode) : `http://127.0.0.1:${port(service, mode)}`;
 export function roleEnv(role: Role, mode: Mode = 'acceptance', flags: Flags = {}) {
   const env: NodeJS.ProcessEnv = Object.fromEntries(['PATH', 'HOME', 'USERPROFILE', 'JAVA_HOME', 'TMPDIR', 'TEMP', 'TMP', 'LANG', 'LC_ALL', 'SystemRoot', 'SYSTEMROOT'].filter(name => process.env[name]).map(name => [name, process.env[name]]));
+  if (role === 'console') return { ...env, NODE_ENV: 'production' };
   if (role === 'reading') {
     // The reading frontend is stateless: it needs only the two upstream origins and its own listener.
     Object.assign(env, { HOST: '0.0.0.0', PORT: flags.port ?? String(port('reading', mode)),
@@ -292,6 +293,7 @@ export async function roleCommand(role: Role, mode: Mode = 'acceptance', flags: 
   const folder = mode === 'local' ? DEV : runtime, env = roleEnv(role, mode, flags);
   // The frontend is a build artifact of reading (`pnpm build:reader`); it runs on the host Node, not on a JAR.
   if (role === 'reading') return { exe: process.execPath, args: [SITE_ENTRY], env };
+  if (role === 'console') return { exe: process.execPath, args: [join(ROOT, 'clients/control-console/node_modules/vite/bin/vite.js'), 'preview', '--host', '0.0.0.0', '--port', String(port('console', mode)), '--strictPort'], env };
   if (role === 'edge') return { exe: 'docker', args: [...compose, '--profile', 'ingress', 'up', '-d', 'ingress'], env };
   const args = [role === 'content' ? '-Xmx512m' : '-Xmx1024m'];
   if (role === 'control') args.push('-Dio.edition.certificates.tls-enabled=false', `-Djavax.net.ssl.trustStore=${join(folder, 'webhook-truststore.p12')}`, '-Djavax.net.ssl.trustStoreType=PKCS12', '-Djavax.net.ssl.trustStorePassword=changeit');
@@ -346,7 +348,7 @@ export function entrypointErrors(root: string) {
   const errors: string[] = [];
   const check = (text: string, name: string) => { for (const file of entrypoints(text)) if (!existsSync(join(root, file))) errors.push(`${name}: missing script ${file}`); };
   for (const path of globSync('.github/workflows/*.yml', { cwd: root })) check(readFileSync(join(root, path), 'utf8'), path);
-  for (const directory of ['acceptance', 'reading', 'infra']) {
+  for (const directory of ['acceptance', 'reading', 'infra', 'clients/control-console']) {
     const path = join(root, directory, 'package.json'); if (!existsSync(path)) continue;
     const scripts = readJson<{ scripts?: Record<string, string> }>(path).scripts ?? {};
     for (const [name, command] of Object.entries(scripts)) {
@@ -430,6 +432,8 @@ export function trustedProxies(...peers: string[]) {
   return [...new Set(['127.0.0.1', '::1', ...peers, ...(process.env.E2E_READING_PEERS ?? '').split(',').map(item => item.trim()).filter(Boolean)])].join(',');
 }
 export async function verify(suite: string, options: { profile: string; grep: string; updateContract?: boolean }) {
+  const previousConsoleOrigins = process.env.EDITION_CONSOLE_ORIGINS;
+  if (suite === 'console') process.env.EDITION_CONSOLE_ORIGINS = `${origin('browser')},https://console.acme.test:${port('ingress')}`;
   mkdirSync(runtime, { recursive: true });
   const acceptanceCompose = [...compose];
   if (process.platform === 'linux') {
@@ -438,7 +442,7 @@ export async function verify(suite: string, options: { profile: string; grep: st
   const runId = `${suite}-${Date.now()}`;
   const env = browserTestEnvironment(runtime, runId, { ...process.env, ...bindings(), E2E_RESULTS_DIR: join(runtime, 'runs', runId, 'browser'), E2E_BACKEND_ORIGIN: origin('control'), E2E_BROWSER_ORIGIN: origin('browser'), E2E_DELIVERY_ORIGIN: origin('edge'), E2E_CONTENT_ORIGIN: origin('content'),
     E2E_DATABASE_URL: `postgresql://edition:edition@localhost:${port('source')}/edition`, E2E_MAILPIT_ORIGIN: origin('mailpit'), E2E_MINIO_CONTAINER: `${project}-objects-1`, E2E_MINIO_ORIGIN: origin('objects'),
-    E2E_WEBHOOK_TLS_KEY: join(runtime, 'webhook-receiver-key.pem'), E2E_WEBHOOK_TLS_CERT: join(runtime, 'webhook-receiver-cert.pem') });
+    E2E_WEBHOOK_TLS_KEY: join(runtime, 'webhook-receiver-key.pem'), E2E_WEBHOOK_TLS_CERT: join(runtime, 'webhook-receiver-cert.pem'), E2E_CONSOLE_ORIGIN: `https://console.acme.test:${port('ingress')}` });
   const processes = new Map<Role, Process>(), active = new Set<Process>(), results: AcceptanceResult[] = [], started = Date.now();
   const abort = new AbortController();
   const kill = async (item: Process) => {
@@ -466,8 +470,9 @@ export async function verify(suite: string, options: { profile: string; grep: st
     await stop(role);
     const flags = { shortReaderAccess: ['control', 'content'].includes(role) && profile === 'short-reader' };
     const app = await roleCommand(role, 'acceptance', flags);
-    processes.set(role, logged(app.exe, app.args, `28-${suite}-${role}-${profile}.log`, { cwd: role === 'reading' ? join(ROOT, 'reading') : join(ROOT, 'backend'), env: app.env, extendEnv: false, forceKillAfterDelay: 12000 }));
-    if (role === 'reading') await waitUp(origin('reading'));
+    processes.set(role, logged(app.exe, app.args, `28-${suite}-${role}-${profile}.log`, { cwd: role === 'console' ? join(ROOT, 'clients/control-console') : role === 'reading' ? join(ROOT, 'reading') : join(ROOT, 'backend'), env: app.env, extendEnv: false, forceKillAfterDelay: 12000 }));
+    if (role === 'console') await waitUp(origin('console') + '/console/');
+    else if (role === 'reading') await waitUp(origin('reading'));
     else if (role !== 'index') await waitHttp(origin(role) + '/healthz', 150); // cold JVM starts on a loaded host exceed 60 s
     else {
       // Index has no HTTP endpoint; wait for its startup log before running scenarios.
@@ -499,7 +504,7 @@ export async function verify(suite: string, options: { profile: string; grep: st
   try {
     // The edge listens inside this project's persistent Caddy container, which survives between runs; only a foreign listener is a conflict.
     const ownedIngress = String((await run('docker', ['ps', '--filter', `name=^${project}-ingress-1$`, '--format', '{{.Names}}'], { reject: false })).stdout ?? '').trim() !== '';
-    for (const role of ['control', 'content', 'reading', 'edge'] as const) {
+    for (const role of [...(['control', 'content', 'reading', 'edge'] as const), ...(suite === 'console' ? ['console' as const] : [])]) {
       if (role === 'edge' && ownedIngress) continue;
       const occupied = await new Promise<boolean>(resolve => {
         const socket = connectTcp({ host: '127.0.0.1', port: port(role) });
@@ -509,12 +514,14 @@ export async function verify(suite: string, options: { profile: string; grep: st
     }
     // Reading pages come from the Astro SSR artifact; build it before any process starts so a stale dist cannot be tested.
     await command('pnpm', ['build:reader'], '28-reading-build.log', join(ROOT, 'reading'));
+    if (suite === 'console') await command('pnpm', ['build'], '28-console-build.log', join(ROOT, 'clients/control-console'));
     if (!existsSync(SITE_ENTRY)) throw new Error(`Reading frontend entry is missing after build: ${SITE_ENTRY}`);
     await init();
     await ensureObjectImage('docker', env);
     await command('docker', [...acceptanceCompose, 'up', '--wait', '--wait-timeout', '180', 'source', 'search', 'objects', 'mailpit'], '28-dependencies.log');
     await waitHttp(origin('mailpit') + '/api/v1/info');
     await provision(); await start('control'); await start('content'); await start('reading');
+    if (suite === 'console') await start('console');
     await command('docker', [...acceptanceCompose, 'up', '-d', 'ingress'], '28-caddy.log');
     // Record the actual Caddy peer; trust only its observed address plus loopback.
     const until = Date.now() + 20000; let ready = false;
@@ -546,6 +553,7 @@ export async function verify(suite: string, options: { profile: string; grep: st
     await exportContract(!options.updateContract, env.E2E_CONTENT_ORIGIN, env.E2E_BACKEND_ORIGIN);
     if (!results.some(result => result.passed)) throw new Error('No acceptance scenarios were selected');
   } finally {
+    if (previousConsoleOrigins === undefined) delete process.env.EDITION_CONSOLE_ORIGINS; else process.env.EDITION_CONSOLE_ORIGINS = previousConsoleOrigins;
     process.off('SIGINT', interrupted); process.off('SIGTERM', interrupted);
     for (const role of processes.keys()) await stop(role);
     rmSync(env.PWTEST_CACHE_DIR!, { recursive: true, force: true });
@@ -560,7 +568,7 @@ export async function verify(suite: string, options: { profile: string; grep: st
 }
 export async function verifyCommand(argv: string[]) {
   await new Command().description('Run the isolated real acceptance topology')
-  .addArgument(new Argument('<suite>').choices(['delivery', 'private', 'vfs']))
+  .addArgument(new Argument('<suite>').choices(['delivery', 'private', 'vfs', 'console']))
   .option('--grep <pattern>', 'select scenarios', '').option('--update-contract', 'regenerate the Reader contract')
   .addOption(new Option('--profile <name>').choices(['all', 'normal', 'short-reader']).default('all'))
   .action(verify).parseAsync(argv, { from: 'user' });
@@ -1011,7 +1019,7 @@ export async function collectCommand(argv: string[]) {
 
 /** One quality entry point. Test ownership remains with each application; no test suite is duplicated. */
 
-const scopes = ['infra', 'backend', 'cli', 'vfs', 'compiler'] as const;
+const scopes = ['infra', 'backend', 'cli', 'vfs', 'compiler', 'console'] as const;
 type Scope = typeof scopes[number];
 export type Result = { name: string; exitCode: number; warnings: string[]; log: string };
 function backendModules(workspace: string) {
@@ -1080,12 +1088,16 @@ export async function check(mode: string, options: { scope: string; measure?: bo
     if (selected.includes('infra')) await record('infra-types', pnpm, ['check'], 'infra');
     if (selected.includes('backend')) await record('backend-check', gradle, [...gradleArgs, 'check', 'bootJar'], 'backend');
     if (selected.includes('cli')) await record('cli-check', gradle, [...gradleArgs, 'check'], 'clients/control');
+    if (selected.includes('console')) {
+      for (const task of ['check', 'lint', 'format:check', 'build']) await record(`console-${task === 'format:check' ? 'format' : task}`, pnpm, [task], 'clients/control-console');
+    }
     if (selected.includes('vfs') || selected.includes('compiler')) {
       const paths = [...(selected.includes('vfs') ? ['clients/edition/python'] : []), ...(selected.includes('compiler') ? ['clients/control/scripts'] : [])];
       await record('python-lint', python, ['-m', 'ruff', 'check', '--select', 'E9,F63,F7,F82,F401', ...paths]);
     }
   }
   if (mode === 'coverage' || mode === 'all') {
+    if (selected.includes('console')) await record('console-tests', pnpm, ['test'], 'clients/control-console');
     // Remove stale reports before each owner runs: a failed command must not reuse yesterday's result.
     const { rmSync } = await import('node:fs');
     const clear = (path: string) => rmSync(join(workspace, path), { recursive: true, force: true });
@@ -1119,7 +1131,7 @@ export async function check(mode: string, options: { scope: string; measure?: bo
   if (mode === 'acceptance' || mode === 'all') {
     // These suites share a topology. Await each one; parallel runs can corrupt test preconditions.
     const env = { EDITION_COMPOSE_PROJECT: process.env.EDITION_COMPOSE_PROJECT ?? 'dw-quality', E2E_STORAGE_NAMESPACE: process.env.E2E_STORAGE_NAMESPACE ?? 'dw-quality', E2E_PORT_OFFSET: process.env.E2E_PORT_OFFSET ?? '2000', E2E_RUNTIME_DIR: process.env.E2E_RUNTIME_DIR ?? join(output, 'acceptance') };
-    for (const suite of ['delivery', 'private', 'vfs']) await record(`acceptance-${suite}`, process.execPath, ['infra/edition.ts', 'verify', suite], '.', env);
+    for (const suite of ['delivery', 'private', 'vfs', 'console']) await record(`acceptance-${suite}`, process.execPath, ['infra/edition.ts', 'verify', suite], '.', env);
   }
   const commandFailures = results.filter(result => result.exitCode !== 0 || result.warnings.length > 0);
   const passed = commandFailures.length === 0 && errors.length === 0;

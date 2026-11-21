@@ -16,10 +16,14 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          cache-dependency-path: acceptance/pnpm-lock.yaml
+          cache-dependency-path: |
+            acceptance/pnpm-lock.yaml
+            clients/control-console/pnpm-lock.yaml
       - working-directory: acceptance
         run: pnpm install --frozen-lockfile
       - working-directory: reading
+        run: pnpm install --frozen-lockfile
+      - working-directory: clients/control-console
         run: pnpm install --frozen-lockfile
       - working-directory: infra
         run: pnpm install --frozen-lockfile
@@ -33,6 +37,8 @@ jobs:
         with: { python-version: '3.12' }
       - name: Read published bytes through the Python client
         run: node infra/edition.ts verify vfs
+      - name: React console with the real same-origin backend
+        run: node infra/edition.ts verify console
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -40,6 +46,7 @@ jobs:
           path: |
             .scratch/dw-v1/runtime/private-reader/28-delivery-*-browser.log
             .scratch/dw-v1/runtime/private-reader/28-private-*-browser.log
+            .scratch/dw-v1/runtime/private-reader/28-console-*-browser.log
             .scratch/dw-v1/runtime/private-reader/28-*-results.json
             acceptance/test-results
           if-no-files-found: error

@@ -8,7 +8,7 @@
 
 平台部署集中在三个文件：[edition.ts](edition.ts) 处理命令、初始化和演示，[compose.yml](deployment/compose.yml) 定义拓扑和健康检查，[Dockerfile](deployment/Dockerfile) 构建应用、前端和对象存储镜像。SQL 登录角色、Caddy 路由和对象存储策略由各自的工具直接读取。
 
-双域名生产入口使用 [production.Caddyfile](deployment/production.Caddyfile)。设置 `CONSOLE_DOMAIN`、`DOCS_DOMAIN`，并按部署调整 `ADMIN_UPSTREAM`、`CONTENT_UPSTREAM`。管理域名覆盖管理 API、审计和 `/ops/*` 作业接口，文档域名交给 Reader。
+双域名生产入口使用 [production.Caddyfile](deployment/production.Caddyfile)。设置 `CONSOLE_DOMAIN`、`DOCS_DOMAIN`，并按部署调整 `ADMIN_UPSTREAM`、`CONTENT_UPSTREAM`。管理域名在 `/console/` 提供 React 控制台静态文件与 SPA 深链接，并覆盖管理 API、审计和 `/ops/*` 作业接口，文档域名交给 Reader。
 
 ```text
 infra/
@@ -24,7 +24,7 @@ infra/
 | --- | --- |
 | `node infra/edition.ts quality all` | 统一质量验收。依赖准备、局部检查与报告口径见[质量看护](quality.md) |
 | `node infra/edition.ts platform start` | 部署三个应用、前端和演示；`doctor` / `setup` / `restart` / `stop` / `status` / `logs` 管理当前项目 |
-| `node infra/edition.ts verify delivery` | 统一真实浏览器验收；其它 suite 为 `private`、`vfs`，共用拓扑且顺序执行 |
+| `node infra/edition.ts verify delivery` | 统一真实浏览器验收；其它 suite 为 `private`、`vfs`、`console`，共用拓扑且顺序执行 |
 | `node infra/edition.ts seed` | 补齐阅读示例、管理示例数据和内容维护 PAT；`--check` 只验证 |
 | `node infra/edition.ts diagnose run reader` | 手动单角色诊断；`bootstrap` 准备本地受限凭据 |
 | `node infra/edition.ts collect --help` | 查询 Reader 观察日志的采集参数 |
@@ -42,3 +42,5 @@ infra/
 运行资源、密钥与日志写入忽略的 `.scratch/dw-v1/runtime/`。验证日志按运行目录保存；一次性验证源码与缓存用后删除。
 
 独立博客前端采用 AstroPaper + Edition Reader；构建、systemd 定时更新与保留业务路由见 [reading](../reading/README.md)。
+
+管理控制台开发和生成契约见 [control-console](../clients/control-console/README.md)。生产镜像把控制台产物放入 `/srv/console`；`/console/assets/*` 的缺失资源返回 404，只有页面路由回退到控制台入口。宿主机 `verify console` 启动独立预览角色（默认 8098，跟随端口偏移），经 HTTPS `console.acme.test` 入口访问，与真实管理服务、Worker 和数据库协作。

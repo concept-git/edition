@@ -45,6 +45,19 @@ FROM reading-deps AS reading-build
 COPY reading/ .
 RUN pnpm build:reader
 
+FROM node-build AS console-deps
+WORKDIR /workspace/clients/control-console
+COPY clients/control-console/package.json clients/control-console/pnpm-lock.yaml ./
+RUN --mount=type=cache,target=/pnpm/store,sharing=locked \
+    --mount=type=cache,target=/root/.cache/pnpm,sharing=locked \
+    pnpm install --frozen-lockfile --prefer-offline --store-dir=/pnpm/store --network-concurrency=2 --fetch-retries=4 --fetch-timeout=120000
+
+FROM console-deps AS console-build
+COPY contracts/openapi.json /workspace/contracts/openapi.json
+COPY LICENSE /workspace/LICENSE
+COPY clients/control-console/ .
+RUN pnpm build
+
 # Reading frontend: Astro SSR with the Node adapter (standalone). Upstreams come from EDITION_CONTENT_ORIGIN / EDITION_CONTROL_ORIGIN.
 FROM node:24-bookworm-slim AS reading
 WORKDIR /app
@@ -75,3 +88,4 @@ ENTRYPOINT ["node", "infra/edition.ts", "diagnose"]
 
 FROM caddy:2 AS web
 COPY infra/deployment/local.Caddyfile /etc/caddy/Caddyfile
+COPY --from=console-build /workspace/clients/control-console/dist/ /srv/console/
