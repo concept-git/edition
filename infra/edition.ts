@@ -436,7 +436,7 @@ export async function verify(suite: string, options: { profile: string; grep: st
     const file = join(runtime, 'linux-compose.json'); writeFileSync(file, JSON.stringify({ services: { ingress: { extra_hosts: ['host.docker.internal:host-gateway'] } } })); acceptanceCompose.push('-f', file);
   }
   const runId = `${suite}-${Date.now()}`;
-  const env = browserTestEnvironment(runtime, runId, { ...process.env, ...bindings(), E2E_BACKEND_ORIGIN: origin('control'), E2E_BROWSER_ORIGIN: origin('browser'), E2E_DELIVERY_ORIGIN: origin('edge'), E2E_CONTENT_ORIGIN: origin('content'),
+  const env = browserTestEnvironment(runtime, runId, { ...process.env, ...bindings(), E2E_RESULTS_DIR: join(runtime, 'runs', runId, 'browser'), E2E_BACKEND_ORIGIN: origin('control'), E2E_BROWSER_ORIGIN: origin('browser'), E2E_DELIVERY_ORIGIN: origin('edge'), E2E_CONTENT_ORIGIN: origin('content'),
     E2E_DATABASE_URL: `postgresql://edition:edition@localhost:${port('source')}/edition`, E2E_MAILPIT_ORIGIN: origin('mailpit'), E2E_MINIO_CONTAINER: `${project}-objects-1`, E2E_MINIO_ORIGIN: origin('objects'),
     E2E_WEBHOOK_TLS_KEY: join(runtime, 'webhook-receiver-key.pem'), E2E_WEBHOOK_TLS_CERT: join(runtime, 'webhook-receiver-cert.pem') });
   const processes = new Map<Role, Process>(), active = new Set<Process>(), results: AcceptanceResult[] = [], started = Date.now();

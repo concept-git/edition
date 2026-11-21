@@ -24,7 +24,7 @@ https://*.acme.test:8446 {
   import edge_routes
 }
 
-# Plain-HTTP entry for the console and delivery suites; keeps their Playwright configs free of HTTPS settings.
+# Plain-HTTP entry for the delivery suite; keeps its Playwright config free of HTTPS settings.
 http://:8097 {
   import edge_routes
 }

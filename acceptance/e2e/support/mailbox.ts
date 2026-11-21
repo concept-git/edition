@@ -107,9 +107,9 @@ export function verificationFor(
 		verificationSubject,
 		(mail) => {
 			const user = /^user=([^\s]+)$/m.exec(mail.Text)?.[1];
-            const token = /^token=([^\s]+)$/m.exec(mail.Text)?.[1];
-            if (user && token) return { user, token };
-            const link = links(mail.Text).find(
+			const token = /^token=([^\s]+)$/m.exec(mail.Text)?.[1];
+			if (user && token) return { user, token };
+			const link = links(mail.Text).find(
 				(candidate) =>
 					candidate.searchParams.has('user') &&
 					candidate.searchParams.has('token')
