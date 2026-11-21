@@ -2,15 +2,15 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
 // Production reads the Reader anonymous API. The fixture is only for local preview.
-if (process.env.SPACE_BLOG_FIXTURE) {
+if (process.env.EDITION_BLOG_FIXTURE) {
   console.error(
-    "Production build refuses SPACE_BLOG_FIXTURE. Use it only with astro dev for local preview.",
+    "Production build refuses EDITION_BLOG_FIXTURE. Use it only with astro dev for local preview.",
   );
   process.exit(1);
 }
 
-const env = { ...process.env, SPACE_BLOG_PRODUCTION: "1" };
-delete env.SPACE_BLOG_FIXTURE;
+const env = { ...process.env, EDITION_BLOG_PRODUCTION: "1" };
+delete env.EDITION_BLOG_FIXTURE;
 
 function run(command, args) {
   const result = spawnSync(command, args, { stdio: "inherit", env });

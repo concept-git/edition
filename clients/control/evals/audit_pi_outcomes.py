@@ -62,9 +62,9 @@ def audit(fixture, run):
                 # Read only the original profile's receipt; never replay or repair during the audit.
                 invocation = run_manifest['intentNamespaces'][arm]['recovery'] + '-write'
                 configured = json.loads(Path(fixture['environmentFile']).read_text())
-                token_name = 'SPACE_EVAL_PAT_' + arm.upper()
+                token_name = 'EDITION_EVAL_PAT_' + arm.upper()
                 environment = {**os.environ, token_name:configured[token_name],
-                               'JAVA_HOME':run_manifest['javaHome'], 'SPACECTL_HOME':f['cliHome']}
+                               'JAVA_HOME':run_manifest['javaHome'], 'EDITIONCTL_HOME':f['cliHome']}
                 receipt = subprocess.run(['rtk','proxy',effective['cli'],'--profile','recovery','control','+receipt','--id',invocation],
                                          env=environment, capture_output=True, text=True, timeout=20)
                 observed = json.loads(receipt.stdout)

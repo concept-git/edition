@@ -1,6 +1,6 @@
 # Pi 技能对照
 
-`pi_skill_compare.py` 在真实 Pi、真实 spacectl、真实 Control/PostgreSQL 上比较旧技能、新技能和无技能。三组使用相同模型、任务顺序、工具、预算和约束，各自拥有独立租户与资源。技能通过 `--no-skills --skill` 显式加载，触发名取各冻结入口的 frontmatter name；候选、CLI 和评估代码的 SHA-256 写入 manifest。
+`pi_skill_compare.py` 在真实 Pi、真实 editionctl、真实 Control/PostgreSQL 上比较旧技能、新技能和无技能。三组使用相同模型、任务顺序、工具、预算和约束，各自拥有独立租户与资源。技能通过 `--no-skills --skill` 显式加载，触发名取各冻结入口的 frontmatter name；候选、CLI 和评估代码的 SHA-256 写入 manifest。
 
 `pi_evaluation_guard.ts` 限定 read/write 路径并阻断明显的 shell 越界。旧轮护栏仅用路径检查，真实逃逸记录保留；最终轮增加 macOS 写入沙箱，shell 及子进程只可写/删本次 work、独立 CLI 状态目录和本次临时目录，平台不支持时停止执行。读取仍依靠工具路径限制、shell 检查和独立轨迹审计，不能声称操作系统级读隔离。运行最终轮需在宿主环境执行，避免外层沙箱使 sandbox-exec 初始化失败。`audit_pi_outcomes.py` 独立重读业务状态，核对导入正文与 live Release，以及未知写入的原路径、原键和一次持久效果；业务后验不能代替 Pi 自己的验证轨迹。
 
@@ -13,7 +13,7 @@
 ```sh
 rtk proxy python3 clients/control/evals/pi_skill_compare.py \
   --fixture "$FIXTURE" --run-dir "$FRESH_RUN" --agent-dir "$PI_EVAL_AGENT_DIR" \
-  --old-skill "$FROZEN_OLD_SKILL" --new-skill clients/control/skills/space-ops \
+  --old-skill "$FROZEN_OLD_SKILL" --new-skill clients/control/skills/edition-ops \
   --pi "$PI_BINARY" --java-home "$JDK25_HOME" --parallelism 3
 rtk proxy python3 clients/control/evals/audit_pi_outcomes.py \
   --fixture "$FIXTURE" --run-dir "$FRESH_RUN"
@@ -33,7 +33,7 @@ rtk proxy python3 clients/control/evals/summarize_pi_comparison.py --run-dir "$F
 `benchmark_cli.py` 对两个已安装发行目录使用同一 Java 25，交错运行 version、分层 help、schema 与合法/非法本地预演。默认每组每场景 3 次预热、30 个计时样本，保留 samples.jsonl、JAR hash/体积、中位数和 P95。每次启动新 JVM，文件缓存已预热，不冒充冷盘或常驻 JVM 测试；只配置隔离状态与不可用 loopback origin，不执行真实业务。
 
 ```sh
-python3 evals/benchmark_cli.py --baseline /path/to/baseline --candidate build/install/spacectl --java-home /path/to/jdk-25 --output /path/to/benchmark-results
+python3 evals/benchmark_cli.py --baseline /path/to/baseline --candidate build/install/editionctl --java-home /path/to/jdk-25 --output /path/to/benchmark-results
 ```
 
 两端必须来自同一业务代码与契约；运行前停止构建、测试等额外负载。help 输出体积变化也会影响耗时，结合原始字节数报告；框架微基准不能替代该端到端结果。评估结果不是 token 或模型账单收益。

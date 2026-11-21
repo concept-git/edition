@@ -15,7 +15,7 @@ const send = (input: string | URL, init?: RequestInit) => fetch(input, init);
 /** 跨标签串行续期；没有 Web Locks 时退化为页内合并。 */
 const webLock: Lock = (run) =>
   typeof navigator !== "undefined" && navigator.locks
-    ? navigator.locks.request("space-content-refresh", run)
+    ? navigator.locks.request("edition-content-refresh", run)
     : run();
 
 export const renewer = createRenewer({

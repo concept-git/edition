@@ -35,8 +35,8 @@ databaseBytes [] => [bytes: Long]
 `(service, instance)` 为键定期 upsert 一行心跳，附版本与少量诊断细节（队列积压、最近失败数），
 不含任何租户数据。心跳写入走独立短事务，失败只记日志，绝不影响业务事务。
 
-只由 sync 调用；gateway 不可见。`space-index` 通过 `shared.record_service_heartbeat` SECURITY DEFINER
-函数以数据库服务键 `space-worker` 写入（`delivery_writer` 只有 EXECUTE）。space-content 没有管理库凭据，
+只由 sync 调用；gateway 不可见。`edition-index` 通过 `shared.record_service_heartbeat` SECURITY DEFINER
+函数以数据库服务键 `edition-worker` 写入（`delivery_writer` 只有 EXECUTE）。edition-content 没有管理库凭据，
 健康由管理面经各自 HTTP `/healthz` 探测。判定阈值属 flow（见 `syncs/platform/servicehealth/SYNCS.md`），本模块只存事实。
 
 搜索作业积压与失败数由主库的只读聚合提供，应用组合将它与本概念的心跳合并。
@@ -46,7 +46,7 @@ databaseBytes [] => [bytes: Long]
 
 ### 实现接口映射
 
-下表完整列出Java调用边界；行为前置、效果及组合策略以上文为准。sealed分支是可区分结果，查询Optional为空表示无绑定；参数中的actor和范围同样属于契约。此映射由SpecificationInterfaceParityTest核对，转录不替代行为审查。
+下表完整列出Java调用边界；行为前置、效果及组合策略以上文为准。sealed分支是可区分结果，查询Optional为空表示无绑定；参数中的actor和范围同样属于契约。
 
 | 方法 | 具名输入 | 返回类型 |
 | --- | --- | --- |

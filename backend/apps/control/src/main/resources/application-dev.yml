@@ -13,10 +13,10 @@ spring:
       mail.smtp.starttls.required: false
 
 io:
-  space:
+  edition:
     mail-outbox:
       enabled: true
-      from: noreply@space.local
+      from: noreply@edition.local
     dns:
       resolver: fake
       auto-prove: true

@@ -6,7 +6,7 @@ import os
 import tempfile
 from pathlib import Path, PurePosixPath
 
-MARKER = '.spacectl-managed'
+MARKER = '.editionctl-managed'
 LEGACY_FILES = {
     'SKILL.md', 'agents/openai.yaml', 'references/access.md',
     'references/content.md', 'references/delivery.md', 'references/recovery.md',
@@ -44,18 +44,18 @@ def owned_files(destination):
     if marker.is_symlink():
         raise SystemExit(f'Refusing symbolic-link ownership marker: {marker}')
     if not marker.is_file():
-        raise SystemExit(f'Existing skill is not managed by spacectl: {destination}')
+        raise SystemExit(f'Existing skill is not managed by editionctl: {destination}')
     text = marker.read_text()
-    if text == 'spacectl\n':
+    if text == 'editionctl\n':
         return set(LEGACY_FILES)
     try:
         data = json.loads(text)
-        if (not isinstance(data, dict) or data.get('product') != 'spacectl'
+        if (not isinstance(data, dict) or data.get('product') != 'editionctl'
                 or data.get('schemaVersion') != 1 or not isinstance(data.get('files'), list)):
             raise ValueError()
         return {relative_file(value) for value in data['files']}
     except (ValueError, TypeError):
-        raise SystemExit(f'Invalid spacectl ownership marker: {marker}') from None
+        raise SystemExit(f'Invalid editionctl ownership marker: {marker}') from None
 
 
 def package_files(source):
@@ -121,7 +121,7 @@ def replace_file(target, content, mode=0o600):
     """Replace one file without following its old inode or exposing partial contents."""
     temporary = None
     try:
-        with tempfile.NamedTemporaryFile(dir=target.parent, prefix='.spacectl-', delete=False) as file:
+        with tempfile.NamedTemporaryFile(dir=target.parent, prefix='.editionctl-', delete=False) as file:
             temporary = Path(file.name)
             os.chmod(temporary, mode)
             file.write(content)
@@ -143,7 +143,7 @@ def install(sources, root):
         for relative in sorted(obsolete):
             remove_obsolete(destination, relative)
         replace_file(destination / MARKER, (json.dumps({
-            'product': 'spacectl', 'schemaVersion': 1, 'files': sorted(files),
+            'product': 'editionctl', 'schemaVersion': 1, 'files': sorted(files),
         }, indent=2) + '\n').encode())
         print(destination)
 

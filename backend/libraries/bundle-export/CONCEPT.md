@@ -60,7 +60,7 @@ Platform concept owning durable export intentions, bounded leases, private artif
 
 ### 实现接口映射
 
-下表完整列出Java调用边界；行为前置、效果及组合策略以上文为准。sealed分支是可区分结果，查询Optional为空表示无绑定；参数中的actor和范围同样属于契约。此映射由SpecificationInterfaceParityTest核对，转录不替代行为审查。
+下表完整列出Java调用边界；行为前置、效果及组合策略以上文为准。sealed分支是可区分结果，查询Optional为空表示无绑定；参数中的actor和范围同样属于契约。
 
 | 方法 | 具名输入 | 返回类型 |
 | --- | --- | --- |

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-跨进程共享的被动快照与记录。协议边界见 `docs/tech/DELIVERY.md`。
+跨进程共享的被动快照与记录。协议边界见 `infra/README.md`。
 
 ## Project map
 

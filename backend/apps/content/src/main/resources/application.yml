@@ -1,6 +1,6 @@
 spring:
   application:
-    name: space-content
+    name: edition-content
   datasource:
     url: ${DELIVERY_DB_URL}
     username: ${DELIVERY_DB_USER}
@@ -30,7 +30,7 @@ management:
     distribution:
       percentiles:
         http.server.requests: [0.5, 0.95, 0.99]
-        space.delivery.search: [0.5, 0.95, 0.99]
+        edition.delivery.search: [0.5, 0.95, 0.99]
   endpoints:
     web:
       base-path: /

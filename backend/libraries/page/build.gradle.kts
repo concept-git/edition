@@ -10,7 +10,6 @@ dependencies {
     implementation("org.springframework:spring-tx")
     implementation("tools.jackson.core:jackson-databind")
     implementation(libs.mybatis.spring.boot)
-    testImplementation(testFixtures(project(":testing")))
     testImplementation(platform(libs.spring.boot.dependencies))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

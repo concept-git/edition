@@ -1,0 +1,19 @@
+[Unit]
+Description=Build the public Space blog with Astro
+After=network-online.target caddy.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=edition-blog
+Group=edition-blog
+WorkingDirectory=/opt/edition-blog/app
+ExecStart=/bin/bash /opt/edition-blog/app/scripts/sync.sh
+TimeoutStartSec=10min
+Nice=15
+CPUQuota=100%
+MemoryMax=768M
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/opt/edition-blog/app /opt/edition-blog/home /var/www/beautyclaw-blog

@@ -1,7 +1,6 @@
 plugins { `java-library` }
 java { toolchain { languageVersion = JavaLanguageVersion.of(25) } }
 dependencies {
-    testImplementation(testFixtures(project(":testing")))
     implementation(platform(libs.spring.boot.dependencies))
     implementation(platform(libs.spring.modulith.bom))
     implementation("org.springframework.boot:spring-boot-autoconfigure")

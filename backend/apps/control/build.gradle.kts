@@ -8,17 +8,11 @@ plugins {
     alias(libs.plugins.springdoc)
 }
 
-tasks.named<ProcessResources>("processTestResources") {
-    from(rootProject.file("../acceptance/e2e/fixtures/import-packs/F-v1-ok.zip")) {
-        into("import-packs")
-    }
-}
-
-group = "io.space"
+group = "io.edition"
 version = rootProject.file("../VERSION").readText().trim()
 
-// 产物名是 space-control。spring.application.name 仍是 space。
-base { archivesName = "space-control" }
+// 产物名是 edition-control。spring.application.name 是 edition。
+base { archivesName = "edition-control" }
 
 java {
     toolchain {
@@ -31,7 +25,6 @@ java {
 dependencies {
     implementation(platform(SpringBootPlugin.BOM_COORDINATES))
     implementation(platform(libs.spring.modulith.bom))
-    testImplementation(testFixtures(project(":import-format")))
     testImplementation(platform(libs.testcontainers.bom))
 
     // 交付契约：唯一与独立交付构件共享的接口（ADR-0022）
@@ -127,27 +120,14 @@ dependencies {
     // 交付库真实实现只用于管理侧源/目标集成测试，不进入运行时 classpath。
 }
 
-tasks.withType<Test> {
-    val productionUnits = rootProject.subprojects.filter { it.name != "testing" }
-    dependsOn(productionUnits.map { "${it.path}:compileJava" })
-    doFirst {
-        systemProperty("space.architecture.classRoots", productionUnits.flatMap {
-            it.extensions.getByType<SourceSetContainer>().getByName("main").output.classesDirs.files
-        }.joinToString(System.getProperty("path.separator")) { it.absolutePath })
-    }
-    systemProperty("space.import.fixtures", project(":import-format").file("src/testFixtures/resources/import-packs").absolutePath)
-    useJUnitPlatform()
-    inputs.files(fileTree("src/main/java") { include("**/*.md") })
-    inputs.files(rootProject.file("../docs/prd"), rootProject.file("CLAUDE.md"))
-    inputs.property("updateSpecInterfaces", providers.environmentVariable("UPDATE_SPEC_INTERFACES").orElse("false"))
-}
+tasks.withType<Test> { useJUnitPlatform() }
 
 // 会话签名及幂等响应加密密钥缺失时应用默认拒绝启动。本机运行显式开启临时密钥，
 // 部署产物（jar/镜像）拿不到这些开关，忘配密钥就起不来。
 tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
-    systemProperty("io.space.session.allow-ephemeral-key", "true")
-    systemProperty("io.space.idempotency.allow-ephemeral-key", "true")
-    systemProperty("io.space.mail-outbox.allow-ephemeral-key", "true")
+    systemProperty("io.edition.session.allow-ephemeral-key", "true")
+    systemProperty("io.edition.idempotency.allow-ephemeral-key", "true")
+    systemProperty("io.edition.mail-outbox.allow-ephemeral-key", "true")
     // 本机默认启用开发夹具；CI / 显式 SPRING_PROFILES_ACTIVE 保持调用方原意（e2e 不得种 @dev.local）。
     val ci = System.getenv("CI") == "true"
     val profiles = System.getenv("SPRING_PROFILES_ACTIVE")
@@ -181,9 +161,9 @@ openApi {
         systemProperties.set(mapOf<String, Any>(
             "server.port" to port,
             "spring.profiles.active" to "default",
-            "io.space.session.allow-ephemeral-key" to "true",
-            "io.space.idempotency.allow-ephemeral-key" to "true",
-            "io.space.mail-outbox.allow-ephemeral-key" to "true"
+            "io.edition.session.allow-ephemeral-key" to "true",
+            "io.edition.idempotency.allow-ephemeral-key" to "true",
+            "io.edition.mail-outbox.allow-ephemeral-key" to "true"
         ))
     }
 }
@@ -199,4 +179,4 @@ tasks.named("generateOpenApiDocs") {
     }
 }
 
-springBoot { mainClass.set("io.space.SpaceApplication") }
+springBoot { mainClass.set("io.edition.EditionApplication") }

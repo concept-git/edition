@@ -1,5 +1,5 @@
 {
-  "name": "space-acceptance",
+  "name": "edition-acceptance",
   "private": true,
   "version": "1.0.1",
   "type": "module",
@@ -10,8 +10,7 @@
     "@playwright/test": "^1.60.0",
     "@types/node": "^24",
     "@types/pg": "^8.23.1",
-    "pg": "^8.23.0",
-    "playwright-bdd": "^9.2.0"
+    "pg": "^8.23.0"
   },
   "packageManager": "pnpm@11.10.0"
 }

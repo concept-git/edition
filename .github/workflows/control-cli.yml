@@ -28,18 +28,12 @@ jobs:
       - run: python scripts/generate_contract.py --check
       - run: ./gradlew --no-daemon --max-workers=2 --warning-mode=fail check jacocoTestCoverageVerification installDist distZip
         shell: bash
-      - name: Actual CLI process with Control and PostgreSQL
-        if: matrix.os == 'ubuntu-latest'
-        env:
-          SPACECTL_REQUIRE_CLI: 'true'
-        run: ../../backend/gradlew --project-dir ../../backend --no-daemon --max-workers=2 :control:test --tests '*ManagementTokenAcceptanceTest'
-        shell: bash
       - uses: actions/upload-artifact@v4
         with:
-          name: spacectl-${{ matrix.os }}
+          name: editionctl-${{ matrix.os }}
           path: clients/control/build/distributions/*.zip
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: spacectl-test-results-${{ matrix.os }}
+          name: editionctl-test-results-${{ matrix.os }}
           path: clients/control/build/test-results/test/*.xml

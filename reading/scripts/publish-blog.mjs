@@ -3,8 +3,8 @@
  * Write reading/content into the BeautyClaw website Space.
  *
  * Required when not using --dry-run:
- *   SPACE_CONTROL_ORIGIN   Control base URL, no trailing path
- *   SPACE_CONTROL_TOKEN    management bearer token (not logged)
+ *   EDITION_CONTROL_ORIGIN   Control base URL, no trailing path
+ *   EDITION_CONTROL_TOKEN    management bearer token (not logged)
  *
  * The script creates or reuses an authored space, turns on autoRelease,
  * binds site host beautyclaw.cn, mounts slug blog, grants anonymous reader,
@@ -34,8 +34,8 @@ const tagSlugs = {
 };
 
 const dryRun = process.argv.includes("--dry-run");
-const origin = (process.env.SPACE_CONTROL_ORIGIN ?? "").replace(/\/$/, "");
-const token = process.env.SPACE_CONTROL_TOKEN ?? "";
+const origin = (process.env.EDITION_CONTROL_ORIGIN ?? "").replace(/\/$/, "");
+const token = process.env.EDITION_CONTROL_TOKEN ?? "";
 
 function fail(message) {
   console.error(message);
@@ -115,7 +115,7 @@ if (dryRun) {
 
 if (!origin || !token) {
   fail(
-    "Control is not configured. Set SPACE_CONTROL_ORIGIN and SPACE_CONTROL_TOKEN. " +
+    "Control is not configured. Set EDITION_CONTROL_ORIGIN and EDITION_CONTROL_TOKEN. " +
       "This host currently serves only the static site, so the Reader API is not available yet.",
   );
 }
@@ -173,7 +173,7 @@ function key(name) {
 }
 
 const me = await api("GET", "/api/v1/me");
-const tenantId = process.env.SPACE_BLOG_TENANT || me.body.tenants?.[0]?.id;
+const tenantId = process.env.EDITION_BLOG_TENANT || me.body.tenants?.[0]?.id;
 if (!tenantId) fail("The management token has no tenant.");
 
 let space = (await listAll(`/api/v1/tenants/${tenantId}/spaces`)).find(

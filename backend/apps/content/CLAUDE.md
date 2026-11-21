@@ -17,7 +17,7 @@
 | Command | What it does |
 |---|---|
 | `:content:check` | 最小验证。不要只跑 `test`，否则会漏掉 `verifyIsolation` |
-| `node infra/space.ts verify delivery --update-contract` | 改 HTTP 契约后生成 `contracts/delivery-openapi.json`。审阅后去掉该参数再验收 |
+| `node infra/edition.ts verify delivery --update-contract` | 改 HTTP 契约后生成 `contracts/delivery-openapi.json`。审阅后去掉该参数再验收 |
 </important>
 
 <important if="you are changing auth routes or edge routing">

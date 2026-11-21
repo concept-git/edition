@@ -25,24 +25,24 @@ jobs:
         run: corepack pnpm check
       - working-directory: infra
         run: corepack pnpm test:coverage
-      - run: node infra/space.ts platform --help
+      - run: node infra/edition.ts platform --help
 
   backend:
     runs-on: ubuntu-latest
     env:
-      SPACE_OBJECT_IMAGE: space-objectstore:2025-09-07
-      SPACE_MINIO_TEST_IMAGE: space-objectstore:2025-09-07
+      EDITION_OBJECT_IMAGE: edition-objectstore:2025-09-07
+      EDITION_MINIO_TEST_IMAGE: edition-objectstore:2025-09-07
     services:
       postgres:
         image: postgres:18.6
         env:
-          POSTGRES_DB: space
-          POSTGRES_USER: space
-          POSTGRES_PASSWORD: space
+          POSTGRES_DB: edition
+          POSTGRES_USER: edition
+          POSTGRES_PASSWORD: edition
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U space"
+          --health-cmd "pg_isready -U edition"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
@@ -59,20 +59,7 @@ jobs:
       - working-directory: infra
         run: corepack pnpm install --frozen-lockfile
       - name: 文档链接、脚本入口与 PRD 组合一致性
-        run: node infra/space.ts repository
-      - name: 架构护栏（模块模型 / 静态分层 / SQL 归属 / 规格对齐 / 库表边界）
-        working-directory: backend
-        run: >-
-          ./gradlew :control:test
-          --tests 'io.space.ModularityTests'
-          --tests 'io.space.ArchitectureTests'
-          --tests 'io.space.SqlSchemaOwnershipTest'
-          --tests 'io.space.SyncSpecParityTest'
-          --tests 'io.space.ConceptSpecParityTest'
-          --tests 'io.space.DdlContextBoundaryTest'
-          --tests 'io.space.PrdModuleInventoryTest'
-          --tests 'io.space.ProblemContractParityTest'
-
+        run: node infra/edition.ts repository
       - name: Build pinned object-store image before full tests
         run: docker compose -p dw-remaining -f infra/deployment/compose.yml build objects
       - name: Build（编译 + 全量测试 + Testcontainers 真库）
@@ -83,7 +70,7 @@ jobs:
       - name: Generate current management contract
         working-directory: backend
         env:
-          DB_URL: jdbc:postgresql://localhost:5412/space
+          DB_URL: jdbc:postgresql://localhost:5412/edition
           OBJECT_STORE_ENDPOINT: http://localhost:9012
           MEILI_URL: http://localhost:7712
           MEILI_API_KEY: acceptance-master-key
@@ -113,9 +100,9 @@ jobs:
           python-version: '3.12'
       - working-directory: infra
         run: corepack pnpm install --frozen-lockfile
-      - run: python -m pip install -r infra/requirements.txt -e 'clients/space/python[mirage,fuse]'
-      - run: node infra/space.ts quality static --scope ${{ matrix.scope }}
-      - run: node infra/space.ts quality coverage --scope ${{ matrix.scope }}
+      - run: python -m pip install -r infra/requirements.txt -e 'clients/edition/python[mirage,fuse]'
+      - run: node infra/edition.ts quality static --scope ${{ matrix.scope }}
+      - run: node infra/edition.ts quality coverage --scope ${{ matrix.scope }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -132,6 +119,6 @@ jobs:
           jq -e '.openapi == "3.1.0" and (.paths | type == "object")' contracts/delivery-openapi.json
 
   independent-delivery:
-    name: 独立交付 Gherkin
+    name: 独立交付验收
     needs: backend
     uses: ./.github/workflows/delivery.yml

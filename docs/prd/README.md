@@ -1,6 +1,6 @@
-# 产品需求 — Space
+# 产品需求 — Edition
 
-Space 让维护者在空间内统一管理内容，通过发版向人和应用智能体交付一致、受控、可追溯的知识。本文统一维护产品范围、验收口径和规格导航；架构理由见 [架构决策](../adr/README.md)，术语见 [CONTEXT](../../CONTEXT.md)。
+Edition 让维护者在空间内统一管理内容，通过发版向人和应用智能体交付一致、受控、可追溯的知识。本文统一维护产品范围、验收口径和规格导航；架构理由见 [架构决策](../adr/README.md)，术语见 [CONTEXT](../../CONTEXT.md)。
 
 ## 文档边界
 
@@ -9,9 +9,9 @@ Space 让维护者在空间内统一管理内容，通过发版向人和应用�
 | 为谁解决什么问题、范围和验收是什么 | 本文 |
 | 为什么采用这些边界、替代过什么方案 | [架构决策](../adr/README.md) |
 | 单概念的状态、动作和错误 | 下文索引的源码共置 `CONCEPT.md` |
-| 跨概念如何组合、何时提交和补偿 | [组合根](../../backend/apps/control/src/main/java/io/space/control/compositions/SYNCS.md)及各 flow 的 `SYNCS.md` |
-| HTTP 映射与交换包 | [HTTP 入口](../tech/API.md)、[Bundle v1](../tech/BUNDLE.md) |
-| 接口精确字段及运行方式 | [生成契约](../../contracts/README.md)、[部署](../tech/DELIVERY.md)、[测试](../tech/TESTING.md) |
+| 跨概念如何组合、何时提交和补偿 | [组合根](../../backend/apps/control/src/main/java/io/edition/control/compositions/SYNCS.md)及各 flow 的 `SYNCS.md` |
+| HTTP 映射与交换包 | [HTTP 入口](../../contracts/README.md)、[Bundle v1](../../backend/libraries/import-format/CONCEPT.md) |
+| 接口精确字段及运行方式 | [生成契约](../../contracts/README.md)、[部署](../../infra/README.md)、[测试](../../infra/quality.md) |
 
 PRD 与 ADR 各维护一份。行为更新落在共置规格；接口字段以生成契约为准，界面映射不建立第二份领域模型。
 
@@ -113,7 +113,7 @@ PRD 与 ADR 各维护一份。行为更新落在共置规格；接口字段以�
 | PluginVerification | 让候选的验证证据绑定构件、样例及环境并可追溯 | [plugin-verification/CONCEPT.md](../../backend/libraries/plugin-verification/CONCEPT.md) |
 | Webhook | 让外部订阅者可靠收到选定范围的完成事件，并能追踪投递结果 | [webhook/CONCEPT.md](../../backend/libraries/webhook/CONCEPT.md) |
 
-类型参数的实例化只发生在组合层，见[组合根 SYNCS.md 的 app 块](../../backend/apps/control/src/main/java/io/space/control/compositions/SYNCS.md)。
+类型参数的实例化只发生在组合层，见[组合根 SYNCS.md 的 app 块](../../backend/apps/control/src/main/java/io/edition/control/compositions/SYNCS.md)。
 
 ## 依赖图与交付口径
 
@@ -137,18 +137,18 @@ Site ──► Space          Search / CustomDomain ──► Site        Redire
 
 | 位置 | 内容 |
 | --- | --- |
-| [组合根 SYNCS.md](../../backend/apps/control/src/main/java/io/space/control/compositions/SYNCS.md) | app 组合（类型参数实例化）、guard 模板、管理杂项模板、全局排除动作、分包索引 |
-| [syncs/iam](../../backend/apps/control/src/main/java/io/space/control/compositions/iam/SYNCS.md) | 注册与激活、登录与会话、账户安全联动、用户注销、成员与邀请、API 令牌生命周期 |
-| [syncs/authoring](../../backend/apps/control/src/main/java/io/space/control/compositions/authoring/SYNCS.md) | 页面创作、目录编排、标签、删除与恢复 |
-| [syncs/releases](../../backend/apps/control/src/main/java/io/space/control/compositions/releases/SYNCS.md) | 发版组索引 |
-| [syncs/releases/release](../../backend/apps/control/src/main/java/io/space/control/compositions/releases/release/SYNCS.md) | 发布、共享发版流水线 |
-| [syncs/releases/bundleimport](../../backend/apps/control/src/main/java/io/space/control/compositions/releases/bundleimport/SYNCS.md) | 持续导入（票 20） |
-| [syncs/hosting](../../backend/apps/control/src/main/java/io/space/control/compositions/hosting/SYNCS.md) | 站点与域名配置、重组重定向、内容和权限投影 |
-| [space-content SYNCS](../../backend/apps/content/src/main/java/io/space/contentapp/SYNCS.md) | 独立阅读进程：页面/导航/搜索/快照文件 |
-| [syncs/hosting/customdomain](../../backend/apps/control/src/main/java/io/space/control/compositions/hosting/customdomain/SYNCS.md) | 域名管理（票 22） |
-| [syncs/platform](../../backend/apps/control/src/main/java/io/space/control/compositions/platform/SYNCS.md) | 租户开通与冻结、服务状态（进程心跳与 `/admin/health`）、邮件投递与管理、Webhook、运维证据 |
+| [组合根 SYNCS.md](../../backend/apps/control/src/main/java/io/edition/control/compositions/SYNCS.md) | app 组合（类型参数实例化）、guard 模板、管理杂项模板、全局排除动作、分包索引 |
+| [syncs/iam](../../backend/apps/control/src/main/java/io/edition/control/compositions/iam/SYNCS.md) | 注册与激活、登录与会话、账户安全联动、用户注销、成员与邀请、API 令牌生命周期 |
+| [syncs/authoring](../../backend/apps/control/src/main/java/io/edition/control/compositions/authoring/SYNCS.md) | 页面创作、目录编排、标签、删除与恢复 |
+| [syncs/releases](../../backend/apps/control/src/main/java/io/edition/control/compositions/releases/SYNCS.md) | 发版组索引 |
+| [syncs/releases/release](../../backend/apps/control/src/main/java/io/edition/control/compositions/releases/release/SYNCS.md) | 发布、共享发版流水线 |
+| [syncs/releases/bundleimport](../../backend/apps/control/src/main/java/io/edition/control/compositions/releases/bundleimport/SYNCS.md) | 持续导入（票 20） |
+| [syncs/hosting](../../backend/apps/control/src/main/java/io/edition/control/compositions/hosting/SYNCS.md) | 站点与域名配置、重组重定向、内容和权限投影 |
+| [edition-content SYNCS](../../backend/apps/content/src/main/java/io/edition/contentapp/SYNCS.md) | 独立阅读进程：页面/导航/搜索/快照文件 |
+| [syncs/hosting/customdomain](../../backend/apps/control/src/main/java/io/edition/control/compositions/hosting/customdomain/SYNCS.md) | 域名管理（票 22） |
+| [syncs/platform](../../backend/apps/control/src/main/java/io/edition/control/compositions/platform/SYNCS.md) | 租户开通与冻结、服务状态（进程心跳与 `/admin/health`）、邮件投递与管理、Webhook、运维证据 |
 
-内容类型的登记、默认切换与启停见 [contenttype](../../backend/apps/control/src/main/java/io/space/control/compositions/platform/contenttype/SYNCS.md)；可信实现查询及插件开发验证见 [pluginmanagement](../../backend/apps/control/src/main/java/io/space/control/compositions/platform/pluginmanagement/SYNCS.md)；空间附件查询见 [attachmentbrowsing](../../backend/apps/control/src/main/java/io/space/control/compositions/authoring/attachmentbrowsing/SYNCS.md)。组合根维护 app 类型实例化、guard 和全局排除动作，各 flow 只有一份共置规格。
+内容类型的登记、默认切换与启停见 [contenttype](../../backend/apps/control/src/main/java/io/edition/control/compositions/platform/contenttype/SYNCS.md)；可信实现查询及插件开发验证见 [pluginmanagement](../../backend/apps/control/src/main/java/io/edition/control/compositions/platform/pluginmanagement/SYNCS.md)；空间附件查询见 [attachmentbrowsing](../../backend/apps/control/src/main/java/io/edition/control/compositions/authoring/attachmentbrowsing/SYNCS.md)。组合根维护 app 类型实例化、guard 和全局排除动作，各 flow 只有一份共置规格。
 
 <a id="content-types"></a>
 
@@ -174,7 +174,7 @@ ContentType 拥有租户内类型身份、启用状态、默认版本、并发�
 | 界面与开发工具 | 卡片展示图标、名称、来源/启停状态及筛选恢复；窄屏无溢出。工作台可选在线类型，固定样例记录定义引用与摘要，停用类型不丢稿 |
 | 回归 | 七个内置类型、多个编辑/呈现实现、原开发验证工具、生成契约、真实 PostgreSQL 和独立 Reader 交付验收通过 |
 
-工程契约与贡献协议见 [CONTENT-PLUGINS](../tech/CONTENT-PLUGINS.md)，决定及保证边界见 [ADR-0029 / ADR-0030](../adr/README.md#adr-0030)。
+工程契约与贡献协议见 [CONTENT-PLUGINS](../../contracts/README.md)，决定及保证边界见 [ADR-0029 / ADR-0030](../adr/README.md#adr-0030)。
 
 ## 排除与建模裁决
 
@@ -212,7 +212,6 @@ ContentType 拥有租户内类型身份、启用状态、默认版本、并发�
 产品版本以仓库根 `VERSION` 为准，当前是 1.7.0。1.0.1 是已发布数据库迁移基线；此后迁移只追加，不改已发布脚本。
 
 - 概念正向验收来自 `CONCEPT.md` 的 operational principle；应用负向验收覆盖每个 flow 的错误输出及恢复行动。
-- 六个核心场景落在 `features/acceptance/<context>/<flow>.feature`，以 flow 和前端状态矩阵核对；完整标准见 [TESTING](../tech/TESTING.md)，阅读入口见 [BDD 导航](../../features/README.md)。
 - 使用真实 PostgreSQL 验证 RLS、事务、并发、租约与迁移；真实浏览器和跨进程故障验证登录、撤权、上线、搜索、无 JS 与窄屏。
 - Control、Content、Index 独立运行。Control 是业务事实的唯一写入方；Content 提供已发布内容；Index 只重建搜索索引。Control 离线时，已发布且无屏障的内容仍可由 Content 读取，新的管理写入失败。
 - 管理会话不替代读者会话；`published`、主版本、站点线上版本、搜索版本、异步作业和物理清理分别核验。新基线不提供旧混合进程或旧开发数据库原地升级模式。

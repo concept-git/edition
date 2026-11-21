@@ -1,17 +1,17 @@
 # Isolated platform and acceptance dependencies; ports and volumes are separate from manual development.
 x-app: &app
   profiles: [platform]
-  image: ${SPACE_COMPOSE_PROJECT:-dw-platform}-app:local
+  image: ${EDITION_COMPOSE_PROJECT:-dw-platform}-app:local
   build: { context: ../.., dockerfile: infra/deployment/Dockerfile, target: app, args: [HTTP_PROXY, HTTPS_PROXY, NO_PROXY, http_proxy, https_proxy, no_proxy] }
   restart: unless-stopped
-  volumes: ["${SPACE_RUNTIME_DIR:-../../.scratch/dw-v1/runtime/platform-dw-platform}:/workspace/.scratch/dw-v1/runtime/platform"]
+  volumes: ["${EDITION_RUNTIME_DIR:-../../.scratch/dw-v1/runtime/platform-dw-platform}:/workspace/.scratch/dw-v1/runtime/platform"]
   environment: &app-env
-    SPACE_CONTAINER: "1"
+    EDITION_CONTAINER: "1"
     E2E_RUNTIME_DIR: /workspace/.scratch/dw-v1/runtime/platform
     E2E_STORAGE_NAMESPACE: ${E2E_STORAGE_NAMESPACE:-dw-platform}
     E2E_TRUSTED_PROXIES: ${E2E_TRUSTED_PROXIES:-127.0.0.1,::1}
-    SPACE_CONSOLE_PROFILE: ${SPACE_CONSOLE_PROFILE:-dev}
-    SPACE_CONSOLE_ORIGINS: http://localhost:${E2E_BROWSER_PORT:-4176},http://127.0.0.1:${E2E_BROWSER_PORT:-4176}
+    EDITION_CONSOLE_PROFILE: ${EDITION_CONSOLE_PROFILE:-dev}
+    EDITION_CONSOLE_ORIGINS: http://localhost:${E2E_BROWSER_PORT:-4176},http://127.0.0.1:${E2E_BROWSER_PORT:-4176}
     READER_PUBLIC_SCHEME: http
     # Site links point at the public entry (the web edge in the platform), not at Reader's JSON port.
     READER_PUBLIC_PORT: ${E2E_BROWSER_PORT:-4176}
@@ -40,7 +40,7 @@ services:
       timeout: 3s
       retries: 30
     image: postgres:18.6
-    environment: { POSTGRES_DB: space, POSTGRES_USER: space, POSTGRES_PASSWORD: space }
+    environment: { POSTGRES_DB: edition, POSTGRES_USER: edition, POSTGRES_PASSWORD: edition }
     ports: ["127.0.0.1:${E2E_SOURCE_PORT:-5412}:5432"]
     volumes: ["source:/var/lib/postgresql"]
   search:
@@ -64,11 +64,11 @@ services:
       interval: 2s
       timeout: 3s
       retries: 30
-    image: ${SPACE_OBJECT_IMAGE:-space-objectstore:2025-09-07}
+    image: ${EDITION_OBJECT_IMAGE:-edition-objectstore:2025-09-07}
     build: { context: ../.., dockerfile: infra/deployment/Dockerfile, target: objectstore }
     pull_policy: never
     command: server /data
-    environment: { MINIO_ROOT_USER: space, MINIO_ROOT_PASSWORD: space-dev }
+    environment: { MINIO_ROOT_USER: edition, MINIO_ROOT_PASSWORD: edition-dev }
     ports: ["127.0.0.1:${E2E_OBJECTS_PORT:-9012}:9000"]
     volumes: ["objects:/data"]
   init:
@@ -78,7 +78,7 @@ services:
     healthcheck: { disable: true }
     command: [init]
   objects-init:
-    image: ${SPACE_OBJECT_IMAGE:-space-objectstore:2025-09-07}
+    image: ${EDITION_OBJECT_IMAGE:-edition-objectstore:2025-09-07}
     pull_policy: never
     profiles: [tools]
     volumes:
@@ -106,7 +106,7 @@ services:
     profiles: [platform]
     build: { context: ../.., dockerfile: infra/deployment/Dockerfile, target: reading, args: [HTTP_PROXY, HTTPS_PROXY, NO_PROXY, http_proxy, https_proxy, no_proxy] }
     restart: unless-stopped
-    environment: { HOST: 0.0.0.0, PORT: "8096", SPACE_CONTENT_ORIGIN: "http://content:8095", SPACE_CONTROL_ORIGIN: "http://control:8094" }
+    environment: { HOST: 0.0.0.0, PORT: "8096", EDITION_CONTENT_ORIGIN: "http://content:8095", EDITION_CONTROL_ORIGIN: "http://control:8094" }
     ports: ["127.0.0.1:${E2E_READING_PORT:-8096}:8096"]
     healthcheck:
       test: [CMD, node, -e, "fetch('http://127.0.0.1:8096/',{redirect:'manual',signal:AbortSignal.timeout(3000)}).then(()=>process.exit(0)).catch(()=>process.exit(1))"]
@@ -131,7 +131,7 @@ services:
     profiles: [tools]
     restart: "no"
     healthcheck: { disable: true }
-    entrypoint: [node, infra/space.ts, seed]
+    entrypoint: [node, infra/edition.ts, seed]
     environment:
       <<: *app-env
       LOCAL_CONTROL_ORIGIN: http://control:8094
@@ -142,7 +142,7 @@ services:
       LOCAL_SEED_EMAIL: ${LOCAL_SEED_EMAIL:-owner@dev.local}
       LOCAL_SEED_PASSWORD: ${LOCAL_SEED_PASSWORD:-password1}
       LOCAL_SEED_RUNTIME_DIR: /workspace/.scratch/dw-v1/runtime/platform
-      PGPASSWORD: space
+      PGPASSWORD: edition
 volumes:
   source:
     name: ${E2E_STORAGE_NAMESPACE:-dw-remaining}_source

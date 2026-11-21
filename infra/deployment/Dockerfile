@@ -45,7 +45,7 @@ FROM reading-deps AS reading-build
 COPY reading/ .
 RUN pnpm build:reader
 
-# Reading frontend: Astro SSR with the Node adapter (standalone). Upstreams come from SPACE_CONTENT_ORIGIN / SPACE_CONTROL_ORIGIN.
+# Reading frontend: Astro SSR with the Node adapter (standalone). Upstreams come from EDITION_CONTENT_ORIGIN / EDITION_CONTROL_ORIGIN.
 FROM node:24-bookworm-slim AS reading
 WORKDIR /app
 COPY --from=reading-build /workspace/reading/dist-reader/ dist-reader/
@@ -71,7 +71,7 @@ COPY infra/ infra/
 COPY --from=backend /workspace/backend/apps/control/build/libs/*.jar backend/apps/control/build/libs/
 COPY --from=backend /workspace/backend/apps/content/build/libs/*.jar backend/apps/content/build/libs/
 COPY --from=backend /workspace/backend/apps/index/build/libs/*.jar backend/apps/index/build/libs/
-ENTRYPOINT ["node", "infra/space.ts", "diagnose"]
+ENTRYPOINT ["node", "infra/edition.ts", "diagnose"]
 
 FROM caddy:2 AS web
 COPY infra/deployment/local.Caddyfile /etc/caddy/Caddyfile

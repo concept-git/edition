@@ -16,7 +16,7 @@ plugins {
 val conceptInventory = groovy.json.JsonSlurper().parse(file("concept-modules.json")) as Map<*, *>
 val conceptDefinitions = (conceptInventory["concepts"] as List<*>).map { it as Map<*, *> }
 val conceptProjects = conceptDefinitions.map { ":${it["project"]}" }.toSet()
-val technicalProjects = setOf(":contract", ":values", ":request-context", ":testing")
+val technicalProjects = setOf(":contract", ":values", ":request-context")
 val applicationProjects = setOf(":control", ":content", ":index")
 
 val allowedProjectDependencies = mapOf(
@@ -26,7 +26,6 @@ val allowedProjectDependencies = mapOf(
     ":contract" to emptySet(),
     ":values" to emptySet(),
     ":request-context" to emptySet(),
-    ":testing" to emptySet(),
 ) + conceptProjects.associateWith {
     setOf(":contract", ":values", ":request-context")
 }
@@ -68,11 +67,11 @@ tasks.register("verifyProjectArchitecture") {
             check(target.projectDir.canonicalFile == expectedDirectory.canonicalFile) {
                 "project location: ${target.path} -> ${target.projectDir}, expected $expectedDirectory"
             }
-            val sources = fileTree(target.layout.projectDirectory.dir(if (target.name == "testing") "src/testFixtures/java" else "src/main/java")) { include("**/*.java") }
+            val sources = fileTree(target.layout.projectDirectory.dir("src/main/java")) { include("**/*.java") }
             check(!sources.isEmpty) { "Production source coverage is empty: ${target.path}" }
             if (target.path in technicalProjects) {
                 sources.forEach { source ->
-                    check(!Regex("io\\.space\\.(concepts|platform|control|contentapp|index)\\.").containsMatchIn(source.readText())) {
+                    check(!Regex("io\\.edition\\.(concepts|platform|control|contentapp|index)\\.").containsMatchIn(source.readText())) {
                         "technical library: ${target.path} -> executable implementation in $source"
                     }
                 }
@@ -93,7 +92,7 @@ tasks.register("verifyProjectArchitecture") {
                         "index" -> "concepts|platform|control|contentapp"
                         else -> "contentapp|index"
                     }
-                    check(!Regex("(?m)^import\\s+(?:static\\s+)?io\\.space\\.(?:$foreign)\\.").containsMatchIn(source.readText())) {
+                    check(!Regex("(?m)^import\\s+(?:static\\s+)?io\\.edition\\.(?:$foreign)\\.").containsMatchIn(source.readText())) {
                         "runtime isolation: ${target.path} -> another application implementation in $source"
                     }
                 }
@@ -102,13 +101,13 @@ tasks.register("verifyProjectArchitecture") {
                 val definition = conceptDefinitions.single { ":${it["project"]}" == target.path }
                 val ownPackage = definition["package"] as String
                 sources.forEach { source ->
-                    Regex("io\\.space\\.concepts\\.[a-z]+(?:\\.[A-Za-z_$][A-Za-z0-9_$]*)*")
+                    Regex("io\\.edition\\.concepts\\.[a-z]+(?:\\.[A-Za-z_$][A-Za-z0-9_$]*)*")
                         .findAll(source.readText()).forEach { reference ->
                             check(reference.value == ownPackage || reference.value.startsWith("$ownPackage.")) {
                                 "concept independence: ${target.path} -> ${reference.value} in $source"
                             }
                         }
-                    check(!source.readText().contains("io.space.control.")) {
+                    check(!source.readText().contains("io.edition.control.")) {
                         "concept independence: ${target.path} -> application in $source"
                     }
                 }
@@ -155,8 +154,8 @@ subprojects {
         }
     }
     tasks.withType<Test>().configureEach {
-        systemProperty("space.backend.root", rootProject.projectDir.absolutePath)
-        inputs.property("minioTestImage", providers.environmentVariable("SPACE_MINIO_TEST_IMAGE").orElse("official"))
+        systemProperty("edition.backend.root", rootProject.projectDir.absolutePath)
+        inputs.property("minioTestImage", providers.environmentVariable("EDITION_MINIO_TEST_IMAGE").orElse("official"))
         // Mockito instrumentation changes the bootstrap classpath; CDS cannot be used here.
         jvmArgs("-Xshare:off")
         jvmArgumentProviders.add(CommandLineArgumentProvider {
@@ -179,10 +178,10 @@ tasks.register("bootRunDelivery") {
 
 val verifyPasswordRuntimeOwnership = tasks.register("verifyPasswordRuntimeOwnership") {
     group = "verification"
-    dependsOn(":password:jar")
+    dependsOn(listOf(":control", ":content", ":index").map { project(it).configurations.named("runtimeClasspath") })
     doLast {
-        val local = "io/space/concepts/password/application/PasswordService.class"
-        val businessApi = "io/space/concepts/password/api/PasswordApi.class"
+        val local = "io/edition/concepts/password/application/PasswordService.class"
+        val businessApi = "io/edition/concepts/password/api/PasswordApi.class"
         fun includes(app: String, entry: String): Boolean = project(app).configurations.getByName("runtimeClasspath").files.any { archive ->
             archive.extension == "jar" && ZipFile(archive).use { it.getEntry(entry) != null }
         }

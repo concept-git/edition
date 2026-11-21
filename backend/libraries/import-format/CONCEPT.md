@@ -34,7 +34,7 @@ sniff [index: PackIndex; source: PackSource] => [adapterId: optional String]
 checksum）。这是平台类概念：不拥有租户业务状态，也不提供 HTTP。gateway 与产品概念模块不可见；
 只有 sync 经 `ImportFormatApi` 调用，再交给 `Release.load`。
 
-导入作业由独立的 [ImportJob 概念](../importjob/CONCEPT.md) 拥有；此概念只返回格式 id、适配包与问题列表，组合层负责将结果记录到作业。
+导入作业由独立的 [ImportJob 概念](../import-job/CONCEPT.md) 拥有；此概念只返回格式 id、适配包与问题列表，组合层负责将结果记录到作业。
 
 ### SPI
 
@@ -60,7 +60,7 @@ checksum）。这是平台类概念：不拥有租户业务状态，也不提供
 ALL_META 无 uri 的业务元数据过滤，des/kw 非字符串忽略，扩展字段在属性容量内保留。
 正文缺失、路径歧义、冲突 META、空/重复 code、缺父节点、循环、过深目录或超长标题在适配阶段阻断。
 CLASS 无 uri 为分组；两份清单的页面并集可缺 SEO 或不入目录，同页可多次出现在目录。
-路径与标题回退、重复合并规则见 `docs/tech/BUNDLE.md` §5；全新系统不提供旧 code 身份迁移。
+全新系统不提供旧 code 身份迁移。
 
 ### file-tree 映射
 
@@ -118,7 +118,6 @@ HTML 上传（IPD、目录树、Bundle）原文保留，包括 doctype、head、
 | `directory` | 目录树构建与名称分配机制 |
 
 格式之间零互引；共享能力不依赖格式或路由；契约不反向依赖实现。
-`ImportFormatBoundariesTest` 对以上边界提供自动门禁。
 
 每个格式声明自己的元数据文件名，路由层以 `FormatMetadataSource` 聚合全部已注册格式的声明。
 这保留混包中已知元数据不进入附件扫描的行为；公共扫描器只调用 `PackSource.metadataEntry`，不硬编码来源名称。
@@ -133,7 +132,7 @@ HTML 上传（IPD、目录树、Bundle）原文保留，包括 doctype、head、
 
 ### 实现接口映射
 
-下表完整列出Java调用边界；行为前置、效果及组合策略以上文为准。sealed分支是可区分结果，查询Optional为空表示无绑定；参数中的actor和范围同样属于契约。此映射由SpecificationInterfaceParityTest核对，转录不替代行为审查。
+下表完整列出Java调用边界；行为前置、效果及组合策略以上文为准。sealed分支是可区分结果，查询Optional为空表示无绑定；参数中的actor和范围同样属于契约。
 
 | 方法 | 具名输入 | 返回类型 |
 | --- | --- | --- |

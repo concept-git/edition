@@ -2,8 +2,8 @@ import { readSource, sourceFingerprint } from "../src/lib/space-source.ts";
 
 try {
   const source = await readSource(
-    process.env.SPACE_BLOG_SOURCE ?? "https://beautyclaw.cn",
-    process.env.SPACE_BLOG_SPACE ?? "blog",
+    process.env.EDITION_BLOG_SOURCE ?? "https://beautyclaw.cn",
+    process.env.EDITION_BLOG_SPACE ?? "blog",
     true,
   );
   const result = process.argv.includes("--manifest")

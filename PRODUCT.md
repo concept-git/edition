@@ -15,7 +15,7 @@ web
 
 ## Product Purpose
 
-Space 是多租户文档与知识交付平台。它把页面、目录和附件收束到空间生命周期中，
+Edition 是多租户文档与知识交付平台。它把页面、目录和附件收束到空间生命周期中，
 通过不可变发版冻结已校验内容，再由各站点整体切换线上版本。
 
 ## Positioning
@@ -33,14 +33,14 @@ Create and manage your content in one place, then deliver consistent, agent-read
 ## Capabilities and Constraints
 
 - 统一语言以 `CONTEXT.md` 为准；概念模型以各 `CONCEPT.md` 与 `syncs` 包 `SYNCS.md` 为准。
-- 管理面必须契约先行，前后端同票开发，并由真实环境 Gherkin 端到端验收。
+- 管理面必须契约先行，前后端同票开发，并由真实环境 端到端验收。
 - 当前无客户标识、商业数据或可对外宣称的基准，不得在界面中虚构。
 
 ## Brand Commitments
 
-- 产品名：Space。
-- 产品名源于核心概念 Space（空间）；界面使用 `Space`，工程标识使用 `space`。空间表示内容归属与治理的单位。
-- 品牌只使用英文 `Space`；锁立使用现有内容卡片标识加 `Space`，不使用 GitHub Mark。
+- 产品名：Edition。
+- 界面使用产品名 `Edition`，工程标识使用 `edition`。领域概念 Space（空间）表示内容归属与治理的单位。
+- 品牌只使用英文 `Edition`；锁立使用现有内容卡片标识加 `Edition`，不使用 GitHub Mark。
 
 ## Product Principles
 

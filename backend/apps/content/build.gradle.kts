@@ -2,7 +2,7 @@ plugins {
     java
     alias(libs.plugins.spring.boot)
 }
-base { archivesName = "space-content" }
+base { archivesName = "edition-content" }
 java { toolchain { languageVersion = JavaLanguageVersion.of(25) } }
 dependencies {
     implementation(platform(libs.spring.boot.dependencies))
@@ -34,14 +34,14 @@ dependencies {
 tasks.register("verifyIsolation") {
     doLast {
         // Runtime artifact names and short Gradle project identities are both checked.
-        val forbiddenNames = setOf("space", "control", "index", "space-control", "space-index") +
+        val forbiddenNames = setOf("space", "control", "index", "edition-control", "edition-index") +
             rootProject.subprojects.filter { it.file("CONCEPT.md").isFile }.map { it.name }
         val forbidden = configurations.runtimeClasspath.get().resolvedConfiguration.resolvedArtifacts.filter {
             it.moduleVersion.id.group == "org.springframework.modulith" || it.name in forbiddenNames
         }
         check(forbidden.isEmpty()) { "Content includes management or worker artifacts: $forbidden" }
         fileTree("src/main/java").matching { include("**/*.java") }.forEach {
-            check(!Regex("io\\.space\\.(concepts|control|platform|index)\\.").containsMatchIn(it.readText())) { "Content imports management: $it" }
+            check(!Regex("io\\.edition\\.(concepts|control|platform|index)\\.").containsMatchIn(it.readText())) { "Content imports management: $it" }
             check(!Regex("""\.(putObject|removeObject|createIndex|deleteIndex|addDocuments|updateDocuments|updateSettings|batchUpdate)\s*\(""").containsMatchIn(it.readText())) { "Reader calls a write operation: $it" }
             val mutation = Regex("""(?i)\b(?:insert\s+into|delete\s+from|(?<!do )update)\s+([\w.]+)""").find(it.readText())
             check(mutation == null) { "Reader mutates database state: $it -> ${mutation?.value}" }

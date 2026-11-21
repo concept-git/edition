@@ -21,7 +21,7 @@ symlinkSync(path.join(outside, 'new-file'), path.join(work, 'dangling-link'));
 const zipped = spawnSync('/usr/bin/zip', ['-q', 'source.zip', 'source.txt'], { cwd: work });
 assert.equal(zipped.status, 0);
 
-Object.assign(process.env, { PI_EVAL_WORK: work, PI_EVAL_SKILL: skill, PI_EVAL_GUARD_LOG: path.join(root, 'guard.jsonl'), SPACECTL_HOME: cliHome });
+Object.assign(process.env, { PI_EVAL_WORK: work, PI_EVAL_SKILL: skill, PI_EVAL_GUARD_LOG: path.join(root, 'guard.jsonl'), EDITIONCTL_HOME: cliHome });
 let callback: any;
 let registered: any;
 evaluationGuard({ on(name: string, hook: any) { assert.equal(name, 'tool_call'); callback = hook; }, registerTool(tool: any) { registered = tool; } });
@@ -63,7 +63,7 @@ async function denied(name: string, command: string) {
   assert.equal(readFileSync(path.join(outside, 'sentinel'), 'utf8'), 'preserve');
   checks[name] = true;
 }
-await allowed('os_work_and_cli_home_writes', 'printf own > own.txt; printf journal > "$SPACECTL_HOME/journal-test"; printf temporary > "$TMPDIR/temp-test"');
+await allowed('os_work_and_cli_home_writes', 'printf own > own.txt; printf journal > "$EDITIONCTL_HOME/journal-test"; printf temporary > "$TMPDIR/temp-test"');
 const rtkResult = await execute('rtk proxy /usr/bin/printf rtk-proxy-preserves-stdout');
 assert.equal(rtkResult.exitCode, 0, rtkResult.output);
 assert.equal(rtkResult.output, 'rtk-proxy-preserves-stdout');

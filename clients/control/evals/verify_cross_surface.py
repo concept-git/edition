@@ -46,7 +46,7 @@ class Mcp:
         self.error_reader = threading.Thread(target=lambda: self.stderr.append(self.process.stderr.read()), daemon=True)
         self.error_reader.start()
         self.request('initialize', {'protocolVersion': '2025-03-26', 'capabilities': {},
-                                   'clientInfo': {'name': 'spacectl-real-verification', 'version': '1'}})
+                                   'clientInfo': {'name': 'editionctl-real-verification', 'version': '1'}})
         self.send({'jsonrpc': '2.0', 'method': 'notifications/initialized'})
 
     def send(self, value):
@@ -86,7 +86,7 @@ def main(args):
     arm = fixture['arms']['cli']
     private = json.loads(Path(fixture['privateCredentials']).read_text())
     secrets = json.loads(Path(fixture['environmentFile']).read_text())
-    env = {**os.environ, **secrets, 'SPACECTL_HOME': arm['cliHome'], 'JAVA_HOME': str(args.java_home)}
+    env = {**os.environ, **secrets, 'EDITIONCTL_HOME': arm['cliHome'], 'JAVA_HOME': str(args.java_home)}
     root = args.output.resolve()
     root.mkdir(parents=True, exist_ok=False)
     cli = str(args.cli.resolve())
@@ -126,7 +126,7 @@ def main(args):
     def run(name, words, *, body=None, profile='evaluation'):
         p = subprocess.run([cli, '--profile', profile, *words], input=body, capture_output=True,
                            text=True, env=env, cwd=work, timeout=75)
-        record = {'argv': ['spacectl', '--profile', profile, *words], 'exit': p.returncode,
+        record = {'argv': ['editionctl', '--profile', profile, *words], 'exit': p.returncode,
                   'stdout': p.stdout, 'stderr': p.stderr}
         save(root / (name + '.json'), record)
         return p.returncode, p.stdout
@@ -150,11 +150,11 @@ def main(args):
             code, value = invoke('schema-'+name.replace('.', '-'), ['schema', name])
             check('schema '+name, code == 0 and bool(value.get('cli')))
         code, value = invoke('selected-source', ['config', 'inspect'])
-        check('selected source only', code == 0 and value['source']['reference'] == 'SPACE_EVAL_PAT_CLI'
+        check('selected source only', code == 0 and value['source']['reference'] == 'EDITION_EVAL_PAT_CLI'
               and value['source']['state'] == 'present' and not value['authenticationVerified'])
         code, value = invoke('missing-source', ['config', 'inspect'], profile='missing')
         check('missing designated source', code == 0 and value['source']['state'] == 'missing'
-              and value['source']['reference'] == 'SPACE_SKILL_EVAL_MISSING')
+              and value['source']['reference'] == 'EDITION_SKILL_EVAL_MISSING')
         code, snapshot = invoke('snapshot', ['control','spaces','pages','+inspect'], target())
         check('content snapshot baseline', code == 0 and snapshot['headers']['etag'].startswith('"rev-')
               and snapshot['body']['id'] == arm['editPageId'])
@@ -323,7 +323,7 @@ def main(args):
                 if any(secret.encode() in blob for secret in secrets.values() if secret):leaked.append(str(path))
         check('secret exact-value scan',not leaked,{'matchedPaths':leaked})
         save(root/'results.json',{'complete':True,'passed':len(results),'checks':results,'fixtureTenant':arm['tenantId'],
-             'cliJarHashes':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in args.cli.parent.parent.glob('lib/spacectl-*.jar')}})
+             'cliJarHashes':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in args.cli.parent.parent.glob('lib/editionctl-*.jar')}})
         print(json.dumps({'complete':True,'checks':len(results),'results':str(root/'results.json')}))
     except BaseException as error:
         save(root/'failure.json',{'errorType':type(error).__name__,'message':str(error),'checks':results})

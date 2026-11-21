@@ -1,7 +1,7 @@
 {
   "version": "1",
   "apiVersion": "1.0.0",
-  "contractSha256": "671439c72e6187a88f84396a49a5d0c58117ddd94aa864fb9aa43ce5aa9c160a",
+  "contractSha256": "d0670cf2d929c459992b289a7216cccb0c0d8518c3d8a4f22b1fb89b48303896",
   "commands": {
     "control.account.erase": {
       "ref": "operations/eraseCurrentUser.json",

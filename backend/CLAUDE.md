@@ -8,7 +8,7 @@
 - `libraries/<领域名>/` — 独立 Gradle 概念项目。清单只维护于 `concept-modules.json`。规则见 `libraries/CLAUDE.md`
 - `libraries/` — 具名技术能力。规则见 `libraries/CLAUDE.md`
 - 模块根 `CONCEPT.md` 是单概念权威规格。应用组合目录共置 `SYNCS.md`
-- 管理产物名是 `space`，项目路径是 `:control`
+- 管理产物名是 `edition-control`，项目路径是 `:control`
 
 <important if="you need to run commands to build, test, lint, or generate code">
 
@@ -39,7 +39,7 @@
 </important>
 
 <important if="you are changing cross-store projection, reader permissions, published versions, or recovery">
-- 见 `docs/tech/DELIVERY.md`。
+- 见 `infra/README.md`。
 </important>
 
 <important if="you are changing failure handling, retries, or external I/O">

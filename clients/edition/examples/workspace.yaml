@@ -1,0 +1,13 @@
+consistency: always
+mounts:
+  /space:
+    resource: edition_vfs:EditionVFS
+    mode: read
+    config:
+      origin: https://docs.example.com
+      host: docs.example.com
+      space: docs
+      token: ${EDITION_TOKEN}
+  /tmp:
+    resource: ram
+    mode: write

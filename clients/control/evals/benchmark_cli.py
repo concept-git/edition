@@ -37,7 +37,7 @@ def distribution(path):
     jars = [{"name": jar.name, "bytes": jar.stat().st_size, "sha256": digest(jar.read_bytes())}
             for jar in sorted((path / "lib").glob("*.jar"))]
     return {"path": str(path), "jars": jars, "jarBytes": sum(jar["bytes"] for jar in jars),
-            "launcherSha256": digest((path / "bin/spacectl").read_bytes())}
+            "launcherSha256": digest((path / "bin/editionctl").read_bytes())}
 
 
 def main():
@@ -64,14 +64,14 @@ def main():
     manifests = {name: distribution(path) for name, path in paths.items()}
     java_version = subprocess.run([str(java_home / "bin/java"), "-version"],
                                   capture_output=True, text=True, check=True).stderr
-    with tempfile.TemporaryDirectory(prefix="spacectl-benchmark-") as temp:
+    with tempfile.TemporaryDirectory(prefix="editionctl-benchmark-") as temp:
         work = Path(temp)
         environments = {}
         for name, path in paths.items():
             env = {key: os.environ[key] for key in ("PATH", "LANG", "LC_ALL", "TMPDIR") if key in os.environ}
-            env.update(JAVA_HOME=str(java_home), SPACECTL_HOME=str(work / name))
+            env.update(JAVA_HOME=str(java_home), EDITIONCTL_HOME=str(work / name))
             environments[name] = env
-            configured = subprocess.run([str(path / "bin/spacectl"), "configure", "--base-url",
+            configured = subprocess.run([str(path / "bin/editionctl"), "configure", "--base-url",
                                          "http://127.0.0.1:1", "--allow-http-loopback",
                                          "--token-env", "BENCHMARK_UNUSED_PAT"], cwd=work,
                                         env=env, capture_output=True, timeout=20)
@@ -81,7 +81,7 @@ def main():
         def run(name, case, timed, iteration):
             argv, expected = CASES[case]
             start = time.perf_counter_ns()
-            completed = subprocess.run([str(paths[name] / "bin/spacectl"), *argv], cwd=work,
+            completed = subprocess.run([str(paths[name] / "bin/editionctl"), *argv], cwd=work,
                                        env=environments[name], input=b"", capture_output=True, timeout=20)
             elapsed = (time.perf_counter_ns() - start) / 1_000_000
             if completed.returncode != expected:

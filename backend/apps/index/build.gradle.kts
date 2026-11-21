@@ -2,7 +2,7 @@ plugins {
     java
     alias(libs.plugins.spring.boot)
 }
-base { archivesName = "space-index" }
+base { archivesName = "edition-index" }
 java { toolchain { languageVersion = JavaLanguageVersion.of(25) } }
 dependencies {
     implementation(platform(libs.spring.boot.dependencies))

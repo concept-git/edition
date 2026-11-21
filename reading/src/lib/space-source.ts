@@ -160,9 +160,9 @@ export async function readSource(
 }
 
 export function assertProductionSource(): void {
-  if (process.env.SPACE_BLOG_PRODUCTION === "1" && process.env.SPACE_BLOG_FIXTURE) {
+  if (process.env.EDITION_BLOG_PRODUCTION === "1" && process.env.EDITION_BLOG_FIXTURE) {
     throw new SourceError(
-      "Production build refuses SPACE_BLOG_FIXTURE",
+      "Production build refuses EDITION_BLOG_FIXTURE",
     );
   }
 }
@@ -171,11 +171,11 @@ let source: Promise<PublishedSource> | undefined;
 export function publishedSource(): Promise<PublishedSource> {
   source ??= (async () => {
     assertProductionSource();
-    const origin = process.env.SPACE_BLOG_SOURCE ?? "https://beautyclaw.cn";
-    const space = process.env.SPACE_BLOG_SPACE ?? "blog";
-    if (!process.env.SPACE_BLOG_FIXTURE) return readSource(origin, space);
+    const origin = process.env.EDITION_BLOG_SOURCE ?? "https://beautyclaw.cn";
+    const space = process.env.EDITION_BLOG_SPACE ?? "blog";
+    if (!process.env.EDITION_BLOG_FIXTURE) return readSource(origin, space);
     const entries = JSON.parse(
-      await readFile(process.env.SPACE_BLOG_FIXTURE, "utf8"),
+      await readFile(process.env.EDITION_BLOG_FIXTURE, "utf8"),
     );
     return {
       mode: "fixture",

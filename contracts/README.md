@@ -3,19 +3,14 @@
 - `openapi.json`：管理面契约。**后端生成、提交入库、供客户端消费**，手改无效；读者认证接口属于独立 reader 契约。
 - 更新流程：后端改动 HTTP 适配器后在 Java 25 运行 `cd backend && ./gradlew :control:generateOpenApiDocs`，
   产物直接写入本目录，与实现同一提交。
-- `delivery-openapi.json`：阅读入口契约。运行 `node infra/space.ts verify private --update-contract` 合并 Reader 的 `/api-docs` 与 Control 的 `/api-docs/reader-commands`，默认检测漂移。
+- `delivery-openapi.json`：阅读入口契约。运行 `node infra/edition.ts verify private --update-contract` 合并 Reader 的 `/api-docs` 与 Control 的 `/api-docs/reader-commands`，默认检测漂移。
 - 契约随应用版本演进，与概念版本无关（概念可复用于多应用）。
 
 ## Problem-code catalog
 
-- `backend/apps/control/src/main/java/io/space/control/compositions/flow/ProblemCode.java` 是顶层 RFC 9457 `code` 的
+- `backend/apps/control/src/main/java/io/edition/control/compositions/flow/ProblemCode.java` 是顶层 RFC 9457 `code` 的
   唯一机器可读 catalog；springdoc 由它生成 OpenAPI enum。`violations[].code` 是独立字段校验词汇，不进顶层 catalog。
-- `ProblemContractParityTest` 从编译后 HTTP 适配器字节码扫描真实 `ProblemCode` 映射，
-  双向比较 catalog / HTTP / 已提交 OpenAPI。尚未开放的 code 必须在 enum 中
-  显式标为 reserved，不得靠无映射沉默预留。
-- 本地门禁：
-  `cd backend && ./gradlew :control:test --tests io.space.ProblemContractParityTest`。测试内置
-  “后端新增但 OpenAPI 缺失”和“OpenAPI 新增但无后端映射/reservation”两类负向 fixture。
+- 尚未开放的错误码在 enum 中显式标为 reserved。
 
 当前为全新平台契约基线，不保留旧版本迁移豁免；CI 校验 OpenAPI 结构、服务产物生成漂移与前端类型消费一致性。首次正式发布后再固定受支持的发布基线。
 

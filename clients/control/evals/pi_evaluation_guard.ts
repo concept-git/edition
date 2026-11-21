@@ -86,7 +86,7 @@ export default function evaluationGuard(pi: any) {
   const work = realpathSync(process.env.PI_EVAL_WORK!);
   const skill = process.env.PI_EVAL_SKILL ? realpathSync(process.env.PI_EVAL_SKILL) : null;
   const log = process.env.PI_EVAL_GUARD_LOG!;
-  const cliHome = realpathSync(process.env.SPACECTL_HOME!);
+  const cliHome = realpathSync(process.env.EDITIONCTL_HOME!);
   const temporary = path.join(work, '.eval-tmp');
   mkdirSync(temporary, { recursive: true, mode: 0o700 });
   pi.registerTool(createBashTool(work, { operations: sandboxOperations([work, cliHome, temporary], temporary) }));

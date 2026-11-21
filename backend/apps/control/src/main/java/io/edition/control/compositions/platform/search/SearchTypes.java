@@ -1,0 +1,18 @@
+package io.edition.control.compositions.platform.search;
+
+import static io.edition.control.compositions.platform.search.SearchTypes.*;
+
+import io.edition.concepts.search.api.SearchApi;
+import io.edition.control.compositions.*;
+import java.util.*;
+
+/** Public composition inputs, results, and finite refusal types. */
+public final class SearchTypes {
+    private SearchTypes() {}
+
+    public record Configuration(List<String> fields, long revision) {
+        static Configuration of(SearchApi.Boost boost) {
+            return new Configuration(boost.fields(), boost.revision());
+        }
+    }
+}

@@ -77,7 +77,7 @@ candidates [limit: Int] => [keys: seq Key]
 本模块不执行业务体积上限：附件单文件 10 MiB 仍是 Page 层不变量；导入发版包 500 MiB 是 syncs/gateway
 入站限制。读写超时 30 分钟以覆盖大包传输；连接超时 5 秒。
 
-配置：`io.space.object-store.{endpoint, access-key, secret-key, bucket, presign-public-endpoint}`；
+配置：`io.edition.object-store.{endpoint, access-key, secret-key, bucket, presign-public-endpoint}`；
 桶在部署侧预建（docker compose `minio-init`），模块启动时不自建桶。
 
 ADR-0023：SourceObjectReservations在写事务保留2小时上传/旧签名保护，再由GuardedObjectStore持对象事务锁至引用提交；GC同锁重新检查所有租户工作区/快照/作业/交付引用。后台分页扫描源桶发现历史与事务回滚遗留对象，按lastModified补2小时保护后再检查引用；不要求每次保护另借连接，避免连接池嵌套事务饥饿。管理不删除交付桶对象。remove是仅GC调用的系统出口。
@@ -92,7 +92,7 @@ ADR-0023：SourceObjectReservations在写事务保留2小时上传/旧签名保�
 
 ### 实现接口映射
 
-下表完整列出Java调用边界；行为前置、效果及组合策略以上文为准。sealed分支是可区分结果，查询Optional为空表示无绑定；参数中的actor和范围同样属于契约。此映射由SpecificationInterfaceParityTest核对，转录不替代行为审查。
+下表完整列出Java调用边界；行为前置、效果及组合策略以上文为准。sealed分支是可区分结果，查询Optional为空表示无绑定；参数中的actor和范围同样属于契约。
 
 | 方法 | 具名输入 | 返回类型 |
 | --- | --- | --- |

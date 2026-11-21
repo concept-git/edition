@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edition-vfs"
+version = "0.1.0"
+description = "Read-only Space consumption adapter over /api/content"
+requires-python = ">=3.11"
+dependencies = [
+  "httpx>=0.28.1",
+  "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+mirage = ["mirage-ai==0.0.6"]
+fuse = ["fusepy==3.0.1"]
+
+[project.scripts]
+edition-vfs = "edition_vfs.cli:main"
+edition-vfs-mount = "edition_vfs.mount:main"
+
+[project.entry-points."mirage.resources"]
+edition = "edition_vfs:EditionVFS"
+
+[tool.setuptools.packages.find]
+where = ["src"]

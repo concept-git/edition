@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Space API",
-    "description": "Five-plane API contract for Space.",
+    "title": "Edition API",
+    "description": "Five-plane API contract for Edition.",
     "version": "1.0.0"
   },
   "servers": [

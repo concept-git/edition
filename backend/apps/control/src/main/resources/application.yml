@@ -16,14 +16,14 @@ spring:
       pool:
         size: 8
   application:
-    name: space
+    name: edition
 
   datasource:
     hikari:
       maximum-pool-size: ${DB_POOL_SIZE:32}
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/space}
-    username: ${DB_USER:space}
-    password: ${DB_PASSWORD:space}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/edition}
+    username: ${DB_USER:edition}
+    password: ${DB_PASSWORD:edition}
 
   flyway:
     schemas: shared,iam,authoring,releases,hosting
@@ -75,7 +75,7 @@ logging:
       console: ecs
       file: ecs
   file:
-    name: ${LOG_FILE:logs/space.log}
+    name: ${LOG_FILE:logs/edition.log}
 
 springdoc:
   api-docs:
@@ -91,7 +91,7 @@ identity:
     reset-ttl: ${RESET_TTL:PT30M}
 
 io:
-  space:
+  edition:
     analytics:
       ingest-key: ${ANALYTICS_INGEST_KEY:}
     health:
@@ -112,7 +112,7 @@ io:
     reader-auth:
       access-ttl: ${READER_ACCESS_TTL:PT10M}
     session:
-      key-id: ${SESSION_KEY_ID:space-session-1}
+      key-id: ${SESSION_KEY_ID:edition-session-1}
       private-key: ${SESSION_PRIVATE_KEY:}
       public-key: ${SESSION_PUBLIC_KEY:}
       access-ttl: ${SESSION_ACCESS_TTL:PT10M}
@@ -121,7 +121,7 @@ io:
       encryption-key: ${IDEMPOTENCY_ENCRYPTION_KEY:}
     mail-outbox:
       enabled: ${MAIL_ENABLED:false}
-      from: ${MAIL_FROM:noreply@space.local}
+      from: ${MAIL_FROM:noreply@edition.local}
       # base64 32-byte AES key；独立于 Session 与幂等响应密钥
       encryption-key: ${MAIL_OUTBOX_ENCRYPTION_KEY:}
     import:
@@ -136,8 +136,8 @@ io:
     object-store:
       # MinIO（S3 协议）：附件二进制按 sha256 内容寻址；桶由 docker compose minio-init 预建
       endpoint: ${OBJECT_STORE_ENDPOINT:http://localhost:9000}
-      access-key: ${OBJECT_STORE_ACCESS_KEY:space}
-      secret-key: ${OBJECT_STORE_SECRET_KEY:space-dev}
+      access-key: ${OBJECT_STORE_ACCESS_KEY:edition}
+      secret-key: ${OBJECT_STORE_SECRET_KEY:edition-dev}
       bucket: ${OBJECT_STORE_BUCKET:attachments}
       # 浏览器可达的签名地址 host（容器内外不同）；为空即与 endpoint 相同
       presign-public-endpoint: ${OBJECT_STORE_PRESIGN_PUBLIC_ENDPOINT:}

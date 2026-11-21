@@ -15,7 +15,7 @@
 |---|---|
 | `python3 scripts/generate_contract.py` | 更新 CLI 目录。verifyContract 阻断漂移 |
 | `./gradlew check installDist distZip` | 构建验证 |
-| 真实 HTTP / CLI / MCP 进程 | 业务集成使用真实 Control 与 PostgreSQL，并设置 `SPACECTL_REQUIRE_CLI=true` |
+| 真实 HTTP / CLI / MCP 进程 | 业务集成使用真实 Control 与 PostgreSQL，并设置 `EDITIONCTL_REQUIRE_CLI=true` |
 </important>
 
 <important if="you are changing CLI behavior or generated contracts">

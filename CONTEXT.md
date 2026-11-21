@@ -1,9 +1,9 @@
-# Space
+# Edition
 
 多租户文档与知识交付平台：以空间统一管理内容，通过发版保持交付一致，供读者与应用智能体按授权发现、读取和引用。
 使用统一领域词汇；概念规格见 `docs/prd/`，架构决策见 `docs/adr/`。词汇覆盖全部 19 个产品概念及平台能力，不以实现进度裁剪。
 
-Space 是平台产品名，工程标识为 `space`；领域概念 Space（空间）表示内容归属与治理的单位。
+Edition 是平台产品名，工程标识为 `edition`；领域概念 Space（空间）表示内容归属与治理的单位。
 
 四个限界上下文是部署与投资边界，不是概念：IAM（身份）管可买的身份与授权；Authoring（创作）管工作稿与组织；Releases（发版）管冻结并切换主版本；Hosting（托管）管站点、域名、重定向、检索。口头固定说法：「发版上下文 Releases / 概念 Release」。Hosting 不占用概念 Site，也不占用运行平面 delivery。
 
@@ -394,5 +394,5 @@ _Avoid_: 通用 Job 概念、队列（实现词）
 _Avoid_: 发版、一次上传
 
 **消费适配**:
-把消费面已有读能力翻译成外部协议的客户端包；只读交付投影，不持内容真相，不进管理概念。构件落在 `clients/space`，代码名 `SpaceVFS`。
+把消费面已有读能力翻译成外部协议的客户端包；只读交付投影，不持内容真相，不进管理概念。构件落在 `clients/edition`，代码名 `EditionVFS`。
 _Avoid_: MCP 服务、Mirage、space-mcp、space-mirage、space-adapter、智能体运行时、ConsumptionSurface 模块

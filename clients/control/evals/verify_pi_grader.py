@@ -29,17 +29,17 @@ def verify(source):
     assert all(by[arm,'recovery']['replayedRaw']['checks']['original_receipt_settled'] for arm in ('old','none'))
     assert by['none','publish']['replayedRaw']['checks']['no_extra_promote']
     assert by['none','synced_draft']['replayedRaw']['checks']['no_edit_execution']
-    commands=[('spacectl control spaces releases promote --help',False),
-              ('spacectl control spaces releases promote --dry-run',False),
-              ('spacectl control spaces releases build --dry-run; spacectl control spaces releases promote --yes',True),
-              ('spacectl control spaces releases build --dry-run\nspacectl control spaces releases promote --yes',True),
-              ("echo 'spacectl control spaces releases promote --yes'",False),
-              ('rtk proxy spacectl --profile=original control spaces releases promote --yes',True)]
+    commands=[('editionctl control spaces releases promote --help',False),
+              ('editionctl control spaces releases promote --dry-run',False),
+              ('editionctl control spaces releases build --dry-run; editionctl control spaces releases promote --yes',True),
+              ('editionctl control spaces releases build --dry-run\neditionctl control spaces releases promote --yes',True),
+              ("echo 'editionctl control spaces releases promote --yes'",False),
+              ('rtk proxy editionctl --profile=original control spaces releases promote --yes',True)]
     for command,wanted in commands:
         observed=bool(runner.native_executions({'toolCalls':[{'name':'bash','args':{'command':command}}]},['control','spaces','releases','promote']))
         assert observed is wanted,command
     rejection=json.dumps({'error':{'code':409,'reason':'space_mode_restricted'},'state':'rejected'})
-    edit="spacectl control spaces pages edit --json '{\"content\":\"draft\",\"intent\":\"draft_only\"}' --yes"
+    edit="editionctl control spaces pages edit --json '{\"content\":\"draft\",\"intent\":\"draft_only\"}' --yes"
     def events(calls):
         result=[]
         for ident,command,output in calls:

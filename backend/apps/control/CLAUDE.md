@@ -16,9 +16,8 @@
 
 | Command | What it does |
 |---|---|
-| `ConceptSpecParityTest`、`SyncSpecParityTest`、`SpecificationInterfaceParityTest` | 修改 `CONCEPT.md`、`SYNCS.md` 或公开接口后运行。更新接口映射时用 `UPDATE_SPEC_INTERFACES=true`，审阅差异后去掉该变量重跑。转录通过不能代替行为测试 |
-| `:control:generateOpenApiDocs`，然后 `ProblemContractParityTest` | 修改 adapters/http 或公开 ProblemCode 后运行。生成器会启动完整功能应用，须先准备依赖 |
-| `DdlContextBoundaryTest`、`SqlSchemaOwnershipTest` 及受影响的真 PostgreSQL 测试 | 修改 SQL 后运行。静态检查不能验证 RLS 实际生效 |
+| `:control:generateOpenApiDocs` | 修改 adapters/http 或公开 ProblemCode 后运行。生成器会启动完整功能应用，须先准备依赖 |
+| `:control:test`（真实 PostgreSQL） | 修改 SQL 后运行。静态检查不能验证 RLS 实际生效 |
 </important>
 
 <important if="you are adding a platform concept or changing a concept boundary">

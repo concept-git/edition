@@ -7,7 +7,7 @@
       "concept": "collection",
       "project": "collection",
       "directory": "libraries/collection",
-      "package": "io.space.concepts.collection"
+      "package": "io.edition.concepts.collection"
     },
     {
       "name": "Page",
@@ -15,7 +15,7 @@
       "concept": "page",
       "project": "page",
       "directory": "libraries/page",
-      "package": "io.space.concepts.page"
+      "package": "io.edition.concepts.page"
     },
     {
       "name": "Revision",
@@ -23,7 +23,7 @@
       "concept": "revision",
       "project": "revision",
       "directory": "libraries/revision",
-      "package": "io.space.concepts.revision"
+      "package": "io.edition.concepts.revision"
     },
     {
       "name": "Space",
@@ -31,7 +31,7 @@
       "concept": "space",
       "project": "space",
       "directory": "libraries/space",
-      "package": "io.space.concepts.space"
+      "package": "io.edition.concepts.space"
     },
     {
       "name": "Tag",
@@ -39,7 +39,7 @@
       "concept": "tag",
       "project": "tag",
       "directory": "libraries/tag",
-      "package": "io.space.concepts.tag"
+      "package": "io.edition.concepts.tag"
     },
     {
       "name": "Toc",
@@ -47,7 +47,7 @@
       "concept": "toc",
       "project": "toc",
       "directory": "libraries/toc",
-      "package": "io.space.concepts.toc"
+      "package": "io.edition.concepts.toc"
     },
     {
       "name": "CustomDomain",
@@ -55,7 +55,7 @@
       "concept": "customdomain",
       "project": "custom-domain",
       "directory": "libraries/custom-domain",
-      "package": "io.space.concepts.customdomain"
+      "package": "io.edition.concepts.customdomain"
     },
     {
       "name": "Redirect",
@@ -63,7 +63,7 @@
       "concept": "redirect",
       "project": "redirect",
       "directory": "libraries/redirect",
-      "package": "io.space.concepts.redirect"
+      "package": "io.edition.concepts.redirect"
     },
     {
       "name": "Search",
@@ -71,7 +71,7 @@
       "concept": "search",
       "project": "search",
       "directory": "libraries/search",
-      "package": "io.space.concepts.search"
+      "package": "io.edition.concepts.search"
     },
     {
       "name": "Site",
@@ -79,7 +79,7 @@
       "concept": "site",
       "project": "site",
       "directory": "libraries/site",
-      "package": "io.space.concepts.site"
+      "package": "io.edition.concepts.site"
     },
     {
       "name": "ApiToken",
@@ -87,7 +87,7 @@
       "concept": "apitoken",
       "project": "api-token",
       "directory": "libraries/api-token",
-      "package": "io.space.concepts.apitoken"
+      "package": "io.edition.concepts.apitoken"
     },
     {
       "name": "ManagementToken",
@@ -95,7 +95,7 @@
       "concept": "managementtoken",
       "project": "management-token",
       "directory": "libraries/management-token",
-      "package": "io.space.concepts.managementtoken"
+      "package": "io.edition.concepts.managementtoken"
     },
     {
       "name": "Membership",
@@ -103,7 +103,7 @@
       "concept": "membership",
       "project": "membership",
       "directory": "libraries/membership",
-      "package": "io.space.concepts.membership"
+      "package": "io.edition.concepts.membership"
     },
     {
       "name": "Password",
@@ -111,7 +111,7 @@
       "concept": "password",
       "project": "password",
       "directory": "libraries/password",
-      "package": "io.space.concepts.password"
+      "package": "io.edition.concepts.password"
     },
     {
       "name": "Permission",
@@ -119,7 +119,7 @@
       "concept": "permission",
       "project": "permission",
       "directory": "libraries/permission",
-      "package": "io.space.concepts.permission"
+      "package": "io.edition.concepts.permission"
     },
     {
       "name": "Session",
@@ -127,7 +127,7 @@
       "concept": "session",
       "project": "session",
       "directory": "libraries/session",
-      "package": "io.space.concepts.session"
+      "package": "io.edition.concepts.session"
     },
     {
       "name": "Team",
@@ -135,7 +135,7 @@
       "concept": "team",
       "project": "team",
       "directory": "libraries/team",
-      "package": "io.space.concepts.team"
+      "package": "io.edition.concepts.team"
     },
     {
       "name": "User",
@@ -143,7 +143,7 @@
       "concept": "user",
       "project": "user",
       "directory": "libraries/user",
-      "package": "io.space.concepts.user"
+      "package": "io.edition.concepts.user"
     },
     {
       "name": "Release",
@@ -151,7 +151,7 @@
       "concept": "release",
       "project": "release",
       "directory": "libraries/release",
-      "package": "io.space.concepts.release"
+      "package": "io.edition.concepts.release"
     },
     {
       "name": "Analytics",
@@ -159,7 +159,7 @@
       "concept": "analytics",
       "project": "analytics",
       "directory": "libraries/analytics",
-      "package": "io.space.concepts.analytics"
+      "package": "io.edition.concepts.analytics"
     },
     {
       "name": "Audit",
@@ -167,7 +167,7 @@
       "concept": "audit",
       "project": "audit",
       "directory": "libraries/audit",
-      "package": "io.space.concepts.audit"
+      "package": "io.edition.concepts.audit"
     },
     {
       "name": "BundleExport",
@@ -175,7 +175,7 @@
       "concept": "bundleexport",
       "project": "bundle-export",
       "directory": "libraries/bundle-export",
-      "package": "io.space.concepts.bundleexport"
+      "package": "io.edition.concepts.bundleexport"
     },
     {
       "name": "CertificateInspection",
@@ -183,7 +183,7 @@
       "concept": "certificateinspection",
       "project": "certificate-inspection",
       "directory": "libraries/certificate-inspection",
-      "package": "io.space.concepts.certificateinspection"
+      "package": "io.edition.concepts.certificateinspection"
     },
     {
       "name": "ContentType",
@@ -191,7 +191,7 @@
       "concept": "contenttype",
       "project": "content-type",
       "directory": "libraries/content-type",
-      "package": "io.space.concepts.contenttype"
+      "package": "io.edition.concepts.contenttype"
     },
     {
       "name": "DeletionRecovery",
@@ -199,7 +199,7 @@
       "concept": "deletionrecovery",
       "project": "deletion-recovery",
       "directory": "libraries/deletion-recovery",
-      "package": "io.space.concepts.deletionrecovery"
+      "package": "io.edition.concepts.deletionrecovery"
     },
     {
       "name": "DnsLookup",
@@ -207,7 +207,7 @@
       "concept": "dnslookup",
       "project": "dns-lookup",
       "directory": "libraries/dns-lookup",
-      "package": "io.space.concepts.dnslookup"
+      "package": "io.edition.concepts.dnslookup"
     },
     {
       "name": "Idempotency",
@@ -215,7 +215,7 @@
       "concept": "idempotency",
       "project": "idempotency",
       "directory": "libraries/idempotency",
-      "package": "io.space.concepts.idempotency"
+      "package": "io.edition.concepts.idempotency"
     },
     {
       "name": "ImportFormat",
@@ -223,7 +223,7 @@
       "concept": "importformat",
       "project": "import-format",
       "directory": "libraries/import-format",
-      "package": "io.space.concepts.importformat"
+      "package": "io.edition.concepts.importformat"
     },
     {
       "name": "ImportJob",
@@ -231,7 +231,7 @@
       "concept": "importjob",
       "project": "import-job",
       "directory": "libraries/import-job",
-      "package": "io.space.concepts.importjob"
+      "package": "io.edition.concepts.importjob"
     },
     {
       "name": "MailOutbox",
@@ -239,7 +239,7 @@
       "concept": "mailoutbox",
       "project": "mail-outbox",
       "directory": "libraries/mail-outbox",
-      "package": "io.space.concepts.mailoutbox"
+      "package": "io.edition.concepts.mailoutbox"
     },
     {
       "name": "ObjectStore",
@@ -247,7 +247,7 @@
       "concept": "objectstore",
       "project": "object-store",
       "directory": "libraries/object-store",
-      "package": "io.space.concepts.objectstore"
+      "package": "io.edition.concepts.objectstore"
     },
     {
       "name": "PluginDevelopment",
@@ -255,7 +255,7 @@
       "concept": "plugindevelopment",
       "project": "plugin-development",
       "directory": "libraries/plugin-development",
-      "package": "io.space.concepts.plugindevelopment"
+      "package": "io.edition.concepts.plugindevelopment"
     },
     {
       "name": "PluginVerification",
@@ -263,7 +263,7 @@
       "concept": "pluginverification",
       "project": "plugin-verification",
       "directory": "libraries/plugin-verification",
-      "package": "io.space.concepts.pluginverification"
+      "package": "io.edition.concepts.pluginverification"
     },
     {
       "name": "ReaderSecurity",
@@ -271,7 +271,7 @@
       "concept": "readersecurity",
       "project": "reader-security",
       "directory": "libraries/reader-security",
-      "package": "io.space.concepts.readersecurity"
+      "package": "io.edition.concepts.readersecurity"
     },
     {
       "name": "ServiceHealth",
@@ -279,7 +279,7 @@
       "concept": "servicehealth",
       "project": "service-health",
       "directory": "libraries/service-health",
-      "package": "io.space.concepts.servicehealth"
+      "package": "io.edition.concepts.servicehealth"
     },
     {
       "name": "TenantRegistry",
@@ -287,7 +287,7 @@
       "concept": "tenantregistry",
       "project": "tenant-registry",
       "directory": "libraries/tenant-registry",
-      "package": "io.space.concepts.tenantregistry"
+      "package": "io.edition.concepts.tenantregistry"
     },
     {
       "name": "Webhook",
@@ -295,7 +295,7 @@
       "concept": "webhook",
       "project": "webhook",
       "directory": "libraries/webhook",
-      "package": "io.space.concepts.webhook"
+      "package": "io.edition.concepts.webhook"
     }
   ]
 }

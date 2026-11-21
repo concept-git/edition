@@ -123,7 +123,7 @@ async def verify(source, output):
         json.loads((synced / 'before.json').read_text()), json.loads((synced / 'after.json').read_text()), {})
     assert synced_judgment['checks']['no_edit_execution']
     original_calls = synced_summary['toolCalls']
-    synced_summary['toolCalls'] = [{'name': 'bash', 'args': {'command': 'spacectl control spaces pages edit --yes'}}]
+    synced_summary['toolCalls'] = [{'name': 'bash', 'args': {'command': 'editionctl control spaces pages edit --yes'}}]
     assert not runner.judge('synced_draft', synced_summary,
         json.loads((synced / 'before.json').read_text()), json.loads((synced / 'after.json').read_text()), {})['checks']['no_edit_execution']
     synced_summary['toolCalls'] = original_calls

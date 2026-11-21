@@ -1,4 +1,4 @@
-# Import beside the existing www/IP redirects and document-space.caddy.
+# Import beside the existing www/IP redirects and edition.caddy.
 # rate_limit_static is defined by the host Caddyfile.
 beautyclaw.cn {
 	import rate_limit_static

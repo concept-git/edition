@@ -8,7 +8,6 @@ dependencies {
     implementation("org.springframework:spring-context")
     implementation("org.springframework:spring-tx")
     implementation(libs.mybatis.spring.boot)
-    testImplementation(testFixtures(project(":testing")))
     testImplementation(platform(libs.spring.boot.dependencies))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

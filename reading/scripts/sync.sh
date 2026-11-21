@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd /opt/space-blog/app
-export PATH="/opt/space-blog/toolchain/node-v24.19.0-linux-x64/bin:$PATH"
-export HOME=/opt/space-blog/home
-export SPACE_BLOG_SOURCE=https://beautyclaw.cn SPACE_BLOG_SPACE=blog
+cd /opt/edition-blog/app
+export PATH="/opt/edition-blog/toolchain/node-v24.19.0-linux-x64/bin:$PATH"
+export HOME=/opt/edition-blog/home
+export EDITION_BLOG_SOURCE=https://beautyclaw.cn EDITION_BLOG_SPACE=blog
 export NODE_OPTIONS=--max-old-space-size=512
-unset SPACE_BLOG_FIXTURE
+unset EDITION_BLOG_FIXTURE
 exec 9>/var/www/beautyclaw-blog/sync.lock
 flock -n 9 || exit 0
 web=/var/www/beautyclaw-blog
 retire() {
   rm -f "$web/current.next"
-  ln -s /opt/space-blog/unavailable "$web/current.next"
+  ln -s /opt/edition-blog/unavailable "$web/current.next"
   mv -Tf "$web/current.next" "$web/current"
 }
 if node scripts/probe.mjs --manifest > "$web/probe.json"; then

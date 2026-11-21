@@ -25,12 +25,14 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build acceptance artifacts
         run: ./backend/gradlew --project-dir backend --no-daemon --max-workers=2 :control:bootJar :content:bootJar :index:bootJar
-      - working-directory: acceptance
-        run: pnpm exec playwright install --with-deps chromium
       - name: Published search and independent content delivery
-        run: node infra/space.ts verify delivery
-      - name: Caddy HTTPS private reader and short credential recovery
-        run: node infra/space.ts verify private
+        run: node infra/edition.ts verify delivery
+      - name: Withdraw anonymous reading access
+        run: node infra/edition.ts verify private
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Read published bytes through the Python client
+        run: node infra/edition.ts verify vfs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

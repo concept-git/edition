@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Space 是多租户文档与知识交付平台：Java 25 / Gradle 的 control、worker、reader 三个独立应用，以及 Control CLI 与 Python SpaceVFS。
+Edition 是多租户文档与知识交付平台：Java 25 / Gradle 的 control、worker、reader 三个独立应用，以及 Control CLI 与 Python EditionVFS。
 
 ## Project map
 
@@ -9,7 +9,7 @@ Space 是多租户文档与知识交付平台：Java 25 / Gradle 的 control、w
 - `backend/libraries/` — contract等具名技术库
 - `acceptance/` — 浏览器验收与测试夹具
 - `clients/control/` — 管理 CLI
-- `clients/space/` — 只读 SpaceVFS
+- `clients/edition/` — 只读 EditionVFS
 - `contracts/` — 生成的 OpenAPI
 - `infra/` — 启动、验收、部署与仓库检查
 - `docs/` — PRD、ADR 与工程文档
@@ -22,8 +22,8 @@ Space 是多租户文档与知识交付平台：Java 25 / Gradle 的 control、w
 
 | Command | What it does |
 |---|---|
-| `node infra/space.ts repository` | 修改文档、目录或脚本入口后，在仓库根运行 |
-| `node infra/space.ts verify` | 浏览器验收。三个 suite 共用端口和数据，顺序运行。不要直接运行无分组的 `playwright test`。完整命令见 `docs/tech/TESTING.md` |
+| `node infra/edition.ts repository` | 修改文档、目录或脚本入口后，在仓库根运行 |
+| `node infra/edition.ts verify` | 浏览器验收。三个 suite 共用端口和数据，顺序运行。不要直接运行无分组的 `playwright test`。完整命令见 `infra/quality.md` |
 </important>
 
 <important if="you are changing product behavior, concepts, or sync rules">
@@ -47,5 +47,5 @@ Space 是多租户文档与知识交付平台：Java 25 / Gradle 的 control、w
 </important>
 
 <important if="you are changing cross-process delivery or which process serves a request">
-- 跨进程交付见 `docs/tech/DELIVERY.md`。
+- 跨进程交付见 `infra/README.md`。
 </important>

@@ -4,14 +4,8 @@ jacoco { toolVersion = '0.8.14' }
 tasks.withType(Test).configureEach {
     def coverageAgent = extensions.getByType(org.gradle.testing.jacoco.plugins.JacocoTaskExtension)
     // Framework bytecode is not part of this repository's denominator. Do not instrument it.
-    coverageAgent.includes = ['io.space.*']
-    def children = layout.buildDirectory.file('jacoco/test-children.exec').get().asFile
-    doFirst {
-        // Native CLI/MCP tests launch another JVM. Give it its own append-only data file.
-        def argument = coverageAgent.asJvmArg
-        children.delete()
-        systemProperty 'space.test.coverage.arg', argument.replaceFirst(/destfile=[^,]*/, "destfile=${children.absolutePath}")
-    }
+    coverageAgent.includes = ['io.edition.*']
+
 }
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.addAll(['-Xlint:deprecation', '-Xlint:unchecked', '-Werror'])

@@ -56,7 +56,7 @@ secret [encrypted: String] => [secret: String]
 - 请求头 `webhook-id`（= eventId，重发不变）、`webhook-timestamp`（Unix 秒）、`webhook-signature`（`v1,` 加 base64(HMAC-SHA256(键, id.timestamp.rawBody))）。
 - 载荷 `{type, timestamp, data:{resourceId, spaceId, siteId, outcome, requestId}}`；只含稳定 ID、动作状态及时间，缺失范围为 null。
 
-`io.space.webhooks.allowed-hosts` 精确命中的主机只豁免公网地址检查，仍须 HTTPS 且不跟随重定向；默认空，仅供运维明示信任的内网接收端与隔离验收。
+`io.edition.webhooks.allowed-hosts` 精确命中的主机只豁免公网地址检查，仍须 HTTPS 且不跟随重定向；默认空，仅供运维明示信任的内网接收端与隔离验收。
 
 失租同样消耗自动尝试预算：第8次租约到期后，领取器先将其标记failed并清除token，不再外发；迟到回执不能复活耗尽任务。
 
@@ -64,7 +64,7 @@ secret [encrypted: String] => [secret: String]
 
 ### 实现接口映射
 
-下表完整列出Java调用边界；行为前置、效果及组合策略以上文为准。sealed分支是可区分结果，查询Optional为空表示无绑定；参数中的actor和范围同样属于契约。此映射由SpecificationInterfaceParityTest核对，转录不替代行为审查。
+下表完整列出Java调用边界；行为前置、效果及组合策略以上文为准。sealed分支是可区分结果，查询Optional为空表示无绑定；参数中的actor和范围同样属于契约。
 
 | 方法 | 具名输入 | 返回类型 |
 | --- | --- | --- |

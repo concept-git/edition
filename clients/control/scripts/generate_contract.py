@@ -199,7 +199,7 @@ def inventory(files):
             if not isinstance(wire, dict) or 'operationId' not in wire: continue
             identity = wire['operationId']; op = methods.get(identity, {})
             writer.writerow([identity, method.upper(), path,
-                             'spacectl ' + op['apiCommand'].replace('.', ' ') if op else '',
+                             'editionctl ' + op['apiCommand'].replace('.', ' ') if op else '',
                              '|'.join(op.get('credentialTypes', wire.get('x-credential-types', []))),
                              '|'.join(op.get('requiredScopes', [])), op.get('idempotencyMode', ''),
                              str(op['highImpact']).lower() if op else '', op.get('description', ''),

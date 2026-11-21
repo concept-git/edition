@@ -1,6 +1,6 @@
 spring:
   application:
-    name: space-index
+    name: edition-index
   main:
     web-application-type: none
   datasource:

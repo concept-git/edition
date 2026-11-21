@@ -4,7 +4,7 @@
 }
 
 # Edge routing (ADR-0035): machine resources -> Reader, session resource -> Control, everything else -> reading frontend.
-# /healthz stays on Reader: space.ts reads Reader's access log to learn Caddy's peer address.
+# /healthz stays on Reader: edition.ts reads Reader's access log to learn Caddy's peer address.
 (edge_routes) {
   handle /_auth/* {
     reverse_proxy {$E2E_CONTROL_UPSTREAM:host.docker.internal:8094}

@@ -1,9 +1,6 @@
-plugins { `java-library`; `java-test-fixtures` }
+plugins { `java-library` }
 java { toolchain { languageVersion = JavaLanguageVersion.of(25) } }
 dependencies {
-    testFixturesApi(platform(libs.spring.boot.dependencies))
-    testFixturesApi("tools.jackson.core:jackson-databind")
-    testFixturesImplementation(project(":values"))
     testImplementation(libs.archunit.junit5)
     implementation(platform(libs.spring.boot.dependencies))
     implementation(platform(libs.spring.modulith.bom))
@@ -19,5 +16,3 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 tasks.withType<Test> { useJUnitPlatform() }
-
-tasks.named<Test>("test") { systemProperty("space.import.fixtures", project.file("src/testFixtures/resources/import-packs").absolutePath) }

@@ -1,6 +1,6 @@
 # BeautyClaw 博客
 
-基于 [AstroPaper v7.2.0](https://github.com/satnaing/astro-paper/releases/tag/v7.2.0)（MIT，保留 LICENSE），使用 Astro 7 Content Loader、静态路由、原生 Markdown、RSS、Sitemap 和 Pagefind。生产内容只从 Space Reader 匿名接口读取，不在前端或构建机保存管理 PAT。
+基于 [AstroPaper v7.2.0](https://github.com/satnaing/astro-paper/releases/tag/v7.2.0)（MIT，保留 LICENSE），使用 Astro 7 Content Loader、静态路由、原生 Markdown、RSS、Sitemap 和 Pagefind。生产内容只从 Edition Reader 匿名接口读取，不在前端或构建机保存管理 PAT。
 
 ## 内容维护
 
@@ -31,13 +31,13 @@ corepack pnpm@11.10.0 --dir reading run build
 corepack pnpm@11.10.0 --dir reading exec astro preview --host 127.0.0.1 --port 4380
 ```
 
-`SPACE_BLOG_SOURCE` 默认为 `https://beautyclaw.cn`，`SPACE_BLOG_SPACE` 默认为 `blog`。仅本地预览可显式使用 `SPACE_BLOG_FIXTURE` 配合 `astro dev`。`pnpm build` 遇到该变量会直接失败，并要求产物 `mode=reader`。维护稿在 `content/`，由 `node scripts/publish-blog.mjs` 经 Control 写入站点主机 `beautyclaw.cn`、挂载名 `blog`、匿名 reader、页面属性并发布。构建对原始 UTF-8/摘要、游标以及构建前后完整匿名清单作校验，拒绝混用不同发布或权限快照。SVG 图示输出为隔离的图片，保留可展开的文字说明。
+`EDITION_BLOG_SOURCE` 默认为 `https://beautyclaw.cn`，`EDITION_BLOG_SPACE` 默认为 `blog`。仅本地预览可显式使用 `EDITION_BLOG_FIXTURE` 配合 `astro dev`。`pnpm build` 遇到该变量会直接失败，并要求产物 `mode=reader`。维护稿在 `content/`，由 `node scripts/publish-blog.mjs` 经 Control 写入站点主机 `beautyclaw.cn`、挂载名 `blog`、匿名 reader、页面属性并发布。构建对原始 UTF-8/摘要、游标以及构建前后完整匿名清单作校验，拒绝混用不同发布或权限快照。SVG 图示输出为隔离的图片，保留可展开的文字说明。
 
 ## 同机部署
 
-源码位于 `/opt/space-blog/app`，专用 Node 工具链位于 `/opt/space-blog/toolchain/node-v24.19.0-linux-x64`（从 nodejs.org 下载并校验 SHASUMS256）。专用用户 `space-blog` 无登录 shell。按锁文件安装依赖，复制 [service](deploy/space-blog.service) 和 [timer](deploy/space-blog.timer) 到 `/etc/systemd/system`，执行 daemon-reload。
+源码位于 `/opt/edition-blog/app`，专用 Node 工具链位于 `/opt/edition-blog/toolchain/node-v24.19.0-linux-x64`（从 nodejs.org 下载并校验 SHASUMS256）。专用用户 `edition-blog` 无登录 shell。按锁文件安装依赖，复制 [service](deploy/edition-blog.service) 和 [timer](deploy/edition-blog.timer) 到 `/etc/systemd/system`，执行 daemon-reload。
 
-[同步脚本](scripts/sync.sh) 由 systemd 以 768 MiB 内存上限、低优先级运行。首次或升级源码后创建 `/var/www/beautyclaw-blog/force-build`（归属 space-blog），然后 `systemctl start space-blog.service`；成功后 `systemctl enable --now space-blog.timer`。检查 `journalctl -u space-blog.service`、timer 状态及线上 `/blog-source.json`。不创建数据库或旧版本备份；构建成功后只保留当前产物。
+[同步脚本](scripts/sync.sh) 由 systemd 以 768 MiB 内存上限、低优先级运行。首次或升级源码后创建 `/var/www/beautyclaw-blog/force-build`（归属 edition-blog），然后 `systemctl start edition-blog.service`；成功后 `systemctl enable --now edition-blog.timer`。检查 `journalctl -u edition-blog.service`、timer 状态及线上 `/blog-source.json`。不创建数据库或旧版本备份；构建成功后只保留当前产物。
 
 [Caddy 站点块](deploy/blog.Caddyfile) 替换主机现有 beautyclaw.cn 站点块，保留 www/IP 跳转与 console/docs 的 import；变更先 `caddy validate` 再 reload。`/api/content/*` 交给 Reader；`/v1/*` 保持原 managed-api 和进程环境的 API key。八个业务/法律页面以及其资源仍由 `/var/www/beautyclaw-superweb/html` 提供，该目录是活动兼容资源，不是备份。其余旧博客 HTML 不作兜底。HTML 与 Pagefind 文件使用 `Cache-Control: no-cache` 进行重新验证，按摘要命名的静态资源长期缓存。未知 URL 返回真正的 404。所有 `/media/*.svg` 受 sandbox CSP 限制。
 
@@ -51,8 +51,8 @@ corepack pnpm@11.10.0 --dir reading exec astro preview --host 127.0.0.1 --port 4
 
 ```bash
 pnpm build:reader        # astro check + 依赖规则检查 + 构建到 dist-reader/
-SPACE_CONTENT_ORIGIN=http://reader:8080 \
-SPACE_CONTROL_ORIGIN=http://control:8081 \
+EDITION_CONTENT_ORIGIN=http://reader:8080 \
+EDITION_CONTROL_ORIGIN=http://control:8081 \
 HOST=0.0.0.0 PORT=4321 pnpm start:reader   # node dist-reader/server/entry.mjs
 ```
 
@@ -60,8 +60,8 @@ HOST=0.0.0.0 PORT=4321 pnpm start:reader   # node dist-reader/server/entry.mjs
 
 | 变量 | 默认值 | 作用 |
 |---|---|---|
-| `SPACE_CONTENT_ORIGIN` | `http://127.0.0.1:8080` | Reader 的内部地址：站点、页面、搜索与浏览事件（`/api/content/*`）。 |
-| `SPACE_CONTROL_ORIGIN` | `http://127.0.0.1:8081` | Control 的内部地址：同域表单路由 `/_login`、`/_logout` 代调 `/_auth/session` 用。 |
+| `EDITION_CONTENT_ORIGIN` | `http://127.0.0.1:8080` | Reader 的内部地址：站点、页面、搜索与浏览事件（`/api/content/*`）。 |
+| `EDITION_CONTROL_ORIGIN` | `http://127.0.0.1:8081` | Control 的内部地址：同域表单路由 `/_login`、`/_logout` 代调 `/_auth/session` 用。 |
 | `HOST`、`PORT` | Astro node adapter 默认（`localhost`、`4321`） | 本前端监听地址，由 adapter 读取。 |
 
 以上两个 Origin 只含协议、主机与端口；读取逻辑在 `src-reader/app/config.ts`，不设置时用表中默认值。
@@ -91,6 +91,6 @@ HOST=0.0.0.0 PORT=4321 pnpm start:reader   # node dist-reader/server/entry.mjs
 
 - `content-plugins.json` 是 `contracts/content-plugins.json` 的随构建副本（Docker 构建上下文只含 reading）；修改契约后必须同步复制，`tests/reader-content-plugins.test.mjs` 断言两者逐字节一致。
 - 渲染器是自定义元素，依赖 `lit`、`@a2ui/*`、`@alenaksu/json-viewer`、`@hyperjump/*`、`dompurify`（pnpm 锁定）；`@hyperjump/browser` 在 `astro.reader.config.ts` 里别名到浏览器入口。
-- 纯逻辑（按类型与冻结定义解析渲染贡献）在 `resolve-view.ts`，由 node 单测覆盖；渲染器与 DOM 增强依赖浏览器，阅读与交付场景分别由 `node infra/space.ts verify private` 和 `node infra/space.ts verify delivery` 验证。
+- 纯逻辑（按类型与冻结定义解析渲染贡献）在 `resolve-view.ts`，由 node 单测覆盖；渲染器与 DOM 增强依赖浏览器，阅读与交付场景分别由 `node infra/edition.ts verify private` 和 `node infra/edition.ts verify delivery` 验证。
 
 按 Feature-first 组织：`app/`（装配与路由）、`features/<能力>/{presentation,domain,data,application}`、`shared/`。依赖方向与无环由 `scripts/check-architecture.mjs` 检查，已接入 `pnpm check` 与 `pnpm test`。

@@ -1,4 +1,4 @@
-# spacectl 架构
+# editionctl 架构
 
 独立 Java 25 项目，通过 HTTP 使用 Control。管理事实与业务授权归服务端，CLI 保留原生参数和结果。
 
@@ -16,7 +16,6 @@
 业务执行与更新模块之间零直接依赖。contract/state 是必要公共能力，不反向调用入口或业务执行。
 command 是组合层：Aesh/MCP SDK 只在此使用，JSON Schema 校验归 execution，系统凭据库归 state。
 公共 HTTP 工具接收 CA Path，不接收业务 profile；PrivateFiles 与 BuildInfo 不归更新或凭据模块所有。
-无新增框架、转发接口或执行器工厂。ArchitectureTest 使用实际字节码验证模块方向、唯一执行入口和第三方 SDK 归属，覆盖全部生产类。
 
 ## 调用路径
 

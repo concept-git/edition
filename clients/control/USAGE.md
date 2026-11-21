@@ -1,6 +1,6 @@
-# Space Control CLI 操作指南
+# Edition Control CLI 操作指南
 
-面向管理人员、运维人员和 AI Agent。适用于 spacectl 1.0 原生 `control` 入口。旧协议已删除。
+面向管理人员、运维人员和 AI Agent。适用于 editionctl 1.0 原生 `control` 入口。旧协议已删除。
 采用约 80% ASD-STE100 风格：短句、统一术语、明确条件和单步动作。中文说明不表示通过英语词典合规认证。
 
 ## 操作约定
@@ -24,18 +24,18 @@ profile 固定服务地址与凭据来源。PAT 限制任务范围，服务端�
 
 ## 案例一：初始化与按需发现
 
-由秘密管理器注入 `SPACE_PAT`。只把变量名传给配置命令。
+由秘密管理器注入 `EDITION_PAT`。只把变量名传给配置命令。
 
 ```sh
-spacectl configure --profile "$PROFILE" --base-url https://control.example.com --token-env SPACE_PAT
-spacectl --profile "$PROFILE" config get
-spacectl --profile "$PROFILE" config inspect
-spacectl --profile "$PROFILE" control auth status
-spacectl --help
-spacectl schema control --brief
-spacectl schema control.spaces.pages --brief
-spacectl schema control.spaces.pages.edit --brief
-spacectl schema control.PageDetail
+editionctl configure --profile "$PROFILE" --base-url https://control.example.com --token-env EDITION_PAT
+editionctl --profile "$PROFILE" config get
+editionctl --profile "$PROFILE" config inspect
+editionctl --profile "$PROFILE" control auth status
+editionctl --help
+editionctl schema control --brief
+editionctl schema control.spaces.pages --brief
+editionctl schema control.spaces.pages.edit --brief
+editionctl schema control.PageDetail
 ```
 
 若使用系统凭据库，配置时省略 token-env，再通过 `config credential set --stdin` 导入。不要将秘密写入聊天、命令参数或日志。
@@ -49,8 +49,8 @@ config inspect 只报告指定来源的本地状态，不读取凭据库、不�
 
 ```sh
 QUERY=$(jq -cn --arg tenant "$TENANT_ID" '{tenantId:$tenant,fields:"items(id,name,status),nextCursor",limit:50}')
-spacectl --profile "$PROFILE" control spaces list --params "$QUERY" --page-all --page-limit 10 --page-delay 100
-spacectl --profile "$PROFILE" control spaces get --params "$SPACE"
+editionctl --profile "$PROFILE" control spaces list --params "$QUERY" --page-all --page-limit 10 --page-delay 100
+editionctl --profile "$PROFILE" control spaces get --params "$SPACE"
 ```
 
 每行是一个 API 页。最后一页的 nextCursor 非空时，保存游标并用同一查询续读；达到页数上限不代表读取完整。
@@ -60,11 +60,11 @@ fields 由服务端执行。只选择需要的字段。动态 map 应整体选�
 ## 案例三：创建空间和页面，组合 JSON 管道
 
 ```sh
-spacectl --profile "$PROFILE" control spaces create --params "$TENANT" --json '{"name":"研发知识库","mode":"authored"}' --dry-run
-SPACE_ID=$(spacectl --profile "$PROFILE" control spaces create --params "$TENANT" --json '{"name":"研发知识库","mode":"authored"}' --invocation-id guide-space-01 | jq -er '.id')
+editionctl --profile "$PROFILE" control spaces create --params "$TENANT" --json '{"name":"研发知识库","mode":"authored"}' --dry-run
+SPACE_ID=$(editionctl --profile "$PROFILE" control spaces create --params "$TENANT" --json '{"name":"研发知识库","mode":"authored"}' --invocation-id guide-space-01 | jq -er '.id')
 SPACE=$(jq -cn --arg tenant "$TENANT_ID" --arg space "$SPACE_ID" '{tenantId:$tenant,spaceId:$space}')
-spacectl --profile "$PROFILE" control spaces pages create --params "$SPACE" --json '{"title":"接口规范","slug":"api-spec","format":"markdown"}' --dry-run
-PAGE_ID=$(spacectl --profile "$PROFILE" control spaces pages create --params "$SPACE" --json '{"title":"接口规范","slug":"api-spec","format":"markdown"}' --invocation-id guide-page-01 | jq -er '.id')
+editionctl --profile "$PROFILE" control spaces pages create --params "$SPACE" --json '{"title":"接口规范","slug":"api-spec","format":"markdown"}' --dry-run
+PAGE_ID=$(editionctl --profile "$PROFILE" control spaces pages create --params "$SPACE" --json '{"title":"接口规范","slug":"api-spec","format":"markdown"}' --invocation-id guide-page-01 | jq -er '.id')
 PAGE=$(jq -cn --arg tenant "$TENANT_ID" --arg space "$SPACE_ID" --arg page "$PAGE_ID" '{tenantId:$tenant,spaceId:$space,pageId:$page}')
 ```
 
@@ -74,15 +74,15 @@ set -o pipefail 保留 CLI 的失败状态。上一步失败时，不使用提�
 ## 案例四：基于 ETag 编辑正文
 
 ```sh
-spacectl --profile "$PROFILE" control spaces pages +inspect --params "$PAGE" > page-before.json
+editionctl --profile "$PROFILE" control spaces pages +inspect --params "$PAGE" > page-before.json
 ETAG=$(jq -er '.headers.etag' page-before.json)
 EDIT=$(jq -cn --argjson target "$PAGE" --arg etag "$ETAG" '$target + {"If-Match":$etag,"Idempotency-Key":"guide-edit-key-01"}')
 cat > content.json <<'CONTENT'
 {"content":"# 接口契约\n\n管理请求使用 HTTPS。","intent":"draft_only"}
 CONTENT
-spacectl --profile "$PROFILE" control spaces pages edit --params "$EDIT" --json @content.json --dry-run
-cat content.json | spacectl --profile "$PROFILE" control spaces pages edit --params "$EDIT" --json - --invocation-id guide-edit-01 --yes
-spacectl --profile "$PROFILE" control spaces pages get --params "$PAGE"
+editionctl --profile "$PROFILE" control spaces pages edit --params "$EDIT" --json @content.json --dry-run
+cat content.json | editionctl --profile "$PROFILE" control spaces pages edit --params "$EDIT" --json - --invocation-id guide-edit-01 --yes
+editionctl --profile "$PROFILE" control spaces pages get --params "$PAGE"
 ```
 
 pages +inspect 读取 content 快照及同次正文强 ETag。摘要与完整详情不作为新编辑基线。保留 ETag 自带引号。强 ETag 与 Idempotency-Key 通过原生 params 发送为 header。一次请求只有一个 stdin 来源。
@@ -94,19 +94,19 @@ pages +inspect 读取 content 快照及同次正文强 ETag。摘要与完整详
 先核对空间的模式、autoRelease、当前在线版本和站点挂载。发布可能影响所有挂载该空间的站点。
 
 ```sh
-spacectl --profile "$PROFILE" control spaces pages publish --params "$PAGE" --dry-run
-spacectl --profile "$PROFILE" control spaces pages publish --params "$PAGE" --invocation-id guide-publish-01 --yes
-spacectl schema control.spaces.releases.build
+editionctl --profile "$PROFILE" control spaces pages publish --params "$PAGE" --dry-run
+editionctl --profile "$PROFILE" control spaces pages publish --params "$PAGE" --invocation-id guide-publish-01 --yes
+editionctl schema control.spaces.releases.build
 ```
 
 仅在手动发版模式且已对齐完整发布范围时执行 release build；它使用全部已发布工作页面，不只包含当前页面。
 
 ```sh
-spacectl --profile "$PROFILE" control spaces releases build --params "$SPACE" --dry-run
-spacectl --profile "$PROFILE" control spaces releases build --params "$SPACE" --invocation-id guide-release-01 --yes
+editionctl --profile "$PROFILE" control spaces releases build --params "$SPACE" --dry-run
+editionctl --profile "$PROFILE" control spaces releases build --params "$SPACE" --invocation-id guide-release-01 --yes
 SITE_ID='00000000-0000-0000-0000-000000000004'
 SITE=$(jq -cn --arg tenant "$TENANT_ID" --arg site "$SITE_ID" '{tenantId:$tenant,siteId:$site}')
-spacectl --profile "$PROFILE" control sites deliveries get --params "$SITE"
+editionctl --profile "$PROFILE" control sites deliveries get --params "$SITE"
 ```
 
 完成条件：核对在线 release、交付终态与 onlineEpoch ≥ targetEpoch，再使用预期读者身份核验客户 URL。管理权限不替代阅读权限。
@@ -116,12 +116,12 @@ spacectl --profile "$PROFILE" control sites deliveries get --params "$SITE"
 先将 SPACE_ID 指向已授权的 active/synced 空间，并重建 SPACE 参数。
 
 ```sh
-spacectl schema control.spaces.imports.create
-spacectl --profile "$PROFILE" control spaces imports create --params "$SPACE" --upload reviewed-bundle.zip --upload-content-type application/zip --dry-run
-spacectl --profile "$PROFILE" control spaces imports create --params "$SPACE" --upload reviewed-bundle.zip --upload-content-type application/zip --invocation-id guide-import-01 --yes > import-result.json
+editionctl schema control.spaces.imports.create
+editionctl --profile "$PROFILE" control spaces imports create --params "$SPACE" --upload reviewed-bundle.zip --upload-content-type application/zip --dry-run
+editionctl --profile "$PROFILE" control spaces imports create --params "$SPACE" --upload reviewed-bundle.zip --upload-content-type application/zip --invocation-id guide-import-01 --yes > import-result.json
 IMPORT_JOB_ID=$(jq -er '.job.id // .id' import-result.json)
 IMPORT_JOB=$(jq -cn --argjson target "$SPACE" --arg job "$IMPORT_JOB_ID" '$target + {jobId:$job}')
-spacectl --profile "$PROFILE" control spaces imports get --params "$IMPORT_JOB"
+editionctl --profile "$PROFILE" control spaces imports get --params "$IMPORT_JOB"
 ```
 
 受理不表示作业完成；根据返回状态继续读取同一作业。held/flagged 需要审查报告并对齐后果。不要把 job ID 当作 release ID。
@@ -130,8 +130,8 @@ spacectl --profile "$PROFILE" control spaces imports get --params "$IMPORT_JOB"
 ```sh
 : "${EXPORT_JOB_ID:?Set the verified completed export job ID}"
 EXPORT_JOB=$(jq -cn --argjson target "$SPACE" --arg job "$EXPORT_JOB_ID" '$target + {jobId:$job}')
-spacectl schema control.spaces.exports.download
-spacectl --profile "$PROFILE" control spaces exports download --params "$EXPORT_JOB" --output release-bundle.zip
+editionctl schema control.spaces.exports.download
+editionctl --profile "$PROFILE" control spaces exports download --params "$EXPORT_JOB" --output release-bundle.zip
 python3 -m zipfile -t release-bundle.zip
 ```
 
@@ -145,9 +145,9 @@ python3 -m zipfile -t release-bundle.zip
 cat > batch.json <<'BATCH'
 {"id":"archive-approved-01","items":[{"id":"space-a","method":"control.spaces.archive","params":{"tenantId":"00000000-0000-0000-0000-000000000001","spaceId":"00000000-0000-0000-0000-000000000002"}}]}
 BATCH
-spacectl schema control.BatchRequest
-spacectl --profile "$PROFILE" control +batch --json @batch.json --dry-run
-spacectl --profile "$PROFILE" control +batch --json @batch.json --parallel 2 --yes
+editionctl schema control.BatchRequest
+editionctl --profile "$PROFILE" control +batch --json @batch.json --dry-run
+editionctl --profile "$PROFILE" control +batch --json @batch.json --parallel 2 --yes
 ```
 
 全部输入先校验；并发上限为 4。默认首错停止新增项，已提交项继续完成。输出包含逐项结果和最后汇总。
@@ -159,8 +159,8 @@ imports get 与 sites deliveries get 可显式使用 --wait、--wait-timeout、-
 ## 案例八：恢复未知结果
 
 ```sh
-spacectl --profile "$PROFILE" control +receipt --id guide-edit-01
-spacectl --profile "$PROFILE" control +resume --id guide-edit-01
+editionctl --profile "$PROFILE" control +receipt --id guide-edit-01
+editionctl --profile "$PROFILE" control +resume --id guide-edit-01
 ```
 
 保留原凭据、文件、请求和幂等键。已成功意图返回保存结果；当前事实仍需重读。
@@ -172,19 +172,19 @@ HTTP 408/429 或 409 idempotency_request_in_progress 保留未决意图。先查
 以下命令是 MCP 客户端启动的长驻服务；由客户端管理 stdin/stdout 与退出。
 
 ```sh
-spacectl mcp --resources control.spaces.pages --profile "$PROFILE"
+editionctl mcp --resources control.spaces.pages --profile "$PROFILE"
 ```
 
 该进程通过 stdin/stdout 提供 MCP。默认只读；启动 --allow-write 才注册选中的写方法。每次高影响调用仍需确认，服务端仍判权。
 启动固定 profile 和文件根；工具参数不能切换身份。写工具必须提供 invocationId：新任务使用新 ID，恢复使用原 ID 与原请求。MCP _meta 和批量项的 state/replayed 区分受理、调用完成与历史回执；replayed=true 不证明当前资源状态。普通 CLI 重放会在 stderr 明示。使用官方 SDK 连接，不将普通 CLI 文本发送给 MCP stdin。
 
 ```sh
-spacectl update status
-spacectl update check
-spacectl update apply --dry-run
-spacectl update apply
-spacectl update status
-spacectl --version
+editionctl update status
+editionctl update check
+editionctl update apply --dry-run
+editionctl update apply
+editionctl update status
+editionctl --version
 ```
 
 沿用已配置的 HTTPS 签名源与部署策略。未配置源不表示已是最新版。scheduled 不等于安装完成；核对 applied/rolled_back、operationId 与实际版本。
@@ -209,4 +209,4 @@ credential_missing 的 hint 指明该 profile 使用的环境变量或 OS 凭据
 1.0 删除旧命令和结果协议。脚本应使用 control 命令、点分 schema 和原生 JSON，例如 `.id`。
 新入口以 --format json 选择格式，以 --output PATH 下载二进制。分页每行一页，不输出旧 item/summary 帧。
 
-发行包的技能正文仅有 `space-ops/SKILL.md`，不依赖参考文件；安装按所有权清单清理同一技能的过期受管文件，保留本地自定义文件；使用 `python3 scripts/install_skill.py` 安装，或加 `--check` 只读核对。完整参数通过当前 CLI help/schema 查询。
+发行包的技能正文仅有 `edition-ops/SKILL.md`，不依赖参考文件；安装按所有权清单清理同一技能的过期受管文件，保留本地自定义文件；使用 `python3 scripts/install_skill.py` 安装，或加 `--check` 只读核对。完整参数通过当前 CLI help/schema 查询。
