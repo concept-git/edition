@@ -35,6 +35,17 @@ const space: components['schemas']['SpaceDetail'] = {
   autoRelease: false,
 };
 async function authenticated(page: Page) {
+  await page.route(`**${base}/operations`, (route) =>
+    route.fulfill({
+      json: {
+        audit: true,
+        webhooks: true,
+        tenantStats: true,
+        spaces: [],
+        sites: [],
+      },
+    }),
+  );
   await page.route('**/auth/refresh', (route) =>
     route.fulfill({
       json: { accessToken: 'browser-test-token', expiresIn: 600 },
@@ -62,6 +73,43 @@ async function authenticated(page: Page) {
     route.fulfill({ json: space }),
   );
 }
+test('operations navigation follows backend capabilities rather than guessing from a tenant role', async ({
+  page,
+}) => {
+  await authenticated(page);
+  await page.route(`**${base}/operations`, (route) =>
+    route.fulfill({
+      json: {
+        audit: false,
+        webhooks: false,
+        tenantStats: false,
+        spaces: [],
+        sites: [],
+      },
+    }),
+  );
+  await page.route(`**${base}/spaces?*`, (route) =>
+    route.fulfill({
+      json: { items: [space], nextCursor: null, total: 1, allowedActions: [] },
+    }),
+  );
+  await page.goto(`/console/t/${tenantId}/spaces`);
+  await expect(
+    page.getByRole('link', { name: '产品指南', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: '审计', exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole('link', { name: 'Webhook', exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole('link', { name: '统计', exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: '创建空间', exact: true }),
+  ).toBeDisabled();
+});
 test('a maintainer can enter a tenant and open its space', async ({ page }) => {
   await authenticated(page);
   await page.route(`**${base}/spaces?*`, (route) =>

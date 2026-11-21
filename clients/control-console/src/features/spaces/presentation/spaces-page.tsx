@@ -44,6 +44,7 @@ export function SpacesPage() {
         actions={
           <Command
             label="创建空间"
+            disabled={!spaces.data?.data.allowedActions?.includes('create')}
             defaults={{ mode: 'authored' }}
             submit={(v, headers) =>
               api.createSpace({

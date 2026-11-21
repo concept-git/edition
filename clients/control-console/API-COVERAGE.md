@@ -5,7 +5,7 @@
 | operation | 接口 | 去向 | 状态 |
 |---|---|---|---|
 | updateWebhook | PUT `/webhooks/{id}` | src/features/operations/presentation/webhooks-page.tsx:75 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| setRetention | PUT `/api/v1/tenants/{tenantId}/spaces/{spaceId}/retention` | src/features/spaces/presentation/spaces-page.tsx:295 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| setRetention | PUT `/api/v1/tenants/{tenantId}/spaces/{spaceId}/retention` | src/features/spaces/presentation/spaces-page.tsx:296 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | putSpaceGrant | PUT `/api/v1/tenants/{tenantId}/spaces/{spaceId}/permissions/grants/{principalKey}` | src/features/access/presentation/permissions-page.tsx:53 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | deleteSpaceGrant | DELETE `/api/v1/tenants/{tenantId}/spaces/{spaceId}/permissions/grants/{principalKey}` | src/features/access/presentation/permissions-page.tsx:114 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | tagPage | PUT `/api/v1/tenants/{tenantId}/spaces/{spaceId}/pages/{pageId}/tags/{label}` | src/features/page-authoring/presentation/page-details.tsx:189 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
@@ -30,7 +30,7 @@
 | deletePluginDevelopment | DELETE `/api/v1/tenants/{tenantId}/plugin-developments/{id}` | src/features/content-platform/presentation/plugins-page.tsx:204 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | placeSpace | PUT `/api/v1/tenants/{tenantId}/collections/{collectionId}/spaces/{spaceId}` | src/features/spaces/presentation/collections-page.tsx:104 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | unplaceSpace | DELETE `/api/v1/tenants/{tenantId}/collections/{collectionId}/spaces/{spaceId}` | src/features/spaces/presentation/collections-page.tsx:129 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| getCurrentUser | GET `/api/v1/me` | src/app/console-app.tsx:99<br>src/features/session/presentation/account-page.tsx:18 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| getCurrentUser | GET `/api/v1/me` | src/app/console-app.tsx:100<br>src/features/session/presentation/account-page.tsx:18 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | replaceCurrentUser | PUT `/api/v1/me` | src/features/session/presentation/account-page.tsx:60 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | updateCurrentUser | PATCH `/api/v1/me` | replaceCurrentUser — 已弃用的 PATCH 兼容入口仍是完整替换语义；界面统一使用 PUT 并预填当前资料 | 待真实验收 |
 | listWebhooks | GET `/webhooks` | src/features/operations/presentation/webhooks-page.tsx:14 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
@@ -47,7 +47,7 @@
 | refreshSession | POST `/auth/refresh` | src/shared/api/session.ts — 单一会话刷新协调器；会话生命周期测试覆盖 | 待真实验收 |
 | resetPassword | POST `/auth/password:reset` | src/features/session/presentation/auth-page.tsx:81 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | forgotPassword | POST `/auth/password:forgot` | src/features/session/presentation/auth-page.tsx:74 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| logout | POST `/auth/logout` | src/app/console-app.tsx:150 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| logout | POST `/auth/logout` | src/app/console-app.tsx:151 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | login | POST `/auth/login` | src/features/session/presentation/auth-page.tsx:40 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | verifyEmail | POST `/auth/email:verify` | src/features/session/presentation/auth-page.tsx:96 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | resendVerification | POST `/auth/email:resend` | src/features/session/presentation/auth-page.tsx:105 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
@@ -60,11 +60,11 @@
 | invite | POST `/api/v1/tenants/{tenantId}/teams/{teamId}/invitations` | src/features/access/presentation/members-page.tsx:79 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | renameTag | POST `/api/v1/tenants/{tenantId}/tags/{label}:rename` | src/features/tags/presentation/tags-page.tsx:61 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | listSpaces | GET `/api/v1/tenants/{tenantId}/spaces` | src/features/spaces/presentation/space-picker.tsx:17<br>src/features/spaces/presentation/spaces-page.tsx:26 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| createSpace | POST `/api/v1/tenants/{tenantId}/spaces` | src/features/spaces/presentation/spaces-page.tsx:49 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| restoreSpace | POST `/api/v1/tenants/{tenantId}/spaces/{spaceId}:restore` | src/features/spaces/presentation/spaces-page.tsx:288 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| createSpace | POST `/api/v1/tenants/{tenantId}/spaces` | src/features/spaces/presentation/spaces-page.tsx:50 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| restoreSpace | POST `/api/v1/tenants/{tenantId}/spaces/{spaceId}:restore` | src/features/spaces/presentation/spaces-page.tsx:289 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | requestBundleExport | POST `/api/v1/tenants/{tenantId}/spaces/{spaceId}:export` | src/features/bundles/presentation/bundles-page.tsx:142 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| convertSpace | POST `/api/v1/tenants/{tenantId}/spaces/{spaceId}:convert` | src/features/spaces/presentation/spaces-page.tsx:264 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| archiveSpace | POST `/api/v1/tenants/{tenantId}/spaces/{spaceId}:archive` | src/features/spaces/presentation/spaces-page.tsx:281 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| convertSpace | POST `/api/v1/tenants/{tenantId}/spaces/{spaceId}:convert` | src/features/spaces/presentation/spaces-page.tsx:265 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| archiveSpace | POST `/api/v1/tenants/{tenantId}/spaces/{spaceId}:archive` | src/features/spaces/presentation/spaces-page.tsx:282 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | viewToc | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}/toc/entries` | src/features/toc/presentation/toc-page.tsx:36 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | addTocEntry | POST `/api/v1/tenants/{tenantId}/spaces/{spaceId}/toc/entries` | src/features/toc/presentation/toc-page.tsx:82 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | moveTocEntry | POST `/api/v1/tenants/{tenantId}/spaces/{spaceId}/toc/entries/{entryId}:move` | src/features/toc/presentation/toc-page.tsx:55<br>src/features/toc/presentation/toc-page.tsx:193 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
@@ -134,9 +134,9 @@
 | rename | PATCH `/api/v1/tenants/{tenantId}/teams/{teamId}` | src/features/access/presentation/members-page.tsx:298 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | removeMember | DELETE `/api/v1/tenants/{tenantId}/teams/{teamId}/members/{userId}` | src/features/access/presentation/members-page.tsx:149 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | setRole | PATCH `/api/v1/tenants/{tenantId}/teams/{teamId}/members/{userId}` | src/features/access/presentation/members-page.tsx:124 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| viewSpace | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}` | src/features/page-authoring/presentation/page-editor.tsx:86<br>src/features/spaces/presentation/spaces-page.tsx:162<br>src/features/spaces/presentation/spaces-page.tsx:208 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| viewSpace | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}` | src/features/page-authoring/presentation/page-editor.tsx:86<br>src/features/spaces/presentation/spaces-page.tsx:163<br>src/features/spaces/presentation/spaces-page.tsx:209 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | deleteSpace | DELETE `/api/v1/tenants/{tenantId}/spaces/{spaceId}` | src/features/termination/presentation/termination-page.tsx:68 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| updateSpace | PATCH `/api/v1/tenants/{tenantId}/spaces/{spaceId}` | src/features/spaces/presentation/spaces-page.tsx:226 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| updateSpace | PATCH `/api/v1/tenants/{tenantId}/spaces/{spaceId}` | src/features/spaces/presentation/spaces-page.tsx:227 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | removeTocEntry | DELETE `/api/v1/tenants/{tenantId}/spaces/{spaceId}/toc/entries/{entryId}` | src/features/toc/presentation/toc-page.tsx:213 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | relabelTocEntry | PATCH `/api/v1/tenants/{tenantId}/spaces/{spaceId}/toc/entries/{entryId}` | src/features/toc/presentation/toc-page.tsx:178 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | viewRelease | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}/releases/{releaseId}` | src/features/releases/presentation/releases-page.tsx:122 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
@@ -188,7 +188,7 @@
 | viewPageAttachment | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}/pages/{pageId}/attachments/{ref}` | src/features/assets/presentation/assets-page.tsx:92 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | detachPageFile | DELETE `/api/v1/tenants/{tenantId}/spaces/{spaceId}/pages/{pageId}/attachments/{ref}` | src/features/assets/presentation/assets-page.tsx:111 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | downloadPageAttachment | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}/pages/{pageId}/attachments/{ref}/content` | src/features/assets/presentation/assets-page.tsx:98 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| listSpaceMounts | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}/mounts` | src/features/spaces/presentation/spaces-page.tsx:326 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| listSpaceMounts | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}/mounts` | src/features/spaces/presentation/spaces-page.tsx:327 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | viewImportJob | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}/import-jobs/{jobId}` | src/features/bundles/presentation/bundles-page.tsx:218 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | listBundleExports | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}/exports` | src/features/bundles/presentation/bundles-page.tsx:22 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | viewBundleExport | GET `/api/v1/tenants/{tenantId}/spaces/{spaceId}/exports/{jobId}` | src/features/bundles/presentation/bundles-page.tsx:175 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
@@ -206,7 +206,7 @@
 | listTenantReleases | GET `/api/v1/tenants/{tenantId}/releases` | src/features/releases/presentation/releases-page.tsx:30 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | viewPluginVerification | GET `/api/v1/tenants/{tenantId}/plugin-verifications/{id}` | src/features/content-platform/presentation/plugins-page.tsx:289<br>src/features/content-platform/presentation/plugins-page.tsx:297 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | viewPluginCandidate | GET `/api/v1/tenants/{tenantId}/plugin-developments/{id}/candidates/{candidateId}` | src/features/content-platform/presentation/plugins-page.tsx:246 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
-| operationsCapabilities | GET `/api/v1/tenants/{tenantId}/operations` | src/features/operations/presentation/audit-page.tsx:121 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
+| operationsCapabilities | GET `/api/v1/tenants/{tenantId}/operations` | src/app/console-app.tsx:191<br>src/features/operations/presentation/audit-page.tsx:121 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | listTenantMembers | GET `/api/v1/tenants/{tenantId}/members` | src/features/access/presentation/members-page.tsx:31 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | listTenantDomains | GET `/api/v1/tenants/{tenantId}/domains` | src/features/sites/presentation/hosting-pages.tsx:19 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |
 | listDeletions | GET `/api/v1/tenants/{tenantId}/deletions` | src/features/termination/presentation/termination-page.tsx:99 — 已接线；接口引用不替代真实操作验收。 | 待真实验收 |

@@ -35,6 +35,7 @@ import { TooltipProvider } from '@/shared/ui/tooltip';
 import { Button } from '@/shared/ui/button';
 import { AppLink } from '@/shared/ui/navigation';
 import { Failure, Pending } from '@/shared/ui/feedback';
+import { useResource } from '@/shared/ui/resource';
 import {
   Sidebar,
   SidebarContent,
@@ -184,6 +185,17 @@ function ConsoleLayout({
     () => localStorage.getItem('edition.theme') ?? 'system',
   );
   const tenantId = parseScope(pathname).tenantId;
+  const capabilities = useResource(
+    ['capabilities'],
+    (signal) =>
+      api.operationsCapabilities({ signal, params: { path: { tenantId } } }),
+    Boolean(tenantId),
+  );
+  const operationFlags: Record<string, boolean | undefined> = {
+    audit: capabilities.data?.data.audit,
+    webhooks: capabilities.data?.data.webhooks,
+    stats: capabilities.data?.data.tenantStats,
+  };
   const base = `t/${tenantId}`;
   useEffect(() => {
     const media = matchMedia('(prefers-color-scheme: dark)');
@@ -257,22 +269,28 @@ function ConsoleLayout({
               <SidebarGroup key={group.title}>
                 <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
                 <SidebarMenu>
-                  {group.items.map(([id, label, Icon]) => (
-                    <SidebarMenuItem key={id}>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={pathname.includes(`/${id}`)}
-                      >
-                        <AppLink
-                          to={`${base}/${id}`}
-                          className="text-sidebar-foreground hover:no-underline"
+                  {group.items
+                    .filter(
+                      ([id]) =>
+                        !Object.hasOwn(operationFlags, id) ||
+                        operationFlags[id] === true,
+                    )
+                    .map(([id, label, Icon]) => (
+                      <SidebarMenuItem key={id}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname.includes(`/${id}`)}
                         >
-                          <Icon />
-                          <span>{label}</span>
-                        </AppLink>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                          <AppLink
+                            to={`${base}/${id}`}
+                            className="text-sidebar-foreground hover:no-underline"
+                          >
+                            <Icon />
+                            <span>{label}</span>
+                          </AppLink>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
                 </SidebarMenu>
               </SidebarGroup>
             ))}
@@ -333,6 +351,14 @@ function ConsoleLayout({
             </Button>
           </div>
           {logoutError !== undefined && <Failure error={logoutError} />}
+          {capabilities.isError && (
+            <Failure
+              error={capabilities.error}
+              retry={() => {
+                void capabilities.refetch();
+              }}
+            />
+          )}
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
