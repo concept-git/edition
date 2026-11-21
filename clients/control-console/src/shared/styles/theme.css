@@ -1,3 +1,4 @@
+/* Adapted from tweakcn Modern Minimal (Apache-2.0); Edition adds layout and accessibility styles. */
 @import 'tailwindcss';
 
 @plugin "tailwind-scrollbar-hide";

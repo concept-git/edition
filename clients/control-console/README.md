@@ -65,3 +65,5 @@ corepack pnpm test:browser
 `EDITION_CONSOLE_PREVIEW=1 corepack pnpm test:browser` 检查已构建生产产物。`EDITION_CHROMIUM_EXECUTABLE` 可指定已安装的 Chromium。单元测试关注会话协调、契约边界、编辑冲突及刷新失败的工作稿保留；变异测试约束会话与编辑领域的行为。浏览器替身测试和真实后端验收分开维护。
 
 仓库根执行 `node infra/edition.ts quality static --scope console` 可运行控制台静态门禁。真实拓扑使用 `node infra/edition.ts verify console`，隔离配置与其它验收共用约定，见[质量说明](../../infra/quality.md)。真实验收覆盖同源登录刷新、创作冲突、主要管理入口、元数据与附件、回收还原、挂载、用户组及插件候选验证。任务执行记录与截图写入 Git 忽略目录，不随源码提交。
+
+复用源码的来源、适配范围与许可见[第三方声明](THIRD-PARTY-NOTICES.md)。

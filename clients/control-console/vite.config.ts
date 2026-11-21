@@ -2,12 +2,32 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath, URL } from 'node:url';
+import { readFileSync } from 'node:fs';
 
 const upstream = process.env.EDITION_CONTROL_ORIGIN ?? 'http://127.0.0.1:8094';
 export default defineConfig({
   base: '/console/',
   preview: { allowedHosts: ['console.acme.test'] },
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    {
+      name: 'edition-third-party-notices',
+      generateBundle() {
+        this.emitFile({
+          type: 'asset',
+          fileName: 'THIRD-PARTY-NOTICES.txt',
+          source:
+            readFileSync(
+              new URL('./THIRD-PARTY-NOTICES.md', import.meta.url),
+              'utf8',
+            ) +
+            '\n\n' +
+            readFileSync(new URL('../../LICENSE', import.meta.url), 'utf8'),
+        });
+      },
+    },
+  ],
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   build: {
     rolldownOptions: {
