@@ -118,7 +118,8 @@ async function create(req, res, ctx, spaceId, body) {
     format,
     content: '',
     revision: 0,
-    updatedAt: now
+    updatedAt: now,
+    revisions: []
   };
   bucket(spaceId).push(page);
   const bodyOut = detail(page);
@@ -166,13 +167,36 @@ async function edit(req, res, ctx, page) {
     ctx.problem(res, 422, 'validation_failed', 'Unprocessable Content', 'Content exceeds 2 MiB.', 'trace-page-size');
     return;
   }
-  page.content = content;
-  page.revision += 1;
-  page.updatedAt = new Date().toISOString();
+  storeRevision(page, content, null);
   const bodyOut = detail(page);
   const tag = etag(page);
   records.set(`edit:${key}`, { fingerprint, status: 200, body: bodyOut, etag: tag });
   ctx.send(res, 200, bodyOut, { etag: tag });
+}
+
+export function findPage(spaceId, pageId) {
+  return find(spaceId, pageId) ?? null;
+}
+
+export function storeRevision(page, content, note) {
+  const latest = page.revisions.at(-1);
+  const created = new Date();
+  if (latest && Date.parse(latest.createdAt) >= created.getTime()) {
+    created.setTime(Date.parse(latest.createdAt) + 1);
+  }
+  page.content = content;
+  page.revision += 1;
+  page.updatedAt = created.toISOString();
+  const sizeBytes = Buffer.byteLength(content, 'utf8');
+  const previous = latest ? latest.sizeBytes : 0;
+  page.revisions.push({
+    n: page.revision,
+    content,
+    createdAt: page.updatedAt,
+    note,
+    sizeBytes,
+    sizeDelta: sizeBytes - previous
+  });
 }
 
 function find(spaceId, pageId) {
