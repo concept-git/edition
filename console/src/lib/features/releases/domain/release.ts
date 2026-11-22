@@ -4,7 +4,22 @@ export type ReleaseSummary = {
   id: string;
   label: string;
   status: string;
+  allowedActions: string[];
 };
+
+export type PreviewPage = {
+  pageId: string;
+  slug: string;
+  title: string;
+};
+
+export type PreviewDocument = {
+  title: string;
+  slug: string;
+  content: string;
+};
+
+const previewable = new Set(['draft', 'flagged', 'validated', 'archived']);
 
 export type ConfirmedBuild = {
   outcome: ReleaseOutcome;
@@ -55,6 +70,24 @@ export function statusLabel(status: string): string {
   }
 }
 
+/** Preview is only for a release that is not the live one. */
+export function canPreview(release: ReleaseSummary): boolean {
+  return previewable.has(release.status);
+}
+
+/** Archived releases roll back; a validated release is switched to live. */
+export function liveControl(release: ReleaseSummary): 'promote' | 'rollback' | null {
+  if (release.status === 'archived' && release.allowedActions.includes('rollback')) return 'rollback';
+  if (release.status !== 'archived' && release.allowedActions.includes('promote')) return 'promote';
+  if (release.allowedActions.includes('rollback')) return 'rollback';
+  return null;
+}
+
+export function withRollback(actions: string[]): string[] {
+  const next = actions.filter((action) => action !== 'promote');
+  return next.includes('rollback') ? next : [...next, 'rollback'];
+}
+
 export function readBuild(value: unknown): ConfirmedBuild | null {
   if (!value || typeof value !== 'object') return null;
   const outcome = (value as { outcome?: unknown }).outcome;
@@ -79,11 +112,32 @@ export function readList(value: unknown): ReleaseSummary[] | null {
   return summaries;
 }
 
-function readSummary(value: unknown): ReleaseSummary | null {
+export function readSummary(value: unknown): ReleaseSummary | null {
   if (!value || typeof value !== 'object') return null;
   const record = value as Record<string, unknown>;
   if (typeof record.id !== 'string' || typeof record.label !== 'string' || typeof record.status !== 'string') return null;
-  return { id: record.id, label: record.label, status: record.status };
+  return { id: record.id, label: record.label, status: record.status, allowedActions: readActions(record.allowedActions) };
+}
+
+export function readPreviewPages(value: unknown): PreviewPage[] | null {
+  if (!value || typeof value !== 'object') return null;
+  const items = (value as { items?: unknown }).items;
+  if (!Array.isArray(items)) return null;
+  const pages: PreviewPage[] = [];
+  for (const item of items) {
+    if (!item || typeof item !== 'object') return null;
+    const record = item as Record<string, unknown>;
+    if (typeof record.pageId !== 'string' || typeof record.slug !== 'string' || typeof record.title !== 'string') return null;
+    pages.push({ pageId: record.pageId, slug: record.slug, title: record.title });
+  }
+  return pages;
+}
+
+export function readPreviewDocument(value: unknown): PreviewDocument | null {
+  if (!value || typeof value !== 'object') return null;
+  const record = value as Record<string, unknown>;
+  if (typeof record.title !== 'string' || typeof record.slug !== 'string' || typeof record.content !== 'string') return null;
+  return { title: record.title, slug: record.slug, content: record.content };
 }
 
 function readReport(release: unknown): string[] {
@@ -104,6 +158,11 @@ function issueLines(value: unknown): string[] {
     const text = detail || code;
     return text ? [text] : [];
   });
+}
+
+function readActions(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === 'string');
 }
 
 function isOutcome(value: unknown): value is ReleaseOutcome {

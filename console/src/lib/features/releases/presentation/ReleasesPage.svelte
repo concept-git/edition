@@ -5,9 +5,19 @@
   import Button from '#lib/shared/ui/Button.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
-  import { buildRelease, listReleases, resolveTenant } from '../data/http-releases';
-  import { sameIntent, statusLabel, type ConfirmedBuild, type ReleaseOutcome, type ReleaseSummary, type WriteIntent } from '../domain/release';
-  import { buildFailureMessage, canRetry, listFailureMessage } from './messages';
+  import { buildRelease, listPreviewPages, listReleases, promoteRelease, readPreviewPage, resolveTenant, rollbackRelease } from '../data/http-releases';
+  import {
+    canPreview,
+    liveControl,
+    sameIntent,
+    statusLabel,
+    withRollback,
+    type ConfirmedBuild,
+    type ReleaseOutcome,
+    type ReleaseSummary,
+    type WriteIntent
+  } from '../domain/release';
+  import { buildFailureMessage, canRetry, listFailureMessage, previewFailureMessage, switchFailureMessage } from './messages';
 
   let { spaceId }: { spaceId: string } = $props();
   const session = getSession();
@@ -24,11 +34,18 @@
   let listFailure = $state<ApiFailure | null>(null);
   let buildFailure = $state<ApiFailure | null>(null);
   let pending = $state(false);
+  let acting = $state(false);
+  let preview = $state.raw<{ title: string; content: string } | null>(null);
+  let previewFailure = $state<ApiFailure | null>(null);
+  let switchFailure = $state<ApiFailure | null>(null);
   let intent: WriteIntent | null = null;
+  const intents = new Map<string, WriteIntent>();
   let alive = true;
 
   const listMessage = $derived(listFailure ? listFailureMessage(listFailure) : '');
   const buildMessage = $derived(buildFailure ? buildFailureMessage(buildFailure) : '');
+  const previewMessage = $derived(previewFailure ? previewFailureMessage(previewFailure) : '');
+  const switchMessage = $derived(switchFailure ? switchFailureMessage(switchFailure) : '');
   const retryable = $derived(buildFailure !== null && canRetry(buildFailure));
 
   onDestroy(() => {
@@ -72,6 +89,67 @@
     pending = true;
     buildFailure = null;
     void run(token, tenantId, key);
+  }
+
+  async function openPreview(release: ReleaseSummary) {
+    if (acting || !tenantId) return;
+    const token = session.accessToken;
+    if (!token) return;
+    acting = true;
+    previewFailure = null;
+    const pages = await listPreviewPages(token, tenantId, spaceId, release.id);
+    if (!alive) return;
+    if (!pages.ok) {
+      acting = false;
+      previewFailure = pages.failure;
+      return;
+    }
+    const first = pages.body[0];
+    if (!first) {
+      acting = false;
+      preview = { title: release.label, content: '' };
+      return;
+    }
+    const document = await readPreviewPage(token, tenantId, spaceId, release.id, first.slug);
+    if (!alive) return;
+    acting = false;
+    if (!document.ok) {
+      previewFailure = document.failure;
+      return;
+    }
+    preview = { title: document.body.title, content: document.body.content };
+  }
+
+  async function switchTo(release: ReleaseSummary, action: 'promote' | 'rollback') {
+    if (acting || !tenantId) return;
+    const token = session.accessToken;
+    if (!token) return;
+    const fingerprint = `${spaceId}:${release.id}:${action}`;
+    const next = sameIntent(intents.get(fingerprint) ?? null, fingerprint);
+    intents.set(fingerprint, next);
+    acting = true;
+    switchFailure = null;
+    const result =
+      action === 'promote'
+        ? await promoteRelease(token, tenantId, spaceId, release.id, next.key)
+        : await rollbackRelease(token, tenantId, spaceId, release.id, next.key);
+    if (!alive) return;
+    acting = false;
+    if (!result.ok) {
+      switchFailure = result.failure;
+      return;
+    }
+    intents.delete(fingerprint);
+    markLive(release.id, result.body);
+    await refresh(token, tenantId);
+  }
+
+  function markLive(releaseId: string, detail: ReleaseSummary) {
+    items = (items ?? []).map((item) => {
+      if (item.id === releaseId) return { ...item, status: 'live', label: detail.label, allowedActions: detail.allowedActions };
+      if (item.status === 'live') return { ...item, status: 'archived', allowedActions: withRollback(item.allowedActions) };
+      return item;
+    });
   }
 
   async function run(token: string, tenant: string, key: string) {
@@ -125,6 +203,23 @@
     {/if}
   </section>
 
+  {#if preview}
+    <section aria-label="预览" class="mt-4 max-w-md rounded-card border border-line bg-surface px-3 py-3 text-sm">
+      <p class="font-medium text-ink">{preview.title}</p>
+      <p class="mt-1 whitespace-pre-wrap text-ink">{preview.content}</p>
+    </section>
+  {/if}
+  {#if previewMessage}
+    <div role="alert" class="mt-4 text-sm text-ink">
+      <p>{previewMessage}</p>
+    </div>
+  {/if}
+  {#if switchMessage}
+    <div role="alert" class="mt-4 text-sm text-ink">
+      <p>{switchMessage}</p>
+    </div>
+  {/if}
+
   {#if listMessage}
     <div role="alert" class="mt-4 flex flex-wrap items-center gap-3 text-sm text-ink">
       <p>{listMessage}</p>
@@ -134,9 +229,20 @@
   {#if items && items.length > 0}
     <ul aria-label="发版列表" class="mt-6 flex max-w-md flex-col gap-2">
       {#each items as release (release.id)}
-        <li class="flex items-center justify-between gap-3 rounded-card border border-line bg-surface px-3 py-2 text-sm">
+        <li class="flex flex-wrap items-center justify-between gap-3 rounded-card border border-line bg-surface px-3 py-2 text-sm">
           <span class="text-ink">{release.label}</span>
           <span class="text-muted">{statusLabel(release.status)}</span>
+          <span class="flex flex-wrap gap-2">
+            {#if canPreview(release)}
+              <Button variant="quiet" disabled={acting} onclick={() => void openPreview(release)}>预览</Button>
+            {/if}
+            {#if liveControl(release) === 'promote'}
+              <Button variant="quiet" disabled={acting} onclick={() => void switchTo(release, 'promote')}>切换主版本</Button>
+            {/if}
+            {#if liveControl(release) === 'rollback'}
+              <Button variant="quiet" disabled={acting} onclick={() => void switchTo(release, 'rollback')}>回滚</Button>
+            {/if}
+          </span>
         </li>
       {/each}
     </ul>

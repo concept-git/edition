@@ -1,4 +1,6 @@
 // @ts-nocheck
+import { claimsReleaseList } from './13-release-live.mjs';
+
 const actorId = '22222222-2222-4222-8222-222222222222';
 const outcomes = ['promoted', 'unchanged', 'skipped', 'held'];
 
@@ -28,6 +30,7 @@ export async function handle(req, res, ctx) {
 
   const listed = url.pathname.match(/^\/api\/v1\/tenants\/([^/]+)\/spaces\/([^/]+)\/releases$/);
   if (listed && req.method === 'GET') {
+    if (claimsReleaseList(decodeURIComponent(listed[2]))) return false;
     if (failLists > 0) {
       failLists -= 1;
       ctx.problem(res, 500, 'unexpected_error', 'Unexpected error', 'The release list could not be loaded.', 'trace-release-list');

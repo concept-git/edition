@@ -13,6 +13,21 @@ export function buildFailureMessage(failure: ApiFailure): string {
   return failure.code ? `构建没有完成（${failure.code}）。` : '构建没有完成。';
 }
 
+export function previewFailureMessage(failure: ApiFailure): string {
+  if (failure.status === 0) return '网络失败，预览没有打开。';
+  if (failure.status === 429) return retryText('预览', failure.retryAfter);
+  if (failure.status === 409 || failure.status === 404) return '这份发版不能预览。';
+  return withTrace('预览没有打开。', failure.traceId);
+}
+
+export function switchFailureMessage(failure: ApiFailure): string {
+  if (failure.status === 0) return '网络失败，主版本没有切换。';
+  if (failure.status === 429) return retryText('切换', failure.retryAfter);
+  if (failure.status === 409) return '发版状态已经变化，请重新载入后再切换。';
+  if (failure.status >= 500) return withTrace('主版本没有切换。', failure.traceId);
+  return failure.code ? `主版本没有切换（${failure.code}）。` : '主版本没有切换。';
+}
+
 export function canRetry(failure: ApiFailure): boolean {
   return failure.status === 0 || failure.status === 429 || failure.status >= 500;
 }
