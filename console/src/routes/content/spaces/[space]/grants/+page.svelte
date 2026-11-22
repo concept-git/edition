@@ -1,5 +1,8 @@
 <script lang="ts">
-  import SpaceSection from '#lib/features/content/presentation/SpaceSection.svelte';
+  import { page } from '$app/state';
+  import ResourceGrants from '#lib/features/permissions/presentation/ResourceGrants.svelte';
+
+  const spaceId = $derived(page.params.space ?? '');
 </script>
 
-<SpaceSection view="grants" />
+<ResourceGrants kind="spaces" resourceId={spaceId} />
