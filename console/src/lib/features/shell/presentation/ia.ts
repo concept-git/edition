@@ -1,3 +1,7 @@
+import { installPlatformWatch, platformOperator } from '#lib/features/platform/domain/operator.svelte';
+
+installPlatformWatch();
+
 export type NavLink = {
   href: string;
   label: string;
@@ -62,7 +66,7 @@ export const productEntries: NavLink[] = [
   { href: '/sites', label: '站点' }
 ];
 
-export const rail = [
+const railEntries = [
   { id: 'overview', href: '/', label: '概览', icon: 'overview' },
   { id: 'content', href: '/content', label: '内容', icon: 'content' },
   { id: 'sites', href: '/sites', label: '站点', icon: 'sites' },
@@ -71,6 +75,15 @@ export const rail = [
   { id: 'members', href: '/members', label: '成员', icon: 'members' },
   { id: 'platform', href: '/platform/tenants', label: '平台', icon: 'platform' }
 ] as const;
+
+type RailEntry = (typeof railEntries)[number];
+
+export const rail = {
+  map<T>(mapper: (item: RailEntry, index: number) => T): T[] {
+    const visible = platformOperator.allowed ? railEntries : railEntries.filter((item) => item.id !== 'platform');
+    return visible.map(mapper);
+  }
+};
 
 export const sections = {
   content: [
