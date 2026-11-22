@@ -5,11 +5,14 @@ export type PageFormat = (typeof FORMATS)[number];
 /** Control rejects page bodies larger than 2 MiB. */
 export const CONTENT_LIMIT_BYTES = 2 * 1024 * 1024;
 
+export type PageReadiness = 'draft' | 'published';
+
 export type PageSummary = {
   id: string;
   title: string;
   slug: string;
   format: PageFormat;
+  status: PageReadiness;
 };
 
 export type PageSource = {
@@ -55,12 +58,28 @@ export function contentEtag(revision: number, header: string | null): string {
   return `"rev-${revision}"`;
 }
 
+export function readinessOf(value: unknown): PageReadiness {
+  return value === 'published' ? 'published' : 'draft';
+}
+
+/** Publish and unpublish responses carry the page. A missing status is not a successful mark. */
+export function readReadiness(value: unknown): PageReadiness | null {
+  if (!value || typeof value !== 'object') return null;
+  const status = (value as { status?: unknown }).status;
+  if (status !== 'published' && status !== 'draft') return null;
+  return status;
+}
+
 export function readSummary(value: unknown): PageSummary | null {
   if (!value || typeof value !== 'object') return null;
   const record = value as Record<string, unknown>;
   if (typeof record.id !== 'string' || typeof record.title !== 'string' || typeof record.slug !== 'string') return null;
   if (!isPageFormat(record.format)) return null;
-  return { id: record.id, title: record.title, slug: record.slug, format: record.format };
+  return { id: record.id, title: record.title, slug: record.slug, format: record.format, status: readinessOf(record.status) };
+}
+
+export function applyReadiness(items: PageSummary[], id: string, status: PageReadiness): PageSummary[] {
+  return items.map((item) => (item.id === id ? { ...item, status } : item));
 }
 
 export function readSource(value: unknown, etag: string | null): PageSource | null {

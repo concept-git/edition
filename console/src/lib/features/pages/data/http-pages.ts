@@ -1,5 +1,14 @@
 import { api, type ApiResult } from '#lib/shared/api/client';
-import { readSource, readSummary, type PageFormat, type PageList, type PageSource, type PageSummary } from '../domain/page';
+import {
+  readReadiness,
+  readSource,
+  readSummary,
+  type PageFormat,
+  type PageList,
+  type PageReadiness,
+  type PageSource,
+  type PageSummary
+} from '../domain/page';
 
 type Profile = {
   tenants?: Array<{ id?: unknown }>;
@@ -88,12 +97,54 @@ export async function editPage(
   return { ok: true, status: result.status, body: source, etag: result.etag };
 }
 
+export async function publishPage(
+  token: string,
+  tenantId: string,
+  spaceId: string,
+  pageId: string,
+  idempotencyKey: string
+): Promise<ApiResult<PageReadiness>> {
+  return mark(token, tenantId, spaceId, pageId, 'publish', idempotencyKey);
+}
+
+export async function unpublishPage(
+  token: string,
+  tenantId: string,
+  spaceId: string,
+  pageId: string,
+  idempotencyKey: string
+): Promise<ApiResult<PageReadiness>> {
+  return mark(token, tenantId, spaceId, pageId, 'unpublish', idempotencyKey);
+}
+
+async function mark(
+  token: string,
+  tenantId: string,
+  spaceId: string,
+  pageId: string,
+  action: 'publish' | 'unpublish',
+  idempotencyKey: string
+): Promise<ApiResult<PageReadiness>> {
+  const result = await api<{ page?: unknown }>(token, `${pagePath(tenantId, spaceId, pageId)}:${action}`, {
+    method: 'POST',
+    idempotencyKey
+  });
+  if (!result.ok) return result;
+  const status = readReadiness(result.body.page);
+  if (!status) return malformed(result.status);
+  return { ok: true, status: result.status, body: status, etag: result.etag };
+}
+
 function collection(tenantId: string, spaceId: string) {
   return `/api/v1/tenants/${encodeURIComponent(tenantId)}/spaces/${encodeURIComponent(spaceId)}/pages`;
 }
 
+function pagePath(tenantId: string, spaceId: string, pageId: string) {
+  return `${collection(tenantId, spaceId)}/${encodeURIComponent(pageId)}`;
+}
+
 function contentPath(tenantId: string, spaceId: string, pageId: string) {
-  return `${collection(tenantId, spaceId)}/${encodeURIComponent(pageId)}/content`;
+  return `${pagePath(tenantId, spaceId, pageId)}/content`;
 }
 
 function malformed(status: number): ApiResult<never> {
