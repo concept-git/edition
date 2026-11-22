@@ -28,7 +28,7 @@ services:
     profiles: [ingress]
     # 8446: HTTPS for the private-reader suite. 8097: plain-HTTP edge for delivery tests.
     ports: ["127.0.0.1:${E2E_INGRESS_PORT:-8446}:8446", "127.0.0.1:${E2E_EDGE_PORT:-8097}:8097"]
-    environment: { E2E_CONTENT_UPSTREAM: "${E2E_CONTENT_UPSTREAM:-host.docker.internal:${E2E_CONTENT_PORT:-8095}}", E2E_CONTROL_UPSTREAM: "${E2E_CONTROL_UPSTREAM:-host.docker.internal:${E2E_CONTROL_PORT:-8094}}", E2E_READING_UPSTREAM: "${E2E_READING_UPSTREAM:-host.docker.internal:${E2E_READING_PORT:-8096}}", E2E_CONSOLE_UPSTREAM: "${E2E_CONSOLE_UPSTREAM:-host.docker.internal:${E2E_CONSOLE_PORT:-8098}}" }
+    environment: { E2E_CONTENT_UPSTREAM: "${E2E_CONTENT_UPSTREAM:-host.docker.internal:${E2E_CONTENT_PORT:-8095}}", E2E_CONTROL_UPSTREAM: "${E2E_CONTROL_UPSTREAM:-host.docker.internal:${E2E_CONTROL_PORT:-8094}}", E2E_READING_UPSTREAM: "${E2E_READING_UPSTREAM:-host.docker.internal:${E2E_READING_PORT:-8096}}" }
     volumes:
       - ./acceptance.Caddyfile:/etc/caddy/Caddyfile:ro
       - ${E2E_TLS_CERT_FILE:-../../.scratch/dw-v1/runtime/private-reader/tls-cert.pem}:/certs/cert.pem:ro

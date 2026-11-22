@@ -27,42 +27,6 @@ jobs:
         run: corepack pnpm test:coverage
       - run: node infra/edition.ts platform --help
 
-  control-console:
-    name: React control console
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - working-directory: infra
-        run: corepack pnpm install --frozen-lockfile
-      - working-directory: clients/control-console
-        run: corepack pnpm install --frozen-lockfile
-      - run: node infra/edition.ts quality static --scope console
-      - working-directory: clients/control-console
-        run: corepack pnpm test
-      - working-directory: clients/control-console
-        run: corepack pnpm check:duplication
-      - working-directory: clients/control-console
-        run: corepack pnpm test:mutation
-      - working-directory: clients/control-console
-        run: corepack pnpm exec playwright install --with-deps chromium
-      - working-directory: clients/control-console
-        env:
-          EDITION_CONSOLE_PREVIEW: '1'
-        run: corepack pnpm test:browser
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: control-console-evidence
-          path: |
-            clients/control-console/test-results
-            clients/control-console/reports
-            clients/control-console/coverage/duplication
-            .scratch/dw-v1/runtime/quality/
-          if-no-files-found: ignore
-
   backend:
     runs-on: ubuntu-latest
     env:

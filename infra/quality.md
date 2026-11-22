@@ -26,14 +26,14 @@ Windows 使用虚拟环境的 `Scripts/python.exe`，并将其绝对路径设为
 | `node infra/edition.ts quality static` | 检查导航、类型、格式、架构和契约，执行工程原有 check |
 | `node infra/edition.ts quality coverage --measure` | 执行测试并生成覆盖率差距报告，不代表验收通过 |
 | `node infra/edition.ts quality coverage` | 执行测试，要求各工程的覆盖率指标均达到 90% |
-| `node infra/edition.ts quality acceptance` | 顺序执行 delivery、private、vfs、console 真实验收 |
+| `node infra/edition.ts quality acceptance` | 顺序执行 delivery、private、vfs 真实验收 |
 | `node infra/edition.ts quality all` | 顺序执行上述正式检查，任何错误或告警均使结果失败 |
 
-用 `--scope infra`、`backend`、`cli`、`vfs`、`compiler` 或 `console` 定位一个工程。默认检查全部工程。`--scope` 不缩减跨应用 acceptance 的四组范围。正式验收使用 `all`，局部通过不能替代全量通过。
+用 `--scope infra`、`backend`、`cli`、`vfs` 或 `compiler` 定位一个工程。默认检查全部工程。`--scope` 不缩减跨应用 acceptance 的三组范围。正式验收使用 `all`，局部通过不能替代全量通过。
 
 `doctor` 是前置工具检查，不能证明应用已启动。`static --scope backend` 与完整 `all` 会构建四个后端 JAR。单独运行浏览器验收前须先构建这些产物并安装 Chromium；浏览器驱动会构建前端。步骤见[测试标准](../contracts/delivery-openapi.json)。
 
-验收默认使用 `dw-quality` 项目、同名存储命名空间和 2000 端口偏移。可用现有 `EDITION_COMPOSE_PROJECT`、`E2E_STORAGE_NAMESPACE`、`E2E_PORT_OFFSET`、`E2E_RUNTIME_DIR` 覆盖。四组必须使用相同配置，不并行运行，不清理原有数据卷。
+验收默认使用 `dw-quality` 项目、同名存储命名空间和 2000 端口偏移。可用现有 `EDITION_COMPOSE_PROJECT`、`E2E_STORAGE_NAMESPACE`、`E2E_PORT_OFFSET`、`E2E_RUNTIME_DIR` 覆盖。三组必须使用相同配置，不并行运行，不清理原有数据卷。
 
 ## 覆盖率口径
 
@@ -68,9 +68,3 @@ Windows 使用虚拟环境的 `Scripts/python.exe`，并将其绝对路径设为
 
 
 JaCoCo 的 Java 25 支持见[官方变更记录](https://www.jacoco.org/jacoco/trunk/doc/changes.html)。Python 子进程测量依据[官方配置说明](https://coverage.readthedocs.io/en/7.13.5/config.html#run-patch)。
-
-## 管理控制台
-
-`quality static --scope console` 检查类型、生成契约、接口归属、架构边界、格式、Lint 与生产构建。`quality coverage --scope console` 执行控制台行为测试；目前不将它声明为上述语言工程的 90% 覆盖率指标。控制台额外的浏览器、重复检测和变异测试命令见[控制台说明](../clients/control-console/README.md)。
-
-`verify console` 使用真实同源 HTTPS 入口。它与其它 suite 顺序执行，不能共享运行进程并行启动。验收自动构建控制台，测试结果写入隔离运行目录。

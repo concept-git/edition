@@ -25,16 +25,6 @@
 
 # Loopback hosts serve Control API; published site hosts follow edge_routes.
 http://localhost:8088, http://127.0.0.1:8088 {
-	redir /console /console/ 308
-	handle /console/assets/* {
-		root * /srv
-		file_server
-	}
-	handle /console/* {
-		root * /srv
-		try_files {path} /console/index.html
-		file_server
-	}
 	# 同域反代后端（免 CORS；host.docker.internal = 宿主机上的 Boot 应用）
 	handle /api/content/* {
 		reverse_proxy {$CONTENT_UPSTREAM:host.docker.internal:8082}

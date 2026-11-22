@@ -6,9 +6,3 @@
 **/build
 **/jte-classes
 **/.features-gen
-clients/control-console/dist
-clients/control-console/test-results
-clients/control-console/playwright-report
-clients/control-console/coverage
-clients/control-console/reports
-clients/control-console/.stryker-tmp

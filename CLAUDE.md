@@ -23,7 +23,7 @@ Edition 是多租户文档与知识交付平台：Java 25 / Gradle 的 control�
 | Command | What it does |
 |---|---|
 | `node infra/edition.ts repository` | 修改文档、目录或脚本入口后，在仓库根运行 |
-| `node infra/edition.ts verify` | 浏览器验收。四个 suite 共用端口和数据，顺序运行。不要直接运行无分组的 `playwright test`。完整命令见 `infra/quality.md` |
+| `node infra/edition.ts verify` | 浏览器验收。三个 suite 共用端口和数据，顺序运行。不要直接运行无分组的 `playwright test`。完整命令见 `infra/quality.md` |
 </important>
 
 <important if="you are changing product behavior, concepts, or sync rules">

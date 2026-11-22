@@ -19,20 +19,6 @@
 }
 
 # TLS entry for the private-reader suite (Secure cookies need HTTPS).
-https://console.acme.test:8446 {
-  tls /certs/cert.pem /certs/key.pem
-  @control path /api/v1/* /auth/* /admin/* /ops/* /audit /audit:* /audit/* /stats/* /webhooks /webhooks/* /healthz /readyz /.well-known/jwks.json
-  handle @control {
-    reverse_proxy {$E2E_CONTROL_UPSTREAM:host.docker.internal:8094}
-  }
-  handle /console/* {
-    reverse_proxy {$E2E_CONSOLE_UPSTREAM:host.docker.internal:8098}
-  }
-  handle {
-    respond 404
-  }
-}
-
 https://*.acme.test:8446 {
   tls /certs/cert.pem /certs/key.pem
   import edge_routes

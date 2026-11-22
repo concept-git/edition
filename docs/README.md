@@ -12,7 +12,6 @@
 | 工程与部署 | [技术栈](../README.md)、[部署与脚本](../infra/README.md) |
 | 测试 | [TESTING](../infra/quality.md) |
 | 内容类型与插件 | [需求](prd/README.md#content-types)、[工程契约](../contracts/README.md)、[后续范围](prd/README.md#plugin-roadmap) |
-| 管理控制台 | [架构、开发与接口覆盖](../clients/control-console/README.md) |
 | 管理 CLI | [使用指南](../clients/control/USAGE.md)、[规格](../clients/control/SPECS.md) |
 | 阅读与消费 | [阅读接口](../contracts/delivery-openapi.json)、[EditionVFS](../clients/edition/README.md) |
 
