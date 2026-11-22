@@ -162,8 +162,6 @@
     <p>{loadFailureMessage(loadFailure)}</p>
     <Button variant="quiet" onclick={() => void load()}>重试</Button>
   </div>
-{:else if mode === 'authored'}
-  <EmptyState title="没有数据" description="authored 空间拒绝整体导入。" />
 {:else}
   {#if !job}
     <EmptyState title="没有数据" description="上传发版包后可以看到作业进度。" />
@@ -184,7 +182,7 @@
   </form>
   {#if job}
     <div class="mt-6 flex max-w-md flex-col gap-3">
-      <p role="status" class="text-sm font-medium text-ink">{statusLabel(job.status)}</p>
+      <p role="status" class="text-sm font-medium text-ink">{job.outcome === 'flagged' ? '待确认' : statusLabel(job.status)}</p>
       {#if job.progress.total !== null}
         <p class="text-sm text-muted">{job.progress.done ?? 0} / {job.progress.total}</p>
       {/if}

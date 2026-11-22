@@ -7,7 +7,7 @@
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import SourceEditor from '#lib/shared/ui/SourceEditor.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
-  import { createPage, editPage, listPages, publishPage, resolveTenant, trashPage, unpublishPage, viewPageContent } from '../data/http-pages';
+  import { createPage, editPage, listPages, publishPage, readSpaceMode, resolveTenant, trashPage, unpublishPage, viewPageContent } from '../data/http-pages';
   import {
     applyReadiness,
     exceedsContentLimit,
@@ -55,6 +55,8 @@
   let markMessage = $state('');
   let markIntent: WriteIntent | null = null;
   let generation = 0;
+  let spaceMode = $state<'authored' | 'synced' | null>(null);
+  let hotfix = $state(false);
 
   async function load(id: string) {
     const request = ++generation;
@@ -73,12 +75,17 @@
       return;
     }
     tenantId = tenant.body;
-    const page = await listPages(token, tenant.body, id);
+    const [page, space] = await Promise.all([listPages(token, tenant.body, id), readSpaceMode(token, tenant.body, id)]);
     if (request !== generation) return;
     if (!page.ok) {
       queryMessage = queryFailureMessage(page.failure);
       return;
     }
+    if (!space.ok) {
+      queryMessage = queryFailureMessage(space.failure);
+      return;
+    }
+    spaceMode = space.body;
     items = page.body.items;
     canCreate = page.body.canCreate;
     queryMessage = '';
@@ -124,6 +131,7 @@
     mode = 'source';
     saveMessage = '';
     saveIntent = null;
+    hotfix = false;
     markMessage = '';
     markIntent = null;
     readiness = readinessOf(items?.find((item) => item.id === id)?.status);
@@ -142,7 +150,7 @@
     if (mode === 'visual' && flushVisual) draft = flushVisual();
     const current = editing;
     const token = session.accessToken;
-    if (!current || saving || !token || !tenantId) return;
+    if (!current || saving || !token || !tenantId || spaceMode === null) return;
     if (exceedsContentLimit(draft)) {
       saveMessage = limitRejection();
       return;
@@ -153,7 +161,7 @@
     const body = draft;
     saving = true;
     saveMessage = '';
-    const result = await editPage(token, tenantId, spaceId, current.id, body, current.etag, key);
+    const result = await editPage(token, tenantId, spaceId, current.id, body, current.etag, key, spaceMode === 'synced' ? 'hotfix' : 'draft_only');
     saving = false;
     if (editing?.id !== current.id) return;
     if (!result.ok) {
@@ -161,6 +169,7 @@
       return;
     }
     saveIntent = null;
+    hotfix = result.body.drift;
     editing = result.body;
     if (draft === body) draft = result.body.content;
   }
@@ -205,6 +214,7 @@
     draft = '';
     saveMessage = '';
     saveIntent = null;
+    hotfix = false;
     markMessage = '';
     markIntent = null;
     marking = false;
@@ -290,6 +300,9 @@
         <SourceEditor bind:value={draft} label="正文" language={editing.format} />
       {/if}
     {/key}
+    {#if hotfix}
+      <p role="status" aria-label="热修结果" class="text-sm text-ink">已发版，并记为漂移。</p>
+    {/if}
     {#if saveMessage}
       <p role="alert" class="text-sm text-ink">{saveMessage}</p>
     {/if}

@@ -77,7 +77,8 @@ export async function handle(req, res, ctx) {
   const viewed = url.pathname.match(/^\/api\/v1\/tenants\/([^/]+)\/spaces\/([^/]+)\/import-jobs\/([^/]+)$/);
   if (viewed && req.method === 'GET') {
     const job = jobs.get(decodeURIComponent(viewed[3]));
-    if (!job || job.spaceId !== decodeURIComponent(viewed[2])) {
+    if (!job) return false;
+    if (job.spaceId !== decodeURIComponent(viewed[2])) {
       ctx.problem(res, 404, 'import_job_not_found', 'Not Found', 'The import job does not exist.', 'trace-import-job');
       return true;
     }
@@ -325,6 +326,12 @@ async function readRaw(req) {
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
   return Buffer.concat(chunks);
+}
+
+export function claimUpload(spaceId, uploadKey) {
+  const upload = uploads.get(uploadKey);
+  if (!upload || !upload.received || upload.spaceId !== spaceId) return null;
+  return { title: upload.title };
 }
 
 function reset() {

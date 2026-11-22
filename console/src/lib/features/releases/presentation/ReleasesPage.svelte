@@ -5,7 +5,7 @@
   import Button from '#lib/shared/ui/Button.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
-  import { buildRelease, listPreviewPages, listReleases, promoteRelease, readPreviewPage, resolveTenant, rollbackRelease } from '../data/http-releases';
+  import { approveRelease, buildRelease, listPreviewPages, listReleases, promoteRelease, readPreviewPage, resolveTenant, rollbackRelease } from '../data/http-releases';
   import {
     canPreview,
     liveControl,
@@ -17,7 +17,7 @@
     type ReleaseSummary,
     type WriteIntent
   } from '../domain/release';
-  import { buildFailureMessage, canRetry, listFailureMessage, previewFailureMessage, switchFailureMessage } from './messages';
+  import { approveFailureMessage, buildFailureMessage, canRetry, listFailureMessage, previewFailureMessage, switchFailureMessage } from './messages';
 
   let { spaceId }: { spaceId: string } = $props();
   const session = getSession();
@@ -40,6 +40,9 @@
   let switchFailure = $state<ApiFailure | null>(null);
   let intent: WriteIntent | null = null;
   const intents = new Map<string, WriteIntent>();
+  let confirmIntent: WriteIntent | null = null;
+  let confirming = $state('');
+  let confirmFailure = $state<ApiFailure | null>(null);
   let alive = true;
 
   const listMessage = $derived(listFailure ? listFailureMessage(listFailure) : '');
@@ -47,6 +50,7 @@
   const previewMessage = $derived(previewFailure ? previewFailureMessage(previewFailure) : '');
   const switchMessage = $derived(switchFailure ? switchFailureMessage(switchFailure) : '');
   const retryable = $derived(buildFailure !== null && canRetry(buildFailure));
+  const confirmMessage = $derived(confirmFailure ? approveFailureMessage(confirmFailure) : '');
 
   onDestroy(() => {
     alive = false;
@@ -165,6 +169,34 @@
     await refresh(token, tenant);
   }
 
+  function confirm(release: ReleaseSummary) {
+    if (confirming || release.status !== 'flagged' || !release.allowedActions.includes('approve') || !tenantId) return;
+    const token = session.accessToken;
+    if (!token) return;
+    confirmIntent = sameIntent(confirmIntent, release.id);
+    const key = confirmIntent.key;
+    confirming = release.id;
+    confirmFailure = null;
+    void runConfirm(token, tenantId, release, key);
+  }
+
+  async function runConfirm(token: string, tenant: string, release: ReleaseSummary, key: string) {
+    const result = await approveRelease(token, tenant, spaceId, release.id, key);
+    if (!alive) return;
+    confirming = '';
+    if (!result.ok) {
+      confirmFailure = result.failure;
+      return;
+    }
+    confirmIntent = null;
+    items = (items ?? []).map((item) => {
+      if (item.id === result.body.id) return result.body;
+      if (item.status === 'live' && result.body.status === 'live') return { ...item, status: 'archived' };
+      return item;
+    });
+    await refresh(token, tenant);
+  }
+
   void load();
 </script>
 
@@ -219,7 +251,9 @@
       <p>{switchMessage}</p>
     </div>
   {/if}
-
+  {#if confirmMessage}
+    <p role="alert" class="mt-4 text-sm text-ink">{confirmMessage}</p>
+  {/if}
   {#if listMessage}
     <div role="alert" class="mt-4 flex flex-wrap items-center gap-3 text-sm text-ink">
       <p>{listMessage}</p>
@@ -229,20 +263,31 @@
   {#if items && items.length > 0}
     <ul aria-label="发版列表" class="mt-6 flex max-w-md flex-col gap-2">
       {#each items as release (release.id)}
-        <li class="flex flex-wrap items-center justify-between gap-3 rounded-card border border-line bg-surface px-3 py-2 text-sm">
-          <span class="text-ink">{release.label}</span>
-          <span class="text-muted">{statusLabel(release.status)}</span>
-          <span class="flex flex-wrap gap-2">
-            {#if canPreview(release)}
-              <Button variant="quiet" disabled={acting} onclick={() => void openPreview(release)}>预览</Button>
-            {/if}
-            {#if liveControl(release) === 'promote'}
-              <Button variant="quiet" disabled={acting} onclick={() => void switchTo(release, 'promote')}>切换主版本</Button>
-            {/if}
-            {#if liveControl(release) === 'rollback'}
-              <Button variant="quiet" disabled={acting} onclick={() => void switchTo(release, 'rollback')}>回滚</Button>
-            {/if}
-          </span>
+        <li class="flex flex-col gap-2 rounded-card border border-line bg-surface px-3 py-2 text-sm">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <span class="text-ink">{release.label}</span>
+            <span class="text-muted">{statusLabel(release.status)}</span>
+            <span class="flex flex-wrap gap-2">
+              {#if canPreview(release)}
+                <Button variant="quiet" disabled={acting} onclick={() => void openPreview(release)}>预览</Button>
+              {/if}
+              {#if liveControl(release) === 'promote'}
+                <Button variant="quiet" disabled={acting} onclick={() => void switchTo(release, 'promote')}>切换主版本</Button>
+              {/if}
+              {#if liveControl(release) === 'rollback'}
+                <Button variant="quiet" disabled={acting} onclick={() => void switchTo(release, 'rollback')}>回滚</Button>
+              {/if}
+            </span>
+          </div>
+          {#if release.status === 'flagged'}
+            <p class="text-ink">确认前不能成为主版本。</p>
+            <div class="flex gap-2">
+              <Button disabled>设为主版本</Button>
+              {#if release.allowedActions.includes('approve')}
+                <Button disabled={confirming === release.id} onclick={() => confirm(release)}>确认</Button>
+              {/if}
+            </div>
+          {/if}
         </li>
       {/each}
     </ul>

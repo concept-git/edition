@@ -37,6 +37,15 @@ export async function handle(req, res, ctx) {
       return true;
     }
     if (req.method === 'PUT') {
+      const raw = await readRaw(req);
+      let body = {};
+      try {
+        body = raw.length === 0 ? {} : JSON.parse(raw.toString('utf8'));
+      } catch {
+        body = {};
+      }
+      rewind(req, raw);
+      if (body.intent === 'hotfix') return false;
       await edit(req, res, ctx, page);
       return true;
     }
@@ -190,6 +199,18 @@ export function findPage(spaceId, pageId) {
   return find(spaceId, pageId) ?? null;
 }
 
+export function markDrift(page) {
+  page.drift = true;
+}
+
+export function renderPage(page) {
+  return detail(page);
+}
+
+export function pageEtag(page) {
+  return etag(page);
+}
+
 export function storeRevision(page, content, note) {
   const latest = page.revisions.at(-1);
   const created = new Date();
@@ -232,7 +253,7 @@ function summary(page) {
     format: page.format,
     icon: null,
     tags: [],
-    driftFlag: false,
+    driftFlag: page.drift === true,
     updatedAt: page.updatedAt,
     updatedBy: actorId,
     publishedAt: null,

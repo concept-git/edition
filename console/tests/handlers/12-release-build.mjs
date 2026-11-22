@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { claimsReleaseList } from './13-release-live.mjs';
+import { releaseItems } from './14-hotfix-drift.mjs';
 
 const actorId = '22222222-2222-4222-8222-222222222222';
 const outcomes = ['promoted', 'unchanged', 'skipped', 'held'];
@@ -36,7 +37,10 @@ export async function handle(req, res, ctx) {
       ctx.problem(res, 500, 'unexpected_error', 'Unexpected error', 'The release list could not be loaded.', 'trace-release-list');
       return true;
     }
-    const items = lists.get(decodeURIComponent(listed[2])) ?? [];
+    const spaceId = decodeURIComponent(listed[2]);
+    const own = lists.get(spaceId) ?? [];
+    const extra = releaseItems(spaceId).filter((item) => !own.some((current) => current.id === item.id));
+    const items = [...extra, ...own];
     ctx.send(res, 200, { items, nextCursor: null, total: items.length, allowedActions: ['publish'] });
     return true;
   }
