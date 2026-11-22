@@ -260,3 +260,47 @@ function problemOutcome(status, code, title, detail, traceId) {
 function fingerprint(req, body) {
   return `${req.method} ${req.url} ${JSON.stringify(body)}`;
 }
+
+export function siteMounts(tenant, siteId) {
+  const found = bucket(tenant).get(siteId);
+  if (!found) return null;
+  return found.mounts.map((mount) => ({
+    spaceId: mount.spaceId,
+    slug: mount.slug,
+    spaceName: nameOf(mount.spaceId)
+  }));
+}
+
+export function mountsOfSpace(spaceId) {
+  const found = [];
+  for (const sites of sitesByTenant.values()) {
+    for (const site of sites.values()) {
+      for (const mount of site.mounts) {
+        if (mount.spaceId === spaceId) found.push({ siteId: site.id, slug: mount.slug, spaceId, spaceName: nameOf(spaceId) });
+      }
+    }
+  }
+  return found;
+}
+
+export function applyRemount(tenant, siteId, oldSlug, newSlug) {
+  const found = bucket(tenant).get(siteId);
+  if (!found) return problemOutcome(404, 'site_not_found', 'Not found', 'Site was not found.', 'trace-site');
+  const normalized = String(newSlug ?? '').normalize('NFKC').trim().toLowerCase();
+  if (normalized.length < 1 || normalized.length > 80 || !slugShape.test(normalized)) {
+    return problemOutcome(422, 'slug_invalid', 'Request rejected', 'Slug is invalid.', 'trace-slug');
+  }
+  const current = found.mounts.find((item) => item.slug === oldSlug);
+  if (!current) return problemOutcome(404, 'mount_not_found', 'Not found', 'Mount was not found.', 'trace-mount');
+  if (found.mounts.some((item) => item !== current && conflicts(item.slug, normalized))) {
+    return problemOutcome(409, 'slug_taken', 'Conflict', 'Mount path conflicts with an existing slug.', 'trace-mount');
+  }
+  const from = current.slug;
+  current.slug = normalized;
+  found.updatedAt = new Date().toISOString();
+  return { from, to: normalized, spaceId: current.spaceId, spaceName: nameOf(current.spaceId), status: 200, body: detail(found) };
+}
+
+function nameOf(spaceId) {
+  return spaces.find((space) => space.id === spaceId)?.name ?? spaceId;
+}
