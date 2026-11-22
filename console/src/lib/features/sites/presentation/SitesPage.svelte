@@ -2,21 +2,28 @@
   import { onDestroy } from 'svelte';
   import type { ApiFailure } from '#lib/shared/api/client';
   import Button from '#lib/shared/ui/Button.svelte';
+  import Dialog from '#lib/shared/ui/Dialog.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import SectionCard from '#lib/shared/ui/SectionCard.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
   import { getSession } from '#lib/features/session/presentation/session.svelte';
-  import { createSite, currentTenant, loadSiteList } from '../data/sites-api';
-  import { IntentKey, queryFailureMessage, writeFailureMessage, type SiteList } from '../domain/sites';
+  import { createSite, currentTenant, deleteSite, loadSiteList } from '../data/sites-api';
+  import { deleteSiteMessage, IntentKey, queryFailureMessage, writeFailureMessage, type SiteList, type SiteSummary } from '../domain/sites';
 
   const session = getSession();
   const intent = new IntentKey();
+  const deleteIntent = new IntentKey();
   let list = $state<SiteList | null>(null);
   let name = $state('');
   let pending = $state(false);
   let queryFailure = $state<ApiFailure | null>(null);
   let createFailure = $state<ApiFailure | null>(null);
+  let deleteOpen = $state(false);
+  let pendingDelete = $state<SiteSummary | null>(null);
+  let confirmationName = $state('');
+  let deleteMessage = $state('');
+  let deleting = $state(false);
   let alive = true;
 
   onDestroy(() => {
@@ -84,6 +91,56 @@
     list = refreshed.body;
   }
 
+  function askDelete(site: SiteSummary) {
+    pendingDelete = site;
+    confirmationName = '';
+    deleteMessage = '';
+    deleteOpen = true;
+  }
+
+  function closeDelete() {
+    deleteOpen = false;
+    pendingDelete = null;
+    deleteMessage = '';
+  }
+
+  async function confirmDelete() {
+    const site = pendingDelete;
+    const token = session.accessToken;
+    if (!site || !token || deleting) return;
+    deleting = true;
+    deleteMessage = '';
+    const tenant = await currentTenant(token);
+    if (!alive) return;
+    if (!tenant.ok) {
+      deleteMessage = deleteSiteMessage(tenant.failure);
+      deleting = false;
+      return;
+    }
+    const key = deleteIntent.take(`${site.id}\n${confirmationName}`);
+    const removed = await deleteSite(token, tenant.body, site.id, confirmationName, key);
+    if (!alive) return;
+    if (!removed.ok) {
+      deleteMessage = deleteSiteMessage(removed.failure);
+      deleting = false;
+      if (removed.failure.status !== 0 && removed.failure.status !== 429 && removed.failure.status < 500) deleteIntent.finish();
+      return;
+    }
+    deleteIntent.finish();
+    deleting = false;
+    closeDelete();
+    const previous = list?.items ?? [];
+    list = { items: previous.filter((item) => item.id !== site.id), canCreate: list?.canCreate ?? false };
+    const refreshed = await loadSiteList(token, tenant.body);
+    if (!alive) return;
+    if (!refreshed.ok) {
+      queryFailure = refreshed.failure;
+      return;
+    }
+    queryFailure = null;
+    list = refreshed.body;
+  }
+
   void load();
 </script>
 
@@ -104,8 +161,9 @@
 {:else}
   <ul aria-label="站点" class="mb-6 flex flex-col items-start gap-2">
     {#each list.items as site (site.id)}
-      <li>
+      <li class="flex items-center gap-3">
         <Button href={`/sites/${site.id}/mounts`}>{site.name}</Button>
+        <Button type="button" variant="quiet" onclick={() => askDelete(site)}>删除</Button>
       </li>
     {/each}
   </ul>
@@ -123,4 +181,19 @@
       </div>
     </form>
   </SectionCard>
+{/if}
+
+{#if deleteOpen && pendingDelete}
+  <Dialog bind:open={deleteOpen} title="确认删除站点" description="回输站点名称。站点仍有挂载时删除会被拒绝，站点还在。">
+    <TextField label="站点名称" bind:value={confirmationName} />
+    {#if deleteMessage}
+      <p role="alert" class="text-sm text-ink">{deleteMessage}</p>
+    {/if}
+    {#snippet actions()}
+      <Button variant="quiet" onclick={closeDelete}>取消</Button>
+      <Button variant="danger" disabled={deleting || confirmationName.trim().length === 0} onclick={() => void confirmDelete()}>
+        删除站点
+      </Button>
+    {/snippet}
+  </Dialog>
 {/if}

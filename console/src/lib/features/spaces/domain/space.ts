@@ -1,9 +1,12 @@
 export type SpaceMode = 'authored' | 'synced';
 
+export type SpaceStatus = 'active' | 'archived';
+
 export type SpaceSummary = {
   id: string;
   name: string;
   mode: SpaceMode;
+  status: SpaceStatus;
 };
 
 export type SpaceDetail = SpaceSummary & {
@@ -35,7 +38,12 @@ export function readSummary(value: unknown): SpaceSummary | null {
   if (!value || typeof value !== 'object') return null;
   const record = value as Record<string, unknown>;
   if (typeof record.id !== 'string' || typeof record.name !== 'string' || !isSpaceMode(record.mode)) return null;
-  return { id: record.id, name: record.name, mode: record.mode };
+  return {
+    id: record.id,
+    name: record.name,
+    mode: record.mode,
+    status: record.status === 'archived' ? 'archived' : 'active'
+  };
 }
 
 export function readDetail(value: unknown): SpaceDetail | null {

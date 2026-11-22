@@ -334,7 +334,7 @@ function match(pathname) {
     [/^\/api\/v1\/tenants\/([^/]+)\/content-types\/activate$/, 'activate'],
     [/^\/api\/v1\/tenants\/([^/]+)\/content-types\/deactivate$/, 'deactivate'],
     [/^\/api\/v1\/tenants\/([^/]+)\/content-types$/, 'types'],
-    [/^\/api\/v1\/tenants\/([^/]+)\/spaces\/([^/]+)\/pages\/([^/]+)$/, 'page'],
+    [/^\/api\/v1\/tenants\/([^/]+)\/spaces\/([^/]+)\/pages\/([^/:]+)$/, 'page'],
     [/^\/api\/v1\/tenants\/([^/]+)\/spaces\/([^/]+)\/pages$/, 'pages']
   ];
   for (const [pattern, kind] of patterns) {

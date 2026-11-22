@@ -6,7 +6,7 @@
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import SourceEditor from '#lib/shared/ui/SourceEditor.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
-  import { createPage, editPage, listPages, publishPage, resolveTenant, unpublishPage, viewPageContent } from '../data/http-pages';
+  import { createPage, editPage, listPages, publishPage, resolveTenant, trashPage, unpublishPage, viewPageContent } from '../data/http-pages';
   import {
     applyReadiness,
     exceedsContentLimit,
@@ -21,7 +21,7 @@
     type PageSummary,
     type WriteIntent
   } from '../domain/page';
-  import { clearMarkRejection, createRejection, limitRejection, markRejection, queryFailureMessage, saveRejection } from './messages';
+  import { clearMarkRejection, createRejection, limitRejection, markRejection, queryFailureMessage, saveRejection, trashRejection } from './messages';
   import Revisions from './Revisions.svelte';
 
   let { spaceId }: { spaceId: string } = $props();
@@ -44,6 +44,8 @@
   let saving = $state(false);
   let saveMessage = $state('');
   let saveIntent: WriteIntent | null = null;
+  let trashIntent: WriteIntent | null = null;
+  let trashing = $state('');
   let readiness = $state<PageReadiness>('draft');
   let marking = $state(false);
   let markMessage = $state('');
@@ -204,6 +206,23 @@
     format = next;
   }
 
+  async function trash(item: PageSummary) {
+    const token = session.accessToken;
+    if (trashing || !token || !tenantId) return;
+    trashIntent = sameIntent(trashIntent, item.id);
+    const key = trashIntent.key;
+    trashing = item.id;
+    const result = await trashPage(token, tenantId, spaceId, item.id, key);
+    trashing = '';
+    if (!result.ok) {
+      queryMessage = trashRejection(result.failure);
+      return;
+    }
+    trashIntent = null;
+    queryMessage = '';
+    items = (items ?? []).filter((page) => page.id !== item.id);
+  }
+
   onDestroy(() => {
     generation += 1;
   });
@@ -266,6 +285,7 @@
               <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">可发版</span>
             {/if}
             <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">{item.format}</span>
+            <Button type="button" variant="quiet" disabled={trashing === item.id} onclick={() => void trash(item)}>回收</Button>
           </span>
         </li>
       {/each}

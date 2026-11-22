@@ -97,6 +97,21 @@ export async function editPage(
   return { ok: true, status: result.status, body: source, etag: result.etag };
 }
 
+export async function trashPage(
+  token: string,
+  tenantId: string,
+  spaceId: string,
+  pageId: string,
+  idempotencyKey: string
+): Promise<ApiResult<true>> {
+  const result = await api<unknown>(token, `${pagePath(tenantId, spaceId, pageId)}:trash`, {
+    method: 'POST',
+    idempotencyKey
+  });
+  if (!result.ok) return result;
+  return { ok: true, status: result.status, body: true, etag: result.etag };
+}
+
 export async function publishPage(
   token: string,
   tenantId: string,
