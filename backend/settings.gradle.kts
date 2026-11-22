@@ -25,12 +25,3 @@ libraries.forEach { name ->
     include(name)
     project(":$name").projectDir = file("libraries/$name")
 }
-
-// One authoritative concept inventory supplies the independently buildable projects.
-val conceptInventory = groovy.json.JsonSlurper().parse(file("concept-modules.json")) as Map<*, *>
-(conceptInventory["concepts"] as List<*>).forEach { entry ->
-    val concept = entry as Map<*, *>
-    val name = concept["project"] as String
-    include(name)
-    project(":$name").projectDir = file(concept["directory"] as String)
-}

@@ -2,8 +2,8 @@ package io.edition;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import io.edition.concepts.tenantregistry.api.TenantRegistryApi;
-import io.edition.concepts.tenantregistry.api.TenantScopeApi;
+import io.edition.control.modules.tenantregistry.api.TenantRegistryApi;
+import io.edition.control.modules.tenantregistry.api.TenantScopeApi;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;

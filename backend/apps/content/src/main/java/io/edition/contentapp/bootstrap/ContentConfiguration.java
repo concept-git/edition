@@ -2,7 +2,9 @@ package io.edition.contentapp.bootstrap;
 
 import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Config;
-import io.edition.contentapp.entry.persistence.PublicationPages;
+import io.edition.contentapp.adapters.outbound.MeiliSiteSearch;
+import io.edition.contentapp.adapters.outbound.MinioObjectBytes;
+import io.edition.contentapp.adapters.readviews.PublicationPages;
 import io.minio.MinioClient;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +19,8 @@ public class ContentConfiguration {
 
     @Bean
     PublicationPages publicationPages(DataSource source, JsonMapper json) {
-        var pages = new PublicationPages(source, json);
+        var pages = new PublicationPages(
+                source, json, io.edition.contentapp.adapters.inbound.observability.ContentAnalytics::site);
         pages.verifyReader();
         return pages;
     }
@@ -32,5 +35,13 @@ public class ContentConfiguration {
             @Value("${delivery.objects.user}") String user,
             @Value("${delivery.objects.password}") String password) {
         return MinioClient.builder().endpoint(url).credentials(user, password).build();
+    }
+
+    public @Bean MinioObjectBytes objectBytes(MinioClient client) {
+        return new MinioObjectBytes(client);
+    }
+
+    public @Bean MeiliSiteSearch siteSearch(Client client) {
+        return new MeiliSiteSearch(client);
     }
 }

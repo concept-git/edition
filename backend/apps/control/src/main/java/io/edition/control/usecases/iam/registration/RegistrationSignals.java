@@ -1,0 +1,17 @@
+package io.edition.control.usecases.iam.registration;
+
+import java.util.UUID;
+
+/** Invocation-bound completion bindings. Payloads are synchronous and never persisted. */
+public final class RegistrationSignals {
+    private RegistrationSignals() {}
+
+    public record AcceptInviteOnRegister(
+            UUID user, String email, io.edition.control.usecases.flow.RuleCompletion<Void> completion) {
+        @Override
+        public String toString() {
+            return "AcceptInviteOnRegister[flow=" + completion.flowId() + ", occurrence=" + completion.occurrenceId()
+                    + "]";
+        }
+    }
+}

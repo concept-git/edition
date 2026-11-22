@@ -1,0 +1,9 @@
+package io.edition.control.modules.search;
+
+import io.edition.control.modules.search.api.*;
+
+/** Construction entry; production imports belong to application bootstrap. */
+@org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
+@org.springframework.context.annotation.ComponentScan(basePackages = "io.edition.control.modules.search")
+@org.mybatis.spring.annotation.MapperScan("io.edition.control.modules.search.persistence")
+public class SearchConfiguration {}

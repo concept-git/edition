@@ -13,37 +13,28 @@ plugins {
     alias(libs.plugins.dependency.analysis)
 }
 
-val conceptInventory = groovy.json.JsonSlurper().parse(file("concept-modules.json")) as Map<*, *>
-val conceptDefinitions = (conceptInventory["concepts"] as List<*>).map { it as Map<*, *> }
-val conceptProjects = conceptDefinitions.map { ":${it["project"]}" }.toSet()
 val technicalProjects = setOf(":contract", ":values", ":request-context")
 val applicationProjects = setOf(":control", ":content", ":index")
 
 val allowedProjectDependencies = mapOf(
-    ":control" to (conceptProjects + setOf(":contract", ":values", ":request-context")),
+    ":control" to setOf(":contract", ":values", ":request-context"),
     ":index" to setOf(":contract"),
     ":content" to setOf(":contract"),
     ":contract" to emptySet(),
     ":values" to emptySet(),
     ":request-context" to emptySet(),
-) + conceptProjects.associateWith {
-    setOf(":contract", ":values", ":request-context")
-}
+)
 
 tasks.register("verifyProjectArchitecture") {
     group = "verification"
     description = "Verifies all application, concept and technical-library build boundaries."
     doLast {
-        check(conceptDefinitions.size == 37 && conceptProjects.size == 37) {
-            "The complete inventory must contain 37 distinct concept build units"
-        }
         check(subprojects.map { it.path }.toSet() == allowedProjectDependencies.keys) {
             "Every project must declare its production dependency boundary"
         }
-        val physicalConcepts = fileTree("libraries") { include("**/CONCEPT.md") }.files
-            .map { it.parentFile.canonicalFile }.toSet()
-        check(physicalConcepts == conceptDefinitions.map { file(it["directory"] as String).canonicalFile }.toSet()) {
-            "Concept inventory must cover every physical concept module exactly once"
+        val conceptSpecs = fileTree("apps/control/src/main/java/io/edition/control/modules") { include("*/CONCEPT.md") }.files
+        check(conceptSpecs.size == 37) {
+            "Control must contain 37 concept modules, found ${conceptSpecs.size}"
         }
         subprojects.forEach { target ->
             val productionConfigurations = target.configurations.filter { configuration ->
@@ -62,7 +53,7 @@ tasks.register("verifyProjectArchitecture") {
             val expectedDirectory = when (target.path) {
                 in applicationProjects -> file("apps/${target.name}")
                 in technicalProjects -> file("libraries/${target.name}")
-                else -> file(conceptDefinitions.single { ":${it["project"]}" == target.path }["directory"] as String)
+                else -> error("unknown project ${target.path}")
             }
             check(target.projectDir.canonicalFile == expectedDirectory.canonicalFile) {
                 "project location: ${target.path} -> ${target.projectDir}, expected $expectedDirectory"
@@ -92,23 +83,51 @@ tasks.register("verifyProjectArchitecture") {
                         "index" -> "concepts|platform|control|contentapp"
                         else -> "contentapp|index"
                     }
-                    check(!Regex("(?m)^import\\s+(?:static\\s+)?io\\.edition\\.(?:$foreign)\\.").containsMatchIn(source.readText())) {
+                    val text = source.readText()
+                    check(!Regex("(?m)^import\\s+(?:static\\s+)?io\\.edition\\.(?:$foreign)\\.").containsMatchIn(text)) {
                         "runtime isolation: ${target.path} -> another application implementation in $source"
+                    }
+                    val path = source.invariantSeparatorsPath
+                    val usecaseImport = Regex("import\\s+(?:static\\s+)?io\\.edition\\.(?:control|contentapp|index)\\.usecases\\.(?!ports\\.|shared\\.|access\\.|SearchQueue|SearchEngine)")
+                    when {
+                        "/usecases/" in path -> check(!text.contains(".adapters.")) {
+                            "usecases depend on an adapter: $source"
+                        }
+                        "/adapters/inbound/" in path -> check(!Regex("\\.adapters\\.(readviews|outbound)\\.").containsMatchIn(text)) {
+                            "inbound depends on another adapter branch: $source"
+                        }
+                        "/adapters/readviews/" in path || "/adapters/outbound/" in path -> check(!usecaseImport.containsMatchIn(text)) {
+                            "adapter implements more than a port: $source"
+                        }
+                        "/modules/" in path && ("/api/" in path || "/domain/" in path) -> check(
+                            !Regex("\\.(application|persistence|adapters)\\.").containsMatchIn(text)
+                        ) {
+                            "module api or domain depends on an inner implementation: $source"
+                        }
+                    }
+                    if ("@Scheduled" in text) {
+                        check("/adapters/inbound/" in path || "/adapters/outbound/" in path) {
+                            "scheduled trigger is outside an adapter: $source"
+                        }
                     }
                 }
             }
-            if (target.path in conceptProjects) {
-                val definition = conceptDefinitions.single { ":${it["project"]}" == target.path }
-                val ownPackage = definition["package"] as String
-                sources.forEach { source ->
-                    Regex("io\\.edition\\.concepts\\.[a-z]+(?:\\.[A-Za-z_$][A-Za-z0-9_$]*)*")
-                        .findAll(source.readText()).forEach { reference ->
-                            check(reference.value == ownPackage || reference.value.startsWith("$ownPackage.")) {
-                                "concept independence: ${target.path} -> ${reference.value} in $source"
+            if (target.path == ":control") {
+                val moduleRoot = target.layout.projectDirectory.dir(
+                    "src/main/java/io/edition/control/modules"
+                ).asFile
+                moduleRoot.listFiles()?.filter { it.isDirectory }?.forEach { module ->
+                    val ownPackage = "io.edition.control.modules.${module.name}"
+                    fileTree(module) { include("**/*.java") }.forEach { source ->
+                        Regex("io\\.edition\\.control\\.modules\\.[a-z]+")
+                            .findAll(source.readText()).forEach { reference ->
+                                check(reference.value == ownPackage) {
+                                    "concept independence: ${module.name} -> ${reference.value} in $source"
+                                }
                             }
+                        check(!Regex("io\\.edition\\.control\\.(usecases|compositions|adapters|entry)\\.").containsMatchIn(source.readText())) {
+                            "concept independence: ${module.name} -> application layer in $source"
                         }
-                    check(!source.readText().contains("io.edition.control.")) {
-                        "concept independence: ${target.path} -> application in $source"
                     }
                 }
             }
@@ -178,12 +197,19 @@ tasks.register("bootRunDelivery") {
 
 val verifyPasswordRuntimeOwnership = tasks.register("verifyPasswordRuntimeOwnership") {
     group = "verification"
-    dependsOn(listOf(":control", ":content", ":index").map { project(it).configurations.named("runtimeClasspath") })
+    dependsOn(listOf(":control", ":content", ":index").flatMap {
+        listOf(project(it).tasks.named("compileJava"), project(it).configurations.named("runtimeClasspath"))
+    })
     doLast {
-        val local = "io/edition/concepts/password/application/PasswordService.class"
-        val businessApi = "io/edition/concepts/password/api/PasswordApi.class"
-        fun includes(app: String, entry: String): Boolean = project(app).configurations.getByName("runtimeClasspath").files.any { archive ->
-            archive.extension == "jar" && ZipFile(archive).use { it.getEntry(entry) != null }
+        val local = "io/edition/control/modules/password/application/PasswordService.class"
+        val businessApi = "io/edition/control/modules/password/api/PasswordApi.class"
+        fun includes(app: String, entry: String): Boolean {
+            val owner = project(app)
+            val classes = owner.layout.buildDirectory.file("classes/java/main/$entry").get().asFile
+            if (classes.isFile) return true
+            return owner.configurations.getByName("runtimeClasspath").files.any { archive ->
+                archive.extension == "jar" && ZipFile(archive).use { it.getEntry(entry) != null }
+            }
         }
         check(includes(":control", businessApi) && includes(":control", local)) { "Control must own the Password implementation" }
         listOf(":content", ":index").forEach { app ->

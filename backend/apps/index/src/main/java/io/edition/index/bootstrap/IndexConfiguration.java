@@ -2,7 +2,8 @@ package io.edition.index.bootstrap;
 
 import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Config;
-import io.edition.index.entry.persistence.IndexStore;
+import io.edition.index.adapters.outbound.MeiliSearchEngine;
+import io.edition.index.adapters.readviews.IndexStore;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,5 +20,9 @@ public class IndexConfiguration {
     public @Bean Client searchClient(
             @Value("${index.search.url}") String url, @Value("${index.search.key}") String key) {
         return new Client(new Config(url, key));
+    }
+
+    public @Bean MeiliSearchEngine searchEngine(Client client) {
+        return new MeiliSearchEngine(client);
     }
 }

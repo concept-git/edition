@@ -10,7 +10,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Modulithic(systemName = "Edition")
 @SpringBootApplication(
-        scanBasePackages = "io.edition.control",
+        scanBasePackages = {"io.edition.control.bootstrap", "io.edition.control.usecases", "io.edition.control.adapters"
+        },
         exclude = org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration.class)
 @EnableAsync
 @EnableScheduling

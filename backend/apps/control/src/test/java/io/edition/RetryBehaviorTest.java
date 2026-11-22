@@ -2,11 +2,11 @@ package io.edition;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import io.edition.concepts.idempotency.api.IdempotencyApi;
-import io.edition.concepts.idempotency.api.IdempotencyApi.Command;
-import io.edition.concepts.idempotency.api.IdempotencyApi.StoredResponse;
-import io.edition.concepts.idempotency.api.IdempotencyKeyReusedException;
-import io.edition.concepts.idempotency.api.IdempotencyRequestInProgressException;
+import io.edition.control.modules.idempotency.api.IdempotencyApi;
+import io.edition.control.modules.idempotency.api.IdempotencyApi.Command;
+import io.edition.control.modules.idempotency.api.IdempotencyApi.StoredResponse;
+import io.edition.control.modules.idempotency.api.IdempotencyKeyReusedException;
+import io.edition.control.modules.idempotency.api.IdempotencyRequestInProgressException;
 import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
