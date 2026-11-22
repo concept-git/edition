@@ -5,8 +5,10 @@
 ## Project map
 
 - `bootstrap` — 最终装配
-- `entry` — 协议与存储
-- `compositions` — 应用行为
+- `adapters/inbound` — 协议
+- `adapters/readviews` — 发布读模型
+- `adapters/outbound` — 对象与搜索读取
+- `usecases` — 应用行为。读取规则见 `usecases/SYNCS.md`
 - 业务运行依赖只允许 `contract`
 - 运行包名、HTTP 和产物名保持既有契约
 

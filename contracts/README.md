@@ -8,7 +8,7 @@
 
 ## Problem-code catalog
 
-- `backend/apps/control/src/main/java/io/edition/control/compositions/flow/ProblemCode.java` 是顶层 RFC 9457 `code` 的
+- `backend/apps/control/src/main/java/io/edition/control/usecases/flow/ProblemCode.java` 是顶层 RFC 9457 `code` 的
   唯一机器可读 catalog；springdoc 由它生成 OpenAPI enum。`violations[].code` 是独立字段校验词汇，不进顶层 catalog。
 - 尚未开放的错误码在 enum 中显式标为 reserved。
 

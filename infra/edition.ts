@@ -357,7 +357,7 @@ export function entrypointErrors(root: string) {
   return errors;
 }
 export function composition(root: string) {
-  const prd = readFileSync(join(root, 'docs/prd/README.md'), 'utf8'), app = readFileSync(join(root, 'backend/apps/control/src/main/java/io/edition/control/compositions/SYNCS.md'), 'utf8');
+  const prd = readFileSync(join(root, 'docs/prd/README.md'), 'utf8'), app = readFileSync(join(root, 'backend/apps/control/src/main/java/io/edition/control/usecases/SYNCS.md'), 'utf8');
   const graph = prd.split('## 依赖图与交付口径')[1].split('```text')[1].split('```')[0];
   const bindings = app.split('## app 组合')[1].split('```text')[1].split('```')[0];
   const includes = [...bindings.matchAll(/^\s*include[ \t]+(\w+)(?:[ \t]+\[([^\n]*)\])?/gm)], names = new Set(includes.map(match => match[1]));
@@ -1014,16 +1014,8 @@ export async function collectCommand(argv: string[]) {
 const scopes = ['infra', 'backend', 'cli', 'vfs', 'compiler'] as const;
 type Scope = typeof scopes[number];
 export type Result = { name: string; exitCode: number; warnings: string[]; log: string };
-function backendModules(workspace: string) {
-  const inventory = JSON.parse(readFileSync(join(workspace, 'backend/concept-modules.json'), 'utf8')) as { concepts: { directory: string }[] };
-  if (!Array.isArray(inventory.concepts) || inventory.concepts.length === 0) throw new Error('Backend concept coverage inventory is empty');
-  const concepts = inventory.concepts.map(concept => concept.directory);
-  if (new Set(concepts).size !== concepts.length || concepts.some(path => !/^libraries\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path))) throw new Error('Backend concept coverage inventory is invalid');
-  const libraries = globSync('backend/libraries/*/build.gradle.kts', { cwd: workspace })
-    .map(path => dirname(path).replace(/^backend\//, ''))
-    .filter(path => !concepts.includes(path)).sort();
-  if (libraries.length === 0) throw new Error('Backend technical-library coverage inventory is empty');
-  return ['apps/control', 'apps/content', 'apps/index', ...concepts, ...libraries];
+function backendModules() {
+  return ['apps/control', 'apps/content', 'apps/index', 'libraries/contract', 'libraries/values', 'libraries/request-context'];
 }
 const gradle = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
@@ -1096,7 +1088,7 @@ export async function check(mode: string, options: { scope: string; measure?: bo
     }
     for (const [scope, directory] of [['backend', 'backend'], ['cli', 'clients/control']] as const) {
       if (!selected.includes(scope)) continue;
-      const modules = scope === 'backend' ? backendModules(workspace) : [''];
+      const modules = scope === 'backend' ? backendModules() : [''];
       for (const module of modules) clear(`${directory}/${module}/build/reports/jacoco/test`);
       await record(`${scope}-coverage`, gradle, [...gradleArgs, 'test', 'jacocoTestReport', ...(options.measure ? [] : ['jacocoTestCoverageVerification'])], directory);
       for (const module of modules) collect(module || 'control-cli', `${directory}/${module}/build/reports/jacoco/test/jacocoTestReport.xml`, 'java');

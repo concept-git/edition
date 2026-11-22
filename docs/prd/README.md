@@ -9,8 +9,8 @@ Edition 让维护者在空间内统一管理内容，通过发版向人和应用
 | 为谁解决什么问题、范围和验收是什么 | 本文 |
 | 为什么采用这些边界、替代过什么方案 | [架构决策](../adr/README.md) |
 | 单概念的状态、动作和错误 | 下文索引的源码共置 `CONCEPT.md` |
-| 跨概念如何组合、何时提交和补偿 | [组合根](../../backend/apps/control/src/main/java/io/edition/control/compositions/SYNCS.md)及各 flow 的 `SYNCS.md` |
-| HTTP 映射与交换包 | [HTTP 入口](../../contracts/README.md)、[Bundle v1](../../backend/libraries/import-format/CONCEPT.md) |
+| 跨概念如何组合、何时提交和补偿 | [组合根](../../backend/apps/control/src/main/java/io/edition/control/usecases/SYNCS.md)及各 flow 的 `SYNCS.md` |
+| HTTP 映射与交换包 | [HTTP 入口](../../contracts/README.md)、[Bundle v1](../../backend/apps/control/src/main/java/io/edition/control/modules/importformat/CONCEPT.md) |
 | 接口精确字段及运行方式 | [生成契约](../../contracts/README.md)、[部署](../../infra/README.md)、[测试](../../infra/quality.md) |
 
 PRD 与 ADR 各维护一份。行为更新落在共置规格；接口字段以生成契约为准，界面映射不建立第二份领域模型。
@@ -53,40 +53,40 @@ PRD 与 ADR 各维护一份。行为更新落在共置规格；接口字段以�
 
 | 概念 | purpose | 规格 |
 | --- | --- | --- |
-| User | 让每一个人拥有可指代、可核验、可终结的稳定身份 | [user/CONCEPT.md](../../backend/libraries/user/CONCEPT.md) |
-| Password [User] | 让用户凭只有自己知道的秘密证明身份 | [password/CONCEPT.md](../../backend/libraries/password/CONCEPT.md) |
-| Session [Principal] | 让主体认证一次后，在一段时间内免于反复证明身份 | [session/CONCEPT.md](../../backend/libraries/session/CONCEPT.md) |
-| ApiToken [Owner, Tenant, Space] | 让程序持有一个受限、可吊销且可独立授权的机器身份 | [api-token/CONCEPT.md](../../backend/libraries/api-token/CONCEPT.md) |
-| ManagementToken [Owner, Tenant] | 让用户签发一个有限期、可撤销且进一步受限的管理凭据 | [management-token/CONCEPT.md](../../backend/libraries/management-token/CONCEPT.md) |
-| Team [Scope] | 让一个作用域内的群体拥有可命名、可终结的稳定身份 | [team/CONCEPT.md](../../backend/libraries/team/CONCEPT.md) |
-| Membership [Group, Member] | 控制一个群体的成员构成，加入须经同意 | [membership/CONCEPT.md](../../backend/libraries/membership/CONCEPT.md) |
-| Permission [Resource, Principal] | 判定某个主体能否对某个资源执行某种操作 | [permission/CONCEPT.md](../../backend/libraries/permission/CONCEPT.md) |
+| User | 让每一个人拥有可指代、可核验、可终结的稳定身份 | [user/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/user/CONCEPT.md) |
+| Password [User] | 让用户凭只有自己知道的秘密证明身份 | [password/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/password/CONCEPT.md) |
+| Session [Principal] | 让主体认证一次后，在一段时间内免于反复证明身份 | [session/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/session/CONCEPT.md) |
+| ApiToken [Owner, Tenant, Space] | 让程序持有一个受限、可吊销且可独立授权的机器身份 | [api-token/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/apitoken/CONCEPT.md) |
+| ManagementToken [Owner, Tenant] | 让用户签发一个有限期、可撤销且进一步受限的管理凭据 | [management-token/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/managementtoken/CONCEPT.md) |
+| Team [Scope] | 让一个作用域内的群体拥有可命名、可终结的稳定身份 | [team/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/team/CONCEPT.md) |
+| Membership [Group, Member] | 控制一个群体的成员构成，加入须经同意 | [membership/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/membership/CONCEPT.md) |
+| Permission [Resource, Principal] | 判定某个主体能否对某个资源执行某种操作 | [permission/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/permission/CONCEPT.md) |
 
 ### Authoring 内容创作（支撑域 · 从简自建）
 
 | 概念 | purpose | 规格 |
 | --- | --- | --- |
-| Space [Item] | 让一组条目共享同一个家：同属、同迁、同灭 | [space/CONCEPT.md](../../backend/libraries/space/CONCEPT.md) |
-| Page [Format] | 让一份多格式内容走完从草稿、进版到删除可反悔的编辑生命周期 | [page/CONCEPT.md](../../backend/libraries/page/CONCEPT.md) |
-| Revision [Item, Content] | 让条目的每次内容保存可追溯，并能取回任一历史内容 | [revision/CONCEPT.md](../../backend/libraries/revision/CONCEPT.md) |
-| Toc [Target] | 让读者按人工编排的顺序与层次浏览一组内容 | [toc/CONCEPT.md](../../backend/libraries/toc/CONCEPT.md) |
-| Collection [Item] | 让条目按嵌套分组组织，位置即分类 | [collection/CONCEPT.md](../../backend/libraries/collection/CONCEPT.md) |
-| Tag [Item] | 让条目跨越所在位置被自由词汇横向聚合 | [tag/CONCEPT.md](../../backend/libraries/tag/CONCEPT.md) |
+| Space [Item] | 让一组条目共享同一个家：同属、同迁、同灭 | [space/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/space/CONCEPT.md) |
+| Page [Format] | 让一份多格式内容走完从草稿、进版到删除可反悔的编辑生命周期 | [page/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/page/CONCEPT.md) |
+| Revision [Item, Content] | 让条目的每次内容保存可追溯，并能取回任一历史内容 | [revision/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/revision/CONCEPT.md) |
+| Toc [Target] | 让读者按人工编排的顺序与层次浏览一组内容 | [toc/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/toc/CONCEPT.md) |
+| Collection [Item] | 让条目按嵌套分组组织，位置即分类 | [collection/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/collection/CONCEPT.md) |
+| Tag [Item] | 让条目跨越所在位置被自由词汇横向聚合 | [tag/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/tag/CONCEPT.md) |
 
 ### Releases 发版（核心域）
 
 | 概念 | purpose | 规格 |
 | --- | --- | --- |
-| Release [Scope, Bundle] | 让一个范围的对外内容以可预览、可整体原子切换、可回滚的不可变版本演进 | [release/CONCEPT.md](../../backend/libraries/release/CONCEPT.md) |
+| Release [Scope, Bundle] | 让一个范围的对外内容以可预览、可整体原子切换、可回滚的不可变版本演进 | [release/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/release/CONCEPT.md) |
 
 ### Hosting 托管（核心域 · 读侧）
 
 | 概念 | purpose | 规格 |
 | --- | --- | --- |
-| Site [Target] | 把选定的一组目标编成一个对外站点，并守护站内地址名 | [site/CONCEPT.md](../../backend/libraries/site/CONCEPT.md) |
-| CustomDomain [Target] | 让访问者用自有域名直达指定目标 | [custom-domain/CONCEPT.md](../../backend/libraries/custom-domain/CONCEPT.md) |
-| Redirect [Scope, Target] | 让旧地址在内容重组后仍能到达目标 | [redirect/CONCEPT.md](../../backend/libraries/redirect/CONCEPT.md) |
-| Search [Scope] | 让运营者为每个范围确定检索字段的优先顺序，并以版本标识触发重新构建 | [search/CONCEPT.md](../../backend/libraries/search/CONCEPT.md) |
+| Site [Target] | 把选定的一组目标编成一个对外站点，并守护站内地址名 | [site/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/site/CONCEPT.md) |
+| CustomDomain [Target] | 让访问者用自有域名直达指定目标 | [custom-domain/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/customdomain/CONCEPT.md) |
+| Redirect [Scope, Target] | 让旧地址在内容重组后仍能到达目标 | [redirect/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/redirect/CONCEPT.md) |
+| Search [Scope] | 让运营者为每个范围确定检索字段的优先顺序，并以版本标识触发重新构建 | [search/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/search/CONCEPT.md) |
 
 ### Platform 平台能力（通用概念）
 
@@ -94,26 +94,26 @@ PRD 与 ADR 各维护一份。行为更新落在共置规格；接口字段以�
 
 | 概念 | purpose | 规格 |
 | --- | --- | --- |
-| Analytics | 让运营者从独立读侧事件中看到有缺口标记的访问与活动趋势 | [analytics/CONCEPT.md](../../backend/libraries/analytics/CONCEPT.md) |
-| Audit | 让授权查询者追溯操作事实，同时使已抹除主体不能被迟到事件重新识别 | [audit/CONCEPT.md](../../backend/libraries/audit/CONCEPT.md) |
-| BundleExport | 让已捕获的内容快照能够可靠地导出为完整的 Bundle v1 ZIP | [bundle-export/CONCEPT.md](../../backend/libraries/bundle-export/CONCEPT.md) |
-| CertificateInspection | 让调用方知道指定主机 443 端口实际呈现的证书状态 | [certificate-inspection/CONCEPT.md](../../backend/libraries/certificate-inspection/CONCEPT.md) |
-| DnsLookup | 让调用方可靠地区分 TXT 无记录与 DNS 查询故障 | [dns-lookup/CONCEPT.md](../../backend/libraries/dns-lookup/CONCEPT.md) |
-| Idempotency | 让同一请求的重试取得原响应，同时阻止同键异请求重复执行 | [idempotency/CONCEPT.md](../../backend/libraries/idempotency/CONCEPT.md) |
-| ImportFormat | 让已知来源的文档包被确定地识别并适配成 Bundle v1 输入 | [import-format/CONCEPT.md](../../backend/libraries/import-format/CONCEPT.md) |
-| ImportJob | 让发起者能观察并恢复一次异步导入，同时保留其有限的进度与问题报告 | [import-job/CONCEPT.md](../../backend/libraries/import-job/CONCEPT.md) |
-| MailOutbox | 让一次性邮件意图在业务提交后可恢复投递，且重试不改变已发送内容 | [mail-outbox/CONCEPT.md](../../backend/libraries/mail-outbox/CONCEPT.md) |
-| ObjectStore | 让内容寻址对象可安全写入、读取与回收，且依赖故障不伪装成对象缺失 | [object-store/CONCEPT.md](../../backend/libraries/object-store/CONCEPT.md) |
-| DeletionRecovery | 让业务资源终结后的回收过程可追踪、可重试，且重复触发不产生第二条记录 | [deletion-recovery/CONCEPT.md](../../backend/libraries/deletion-recovery/CONCEPT.md) |
-| ReaderSecurity | 让读侧身份与访问策略的投递具有可恢复的安全屏障，并在注销时清除读侧个人状态 | [reader-security/CONCEPT.md](../../backend/libraries/reader-security/CONCEPT.md) |
-| ServiceHealth | 让平台运营者看到进程、交付与数据库的当前运行状态，而不泄露租户载荷 | [service-health/CONCEPT.md](../../backend/libraries/service-health/CONCEPT.md) |
-| TenantRegistry | 让平台能登记租户身份及其管理操作是否被冻结 | [tenant-registry/CONCEPT.md](../../backend/libraries/tenant-registry/CONCEPT.md) |
-| ContentType | 让租户以明确、不可变的版本定义内容的解释、Schema约束和可信编辑/呈现绑定 | [content-type/CONCEPT.md](../../backend/libraries/content-type/CONCEPT.md) |
-| PluginDevelopment | 让插件源码可按基线编辑并形成可复现的不可变候选 | [plugin-development/CONCEPT.md](../../backend/libraries/plugin-development/CONCEPT.md) |
-| PluginVerification | 让候选的验证证据绑定构件、样例及环境并可追溯 | [plugin-verification/CONCEPT.md](../../backend/libraries/plugin-verification/CONCEPT.md) |
-| Webhook | 让外部订阅者可靠收到选定范围的完成事件，并能追踪投递结果 | [webhook/CONCEPT.md](../../backend/libraries/webhook/CONCEPT.md) |
+| Analytics | 让运营者从独立读侧事件中看到有缺口标记的访问与活动趋势 | [analytics/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/analytics/CONCEPT.md) |
+| Audit | 让授权查询者追溯操作事实，同时使已抹除主体不能被迟到事件重新识别 | [audit/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/audit/CONCEPT.md) |
+| BundleExport | 让已捕获的内容快照能够可靠地导出为完整的 Bundle v1 ZIP | [bundle-export/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/bundleexport/CONCEPT.md) |
+| CertificateInspection | 让调用方知道指定主机 443 端口实际呈现的证书状态 | [certificate-inspection/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/certificateinspection/CONCEPT.md) |
+| DnsLookup | 让调用方可靠地区分 TXT 无记录与 DNS 查询故障 | [dns-lookup/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/dnslookup/CONCEPT.md) |
+| Idempotency | 让同一请求的重试取得原响应，同时阻止同键异请求重复执行 | [idempotency/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/idempotency/CONCEPT.md) |
+| ImportFormat | 让已知来源的文档包被确定地识别并适配成 Bundle v1 输入 | [import-format/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/importformat/CONCEPT.md) |
+| ImportJob | 让发起者能观察并恢复一次异步导入，同时保留其有限的进度与问题报告 | [import-job/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/importjob/CONCEPT.md) |
+| MailOutbox | 让一次性邮件意图在业务提交后可恢复投递，且重试不改变已发送内容 | [mail-outbox/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/mailoutbox/CONCEPT.md) |
+| ObjectStore | 让内容寻址对象可安全写入、读取与回收，且依赖故障不伪装成对象缺失 | [object-store/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/objectstore/CONCEPT.md) |
+| DeletionRecovery | 让业务资源终结后的回收过程可追踪、可重试，且重复触发不产生第二条记录 | [deletion-recovery/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/deletionrecovery/CONCEPT.md) |
+| ReaderSecurity | 让读侧身份与访问策略的投递具有可恢复的安全屏障，并在注销时清除读侧个人状态 | [reader-security/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/readersecurity/CONCEPT.md) |
+| ServiceHealth | 让平台运营者看到进程、交付与数据库的当前运行状态，而不泄露租户载荷 | [service-health/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/servicehealth/CONCEPT.md) |
+| TenantRegistry | 让平台能登记租户身份及其管理操作是否被冻结 | [tenant-registry/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/tenantregistry/CONCEPT.md) |
+| ContentType | 让租户以明确、不可变的版本定义内容的解释、Schema约束和可信编辑/呈现绑定 | [content-type/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/contenttype/CONCEPT.md) |
+| PluginDevelopment | 让插件源码可按基线编辑并形成可复现的不可变候选 | [plugin-development/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/plugindevelopment/CONCEPT.md) |
+| PluginVerification | 让候选的验证证据绑定构件、样例及环境并可追溯 | [plugin-verification/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/pluginverification/CONCEPT.md) |
+| Webhook | 让外部订阅者可靠收到选定范围的完成事件，并能追踪投递结果 | [webhook/CONCEPT.md](../../backend/apps/control/src/main/java/io/edition/control/modules/webhook/CONCEPT.md) |
 
-类型参数的实例化只发生在组合层，见[组合根 SYNCS.md 的 app 块](../../backend/apps/control/src/main/java/io/edition/control/compositions/SYNCS.md)。
+类型参数的实例化只发生在组合层，见[组合根 SYNCS.md 的 app 块](../../backend/apps/control/src/main/java/io/edition/control/usecases/SYNCS.md)。
 
 ## 依赖图与交付口径
 
@@ -137,18 +137,18 @@ Site ──► Space          Search / CustomDomain ──► Site        Redire
 
 | 位置 | 内容 |
 | --- | --- |
-| [组合根 SYNCS.md](../../backend/apps/control/src/main/java/io/edition/control/compositions/SYNCS.md) | app 组合（类型参数实例化）、guard 模板、管理杂项模板、全局排除动作、分包索引 |
-| [syncs/iam](../../backend/apps/control/src/main/java/io/edition/control/compositions/iam/SYNCS.md) | 注册与激活、登录与会话、账户安全联动、用户注销、成员与邀请、API 令牌生命周期 |
-| [syncs/authoring](../../backend/apps/control/src/main/java/io/edition/control/compositions/authoring/SYNCS.md) | 页面创作、目录编排、标签、删除与恢复 |
-| [syncs/releases](../../backend/apps/control/src/main/java/io/edition/control/compositions/releases/SYNCS.md) | 发版组索引 |
-| [syncs/releases/release](../../backend/apps/control/src/main/java/io/edition/control/compositions/releases/release/SYNCS.md) | 发布、共享发版流水线 |
-| [syncs/releases/bundleimport](../../backend/apps/control/src/main/java/io/edition/control/compositions/releases/bundleimport/SYNCS.md) | 持续导入（票 20） |
-| [syncs/hosting](../../backend/apps/control/src/main/java/io/edition/control/compositions/hosting/SYNCS.md) | 站点与域名配置、重组重定向、内容和权限投影 |
+| [组合根 SYNCS.md](../../backend/apps/control/src/main/java/io/edition/control/usecases/SYNCS.md) | app 组合（类型参数实例化）、guard 模板、管理杂项模板、全局排除动作、分包索引 |
+| [syncs/iam](../../backend/apps/control/src/main/java/io/edition/control/usecases/iam/SYNCS.md) | 注册与激活、登录与会话、账户安全联动、用户注销、成员与邀请、API 令牌生命周期 |
+| [syncs/authoring](../../backend/apps/control/src/main/java/io/edition/control/usecases/authoring/SYNCS.md) | 页面创作、目录编排、标签、删除与恢复 |
+| [syncs/releases](../../backend/apps/control/src/main/java/io/edition/control/usecases/releases/SYNCS.md) | 发版组索引 |
+| [syncs/releases/release](../../backend/apps/control/src/main/java/io/edition/control/usecases/releases/release/SYNCS.md) | 发布、共享发版流水线 |
+| [syncs/releases/bundleimport](../../backend/apps/control/src/main/java/io/edition/control/usecases/releases/bundleimport/SYNCS.md) | 持续导入（票 20） |
+| [syncs/hosting](../../backend/apps/control/src/main/java/io/edition/control/usecases/hosting/SYNCS.md) | 站点与域名配置、重组重定向、内容和权限投影 |
 | [edition-content SYNCS](../../backend/apps/content/src/main/java/io/edition/contentapp/SYNCS.md) | 独立阅读进程：页面/导航/搜索/快照文件 |
-| [syncs/hosting/customdomain](../../backend/apps/control/src/main/java/io/edition/control/compositions/hosting/customdomain/SYNCS.md) | 域名管理（票 22） |
-| [syncs/platform](../../backend/apps/control/src/main/java/io/edition/control/compositions/platform/SYNCS.md) | 租户开通与冻结、服务状态（进程心跳与 `/admin/health`）、邮件投递与管理、Webhook、运维证据 |
+| [syncs/hosting/customdomain](../../backend/apps/control/src/main/java/io/edition/control/usecases/hosting/customdomain/SYNCS.md) | 域名管理（票 22） |
+| [syncs/platform](../../backend/apps/control/src/main/java/io/edition/control/usecases/platform/SYNCS.md) | 租户开通与冻结、服务状态（进程心跳与 `/admin/health`）、邮件投递与管理、Webhook、运维证据 |
 
-内容类型的登记、默认切换与启停见 [contenttype](../../backend/apps/control/src/main/java/io/edition/control/compositions/platform/contenttype/SYNCS.md)；可信实现查询及插件开发验证见 [pluginmanagement](../../backend/apps/control/src/main/java/io/edition/control/compositions/platform/pluginmanagement/SYNCS.md)；空间附件查询见 [attachmentbrowsing](../../backend/apps/control/src/main/java/io/edition/control/compositions/authoring/attachmentbrowsing/SYNCS.md)。组合根维护 app 类型实例化、guard 和全局排除动作，各 flow 只有一份共置规格。
+内容类型的登记、默认切换与启停见 [contenttype](../../backend/apps/control/src/main/java/io/edition/control/usecases/platform/contenttype/SYNCS.md)；可信实现查询及插件开发验证见 [pluginmanagement](../../backend/apps/control/src/main/java/io/edition/control/usecases/platform/pluginmanagement/SYNCS.md)；空间附件查询见 [attachmentbrowsing](../../backend/apps/control/src/main/java/io/edition/control/usecases/authoring/attachmentbrowsing/SYNCS.md)。组合根维护 app 类型实例化、guard 和全局排除动作，各 flow 只有一份共置规格。
 
 <a id="content-types"></a>
 

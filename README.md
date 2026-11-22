@@ -59,7 +59,7 @@ flowchart TB
 
 资源管理与授权受租户边界约束。User 是全局账号。Membership 分别承载租户成员和用户组成员关系。ApiToken 绑定单一租户和空间，授权不继承签发人的权限。ManagementToken 仍代表用户。
 
-概念定义与类型参数见[组合根](backend/apps/control/src/main/java/io/edition/control/compositions/SYNCS.md)。平台扩展概念见 [PRD 概念索引](docs/prd/README.md)。
+概念定义与类型参数见[组合根](backend/apps/control/src/main/java/io/edition/control/usecases/SYNCS.md)。平台扩展概念见 [PRD 概念索引](docs/prd/README.md)。
 
 ## 环境要求
 
@@ -183,7 +183,7 @@ sequenceDiagram
   end
 ```
 
-Revision 记录失败会回滚正文变更。保存与取回历史修订共用 `editAndRecord` 接力。规则与实现见[页面创作与修订](backend/apps/control/src/main/java/io/edition/control/compositions/authoring/pageediting/SYNCS.md)。
+Revision 记录失败会回滚正文变更。保存与取回历史修订共用 `editAndRecord` 接力。规则与实现见[页面创作与修订](backend/apps/control/src/main/java/io/edition/control/usecases/authoring/pageediting/SYNCS.md)。
 
 ### 场景二：页面进版、构建发版并交付站点
 
@@ -229,7 +229,7 @@ sequenceDiagram
   end
 ```
 
-页面进版与发版校验是两个步骤。校验失败时，进版标记仍可提交。主版本晋升提交后可通过已验证域名阅读，访问仍取决于当前权限。流程依据见[发版同步规则](backend/apps/control/src/main/java/io/edition/control/compositions/releases/release/SYNCS.md)与[站点交付同步规则](backend/apps/control/src/main/java/io/edition/control/compositions/hosting/sitedelivery/SYNCS.md)。
+页面进版与发版校验是两个步骤。校验失败时，进版标记仍可提交。主版本晋升提交后可通过已验证域名阅读，访问仍取决于当前权限。流程依据见[发版同步规则](backend/apps/control/src/main/java/io/edition/control/usecases/releases/release/SYNCS.md)与[站点交付同步规则](backend/apps/control/src/main/java/io/edition/control/usecases/hosting/sitedelivery/SYNCS.md)。
 
 ### 场景三：登录读者访问已上线页面
 

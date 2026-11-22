@@ -8,7 +8,7 @@
 | 需求与验收 | [PRD](prd/README.md)、源码共置 CONCEPT.md 与 SYNCS.md |
 | 统一术语 | [CONTEXT](../CONTEXT.md) |
 | 架构取舍 | [ADR](adr/README.md) |
-| HTTP 与交换包 | [接口映射](../contracts/README.md)、[Bundle v1](../backend/libraries/import-format/CONCEPT.md) |
+| HTTP 与交换包 | [接口映射](../contracts/README.md)、[Bundle v1](../backend/apps/control/src/main/java/io/edition/control/modules/importformat/CONCEPT.md) |
 | 工程与部署 | [技术栈](../README.md)、[部署与脚本](../infra/README.md) |
 | 测试 | [TESTING](../infra/quality.md) |
 | 内容类型与插件 | [需求](prd/README.md#content-types)、[工程契约](../contracts/README.md)、[后续范围](prd/README.md#plugin-roadmap) |

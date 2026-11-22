@@ -1,12 +1,12 @@
 # CLAUDE.md
 
-Edition 是多租户文档与知识交付平台：Java 25 / Gradle 的 control、worker、reader 三个独立应用，以及 Control CLI 与 Python EditionVFS。
+Edition 是多租户文档与知识交付平台：Java 25 / Gradle 的 control、content、index 三个独立应用，以及 Control CLI 与 Python EditionVFS。
 
 ## Project map
 
-- `backend/apps/` — control、worker、reader；三个进程独立运行。Control 不提供阅读页面
-- `backend/libraries/<领域名>/` — 独立概念模块；规格在各模块 `CONCEPT.md`
-- `backend/libraries/` — contract等具名技术库
+- `backend/apps/` — control、content、index；三个进程独立运行。Control 不提供阅读页面
+- `backend/apps/control/` 源码根的 `modules/<concept>/` — 概念。规格在各模块 `CONCEPT.md`
+- `backend/libraries/` — contract、values、request-context
 - `acceptance/` — 浏览器验收与测试夹具
 - `clients/control/` — 管理 CLI
 - `clients/edition/` — 只读 EditionVFS

@@ -56,7 +56,7 @@ Revision 只提供历史与差异；取回修订由组合层读取历史后调�
 
 <a id="adr-0009-bundle"></a>
 
-Bundle v1 是版本化交换语言，不是线上存储格式。导入先转换校验，导出从 live/archived 快照生成包含清单及附件的 ZIP，避免查询、diff 和切版必须解包或跨存储事务。正文导出还须检查逐页当前归属的 read 权限。详细格式见 [Bundle 契约](../../backend/libraries/import-format/CONCEPT.md)。
+Bundle v1 是版本化交换语言，不是线上存储格式。导入先转换校验，导出从 live/archived 快照生成包含清单及附件的 ZIP，避免查询、diff 和切版必须解包或跨存储事务。正文导出还须检查逐页当前归属的 read 权限。详细格式见 [Bundle 契约](../../backend/apps/control/src/main/java/io/edition/control/modules/importformat/CONCEPT.md)。
 
 <a id="adr-0005"></a>
 
@@ -109,7 +109,7 @@ Meilisearch 承担全文检索，MinIO 承担对象存储，Caddy 承担路由/T
 <a id="adr-0018"></a>
 <a id="adr-0026"></a>
 
-工程布局由 [ADR-0031](#adr-0031) 替代本节原来的包级构建边界；目录与规则类名由 [ADR-0033](#adr-0033) 替代 [ADR-0032](#adr-0032)。当前为三应用、38 个独立概念工程及五个技术库（ADR-0034）。Control 产物及应用身份保留 space；运行包、心跳身份和 Gradle 工程名分别服从各自契约。规则身份是 `SYNCS.md` 的 `sync` 名与 `claim` 字符串。Reader 不依赖管理或 Worker 生产构件，测试夹具依赖不构成生产许可。
+工程布局由 [ADR-0037](#adr-0037) 定为现行形状。Control 产物及应用身份保留 space；运行包、心跳身份和 Gradle 工程名分别服从各自契约。规则身份是 `SYNCS.md` 的 `sync` 名与 `claim` 字符串。Content 不依赖管理概念或 Index 生产构件。
 
 <a id="adr-0027"></a>
 
@@ -230,15 +230,15 @@ PluginDevelopment 拥有工作稿与不可变候选，PluginVerification 拥有�
 | 事实 | 实现与检查依据 |
 | --- | --- |
 | 四个应用、五个技术库及 Reader 隔离 | [Gradle 工程清单](../../backend/settings.gradle.kts)、[Reader 依赖与 verifyIsolation](../../backend/apps/content/build.gradle.kts) |
-| 概念及依赖边界 | [组合根](../../backend/apps/control/src/main/java/io/edition/control/compositions/SYNCS.md) |
-| 主体闭包、直接规则优先与逐层收窄 | [管理判定器](../../backend/libraries/permission/src/main/java/io/edition/concepts/permission/domain/PermissionPolicy.java)、[读侧判定器](../../backend/apps/control/src/main/resources/db/migration/V8__publication_read_view.sql) |
-| 管理 JWT 与读者不透明会话分别实现 | [管理会话](../../backend/libraries/session/src/main/java/io/edition/concepts/session/application/SessionService.java)、[读者会话](../../backend/libraries/reader-security/src/main/java/io/edition/concepts/readersecurity/adapters/persistence/JdbcReaderState.java) |
+| 概念及依赖边界 | [组合根](../../backend/apps/control/src/main/java/io/edition/control/usecases/SYNCS.md) |
+| 主体闭包、直接规则优先与逐层收窄 | [管理判定器](../../backend/apps/control/src/main/java/io/edition/control/modules/permission/src/main/java/io/edition/control/modules/permission/domain/PermissionPolicy.java)、[读侧判定器](../../backend/apps/control/src/main/resources/db/migration/V8__publication_read_view.sql) |
+| 管理 JWT 与读者不透明会话分别实现 | [管理会话](../../backend/apps/control/src/main/java/io/edition/control/modules/session/src/main/java/io/edition/control/modules/session/application/SessionService.java)、[读者会话](../../backend/apps/control/src/main/java/io/edition/control/modules/readersecurity/src/main/java/io/edition/control/modules/readersecurity/persistence/JdbcReaderState.java) |
 | 迁移清单、外键、不可变快照与校验失败即停 | [管理迁移](../../backend/apps/control/src/main/resources/db/migration)、[DevelopmentFlywayConfiguration](../../backend/apps/control/src/main/java/io/edition/control/bootstrap/dev/DevelopmentFlywayConfiguration.java) |
 | 安全投影与账号事实投影的不同重试策略 | [shared 函数](../../backend/apps/control/src/main/resources/db/migration/V1__shared.sql)、[账号事实投影函数](../../backend/apps/control/src/main/resources/db/migration/V2__iam.sql) |
 | 搜索当前权限核验、游标与扫描预算 | [ContentSearch](../../backend/apps/content/src/main/java/io/edition/contentapp/compositions/search/ContentSearch.java) |
-| 类型首次物化、后续版本登记与固定绑定 | [ContentTypeService](../../backend/libraries/content-type/src/main/java/io/edition/concepts/contenttype/application/ContentTypeService.java)、[绑定与导入](../../backend/apps/control/src/main/java/io/edition/control/compositions/resource/ContentTypes.java) |
-| Schema 声明、资源闭包及禁用远端解析 | [ContentValidation](../../backend/libraries/release/src/main/java/io/edition/concepts/release/validation/ContentValidation.java) |
-| 一次性拉取仍保留作业 sourceUrl 元数据 | [ImportJobApi](../../backend/libraries/import-job/src/main/java/io/edition/concepts/importjob/api/ImportJobApi.java)、[ImportJobMapper](../../backend/libraries/import-job/src/main/java/io/edition/concepts/importjob/adapters/persistence/ImportJobMapper.java) |
+| 类型首次物化、后续版本登记与固定绑定 | [ContentTypeService](../../backend/apps/control/src/main/java/io/edition/control/modules/contenttype/src/main/java/io/edition/control/modules/contenttype/application/ContentTypeService.java)、[绑定与导入](../../backend/apps/control/src/main/java/io/edition/control/usecases/resource/ContentTypes.java) |
+| Schema 声明、资源闭包及禁用远端解析 | [ContentValidation](../../backend/apps/control/src/main/java/io/edition/control/modules/release/src/main/java/io/edition/control/modules/release/validation/ContentValidation.java) |
+| 一次性拉取仍保留作业 sourceUrl 元数据 | [ImportJobApi](../../backend/apps/control/src/main/java/io/edition/control/modules/importjob/src/main/java/io/edition/control/modules/importjob/api/ImportJobApi.java)、[ImportJobMapper](../../backend/apps/control/src/main/java/io/edition/control/modules/importjob/src/main/java/io/edition/control/modules/importjob/persistence/ImportJobMapper.java) |
 
 <a id="adr-0031"></a>
 
@@ -377,4 +377,19 @@ User 当前状态与 readerEpoch 现在直接参与安全视图授权；密码�
 
 2026-11-20 确认三个进程按唯一职责命名：Control 是业务事实的唯一写入方，Content 提供已发布内容，Index 只重建搜索索引并上报心跳。邮件、导入、导出和回收调度仍留在 Control。概念工程保持平铺，不并入应用。
 
-Index 的目录、Gradle 工程、包、产物和运行角色都使用 `index`。心跳身份是 `edition-index`。Content 的包是 `io.edition.contentapp`，因为 `io.edition.content` 已是契约值类型。表示该进程的类型使用 `Content` 前缀。读者概念 `ReaderSecurity`、权限角色 `reader`、已发布数据库角色和 HTTP 路径保持原名。
+Index 的目录、Gradle 工程、包、产物和运行角色都使用 `index`。心跳身份是 `edition-index`。Content 的包是 `io.edition.contentapp`，因为 `io.edition.content` 已是契约值类型。表示该进程的类型使用 `Content` 前缀。读者概念 `ReaderSecurity`、权限角色 `reader`、已发布数据库角色和 HTTP 路径保持原名。概念目录的后续归属见 [ADR-0037](#adr-0037)。
+
+<a id="adr-0037"></a>
+
+## Control 源码根中的概念模块
+
+2026-11-22 确认首版未发布，概念直接放在 Control 源码根，不再作为独立 Gradle 工程。
+
+三个进程仍是 Control、Content、Index。Gradle 工程是 `:control`、`:content`、`:index`、`:contract`、`:values`、`:request-context`。37 个概念位于 `apps/control` 的 `modules/<concept>/`，包名是 `io.edition.control.modules.<concept>`。Modulith 模块 id 保持 `concepts.<context>.<concept>`、`syncs` 与 `gateway`。`claim` 字符串、HTTP 契约、数据库 schema 和已发布迁移保持不变。
+
+每个应用的源码根是 `bootstrap`、`usecases`、`adapters`。Content 与 Index 没有 `modules`。技术库只有 `contract`、`values`、`request-context`。依赖朝内：用例不引用适配器；入站调用用例；出站和读模型实现用例拥有的端口；概念之间零引用。`api` 与 `domain` 不引用 `application` 或 `persistence`。没有状态就不建空的 `domain`。
+
+**替代关系。** 替代 ADR-0031 的独立概念构建、ADR-0033 的 `libraries/<concept>` 与 `entry`/`compositions` 目录，以及 ADR-0036 中「概念工程保持平铺，不并入应用」。不替代三进程职责、共享主库和规则身份。
+
+**代价。** 概念不再单独编译。边界由 `verifyProjectArchitecture` 检查源码依赖，违反即失败。
+

@@ -1,13 +1,12 @@
 # CLAUDE.md
 
-后端按 ADR-0031 分成应用装配、独立概念项目和具名技术库。目录与组合命名见 ADR-0032。
+后端按 ADR-0037 分成三个应用。概念在 Control 源码根的 `modules/`，技术库在 `libraries/`。
 
 ## Project map
 
-- `apps/` — 装配、协议和组合
-- `libraries/<领域名>/` — 独立 Gradle 概念项目。清单只维护于 `concept-modules.json`。规则见 `libraries/CLAUDE.md`
-- `libraries/` — 具名技术能力。规则见 `libraries/CLAUDE.md`
-- 模块根 `CONCEPT.md` 是单概念权威规格。应用组合目录共置 `SYNCS.md`
+- `apps/control` — `modules`、`usecases`、`adapters`、`bootstrap`。概念规格在模块 `CONCEPT.md`，组合规格在用例组 `SYNCS.md`
+- `apps/content`、`apps/index` — `usecases`、`adapters`、`bootstrap`。没有概念模块
+- `libraries/` — contract、values、request-context。规则见 `libraries/CLAUDE.md`
 - 管理产物名是 `edition-control`，项目路径是 `:control`
 
 <important if="you need to run commands to build, test, lint, or generate code">
