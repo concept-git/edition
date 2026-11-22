@@ -261,6 +261,14 @@ function fingerprint(req, body) {
   return `${req.method} ${req.url} ${JSON.stringify(body)}`;
 }
 
+export function siteRecord(tenant, siteId) {
+  return bucket(tenant).get(siteId) ?? null;
+}
+
+export function removeSite(tenant, siteId) {
+  return bucket(tenant).delete(siteId);
+}
+
 export function siteMounts(tenant, siteId) {
   const found = bucket(tenant).get(siteId);
   if (!found) return null;

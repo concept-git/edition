@@ -36,7 +36,7 @@ test('a markdown page keeps heading, list, and emphasis as markdown across visua
   await openPage(page, '章节');
 
   const modes = page.getByRole('group', { name: '编辑模式' });
-  await modes.getByRole('button', { name: '可视化', exact: true }).click();
+  await showVisual(page, modes);
   const visual = page.getByRole('textbox', { name: '正文' });
   await visual.click();
   await page.keyboard.type('# ');
@@ -100,6 +100,18 @@ async function createPage(page: Page, format: string, title: string) {
   await form.getByLabel('标题').fill(title);
   await form.getByRole('button', { name: '创建', exact: true }).click();
   await expect(page.getByRole('listitem').filter({ hasText: title })).toBeVisible();
+}
+
+async function showVisual(page: Page, modes: ReturnType<Page['getByRole']>) {
+  const visualButton = modes.getByRole('button', { name: '可视化', exact: true });
+  await visualButton.click();
+  const editor = page.getByRole('textbox', { name: '正文' });
+  const opened = await editor.waitFor({ state: 'visible', timeout: 8_000 }).then(() => true).catch(() => false);
+  if (opened) return;
+  // The dev server reloads once when it first optimizes Milkdown, which drops the open editor.
+  await openPage(page, '章节');
+  await page.getByRole('group', { name: '编辑模式' }).getByRole('button', { name: '可视化', exact: true }).click();
+  await editor.waitFor({ state: 'visible' });
 }
 
 async function openPage(page: Page, title: string) {

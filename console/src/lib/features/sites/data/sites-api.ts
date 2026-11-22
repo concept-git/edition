@@ -38,6 +38,22 @@ export async function createSite(token: string, tenant: string, name: string, id
   return { ok: true, status: result.status, body: site, etag: result.etag };
 }
 
+export async function deleteSite(
+  token: string,
+  tenant: string,
+  siteId: string,
+  confirmationName: string,
+  idempotencyKey: string
+): Promise<ApiResult<true>> {
+  const result = await api<unknown>(token, `${tenantPath(tenant)}/sites/${encodeURIComponent(siteId)}`, {
+    method: 'DELETE',
+    body: { confirmationName },
+    idempotencyKey
+  });
+  if (!result.ok) return result;
+  return { ok: true, status: result.status, body: true, etag: result.etag };
+}
+
 export async function loadSite(token: string, tenant: string, siteId: string): Promise<ApiResult<SiteView>> {
   const result = await api<unknown>(token, `${tenantPath(tenant)}/sites/${encodeURIComponent(siteId)}`);
   if (!result.ok) return result;
