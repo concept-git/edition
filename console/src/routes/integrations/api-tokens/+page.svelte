@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IntegrationsPage from '#lib/features/integrations/presentation/IntegrationsPage.svelte';
+  import TokensPage from '#lib/features/tokens/presentation/TokensPage.svelte';
 </script>
 
-<IntegrationsPage view="api" />
+<TokensPage kind="api" />
