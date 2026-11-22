@@ -19,7 +19,7 @@
   } from '../domain/release';
   import { buildFailureMessage, canRetry, listFailureMessage, previewFailureMessage, switchFailureMessage } from './messages';
 
-  let { spaceId }: { spaceId: string } = $props();
+  let { spaceId, onLive }: { spaceId: string; onLive?: (releaseId: string | null) => void } = $props();
   const session = getSession();
   const tones: Record<ReleaseOutcome, string> = {
     promoted: 'bg-mint text-accent',
@@ -78,6 +78,7 @@
     }
     items = listed.body;
     listFailure = null;
+    reportLive(items);
   }
 
   function submit() {
@@ -150,6 +151,11 @@
       if (item.status === 'live') return { ...item, status: 'archived', allowedActions: withRollback(item.allowedActions) };
       return item;
     });
+    reportLive(items);
+  }
+
+  function reportLive(list: ReleaseSummary[]) {
+    onLive?.(list.find((item) => item.status === 'live')?.id ?? null);
   }
 
   async function run(token: string, tenant: string, key: string) {
