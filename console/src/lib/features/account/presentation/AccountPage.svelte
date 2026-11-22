@@ -1,6 +1,9 @@
 <script lang="ts">
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
+  import TextField from '#lib/shared/ui/TextField.svelte';
+
+  let draft = $state('');
 
   let { view }: { view: 'password' | 'sessions' | 'deactivate' | 'erase' } = $props();
 
@@ -31,4 +34,9 @@
 </script>
 
 <PageHeader title={current.title} description={current.description} />
+{#if view === 'password'}
+  <div class="mb-4 max-w-sm">
+    <TextField label="当前密码" type="password" autocomplete="current-password" bind:value={draft} />
+  </div>
+{/if}
 <EmptyState title="没有数据" description={current.empty} />

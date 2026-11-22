@@ -1,9 +1,12 @@
 import { expect, test, type Page } from '@playwright/test';
+import { signIn } from './sign-in';
+import { resetStub } from './stub';
 
 /**
  * Component and route check for the two shells.
- * The browser seam that signs in to a real Control server stays blocked until
- * the session ticket can start that server. This file does not boot Docker.
+ * Pages now require a session, so each check signs in through the local auth
+ * stub first. The assertions are unchanged. This file does not boot Docker or
+ * a real Control server.
  */
 
 test.beforeEach(async ({ page }) => {
@@ -19,6 +22,8 @@ test.beforeEach(async ({ page }) => {
       return original.call(this, keyframes, options);
     };
   });
+  await resetStub();
+  await signIn(page);
 });
 
 test('overview shell shows a wide sidebar and the content and site entries', async ({ page }) => {

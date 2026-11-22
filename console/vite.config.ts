@@ -2,7 +2,29 @@ import adapter from '@sveltejs/adapter-auto';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, type ProxyOptions } from 'vite';
+
+declare const process: { env: Record<string, string | undefined> };
+
+const controlOrigin = process.env.EDITION_CONTROL_ORIGIN ?? 'http://127.0.0.1:8081';
+
+function controlProxy(target: string): ProxyOptions {
+  return {
+    target,
+    changeOrigin: true,
+    configure(proxy) {
+      const server = proxy as unknown as {
+        on: (
+          event: 'error',
+          handler: (error: unknown, req: unknown, res: { headersSent?: boolean; destroy: () => void }) => void
+        ) => void;
+      };
+      server.on('error', (_error, _req, res) => {
+        if (!res.headersSent) res.destroy();
+      });
+    }
+  };
+}
 
 export default defineConfig(async () => ({
   plugins: [
@@ -12,5 +34,11 @@ export default defineConfig(async () => ({
       adapter: adapter(),
       paths: { relative: false }
     }))
-  ]
+  ],
+  server: {
+    proxy: {
+      '/auth': controlProxy(controlOrigin),
+      '/api': controlProxy(controlOrigin)
+    }
+  }
 }));

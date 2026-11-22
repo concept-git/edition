@@ -16,5 +16,5 @@
     "moduleResolution": "bundler"
   },
   "include": ["src", "tests", "*"],
-  "exclude": ["src/service-worker"]
+  "exclude": ["src/service-worker", "tests/auth-stub.mjs"]
 }

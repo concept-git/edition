@@ -10,7 +10,7 @@
   import { shellEnter } from '#lib/features/shell/presentation/motion';
   import { getShellMode } from '#lib/features/shell/presentation/shell-mode.svelte';
 
-  let { children }: { children: Snippet } = $props();
+  let { children, account, notice }: { children: Snippet; account?: Snippet; notice?: Snippet } = $props();
   const shell = getShellMode();
   const pathname = $derived(page.url.pathname);
   const kind = $derived(shellFor(pathname, shell.stickToModule));
@@ -88,11 +88,12 @@
 </script>
 
 <div class="flex h-dvh flex-col bg-canvas font-sans text-ink">
-  <TopBar onOverview={() => shell.preferOverview()} />
+  <TopBar onOverview={() => shell.preferOverview()} {account} />
   {#if kind === 'overview'}
     <div class="flex min-h-0 flex-1" data-shell="overview" in:shellEnter|global>
       <WideNav entries={wideEntries} {products} onOverview={() => shell.preferOverview()} onModule={() => shell.preferModule()} />
       <main data-region="canvas" class="min-w-0 flex-1 overflow-auto bg-canvas px-6 py-5">
+        {#if notice}{@render notice()}{/if}
         {@render children()}
       </main>
     </div>
@@ -101,6 +102,7 @@
       <IconRail items={railItems} onSelect={chooseRail} />
       <SectionNav items={sectionItems} onSelect={() => shell.preferModule()} />
       <main data-region="canvas" class="min-w-0 flex-1 overflow-auto bg-surface px-8 py-6">
+        {#if notice}{@render notice()}{/if}
         {@render children()}
       </main>
     </div>
