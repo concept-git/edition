@@ -23,6 +23,10 @@ export type PageSource = {
   etag: string;
 };
 
+export type SavedPage = PageSource & {
+  drift: boolean;
+};
+
 export type PageList = {
   items: PageSummary[];
   canCreate: boolean;

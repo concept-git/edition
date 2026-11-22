@@ -27,6 +27,24 @@ export async function listReleases(token: string, tenantId: string, spaceId: str
   return { ok: true, status: result.status, body: items, etag: result.etag };
 }
 
+export async function approveRelease(
+  token: string,
+  tenantId: string,
+  spaceId: string,
+  releaseId: string,
+  idempotencyKey: string
+): Promise<ApiResult<ReleaseSummary>> {
+  const result = await api<unknown>(token, `${collection(tenantId, spaceId)}/${encodeURIComponent(releaseId)}:approve`, {
+    method: 'POST',
+    idempotencyKey
+  });
+  if (!result.ok) return result;
+  if (!result.body || typeof result.body !== 'object') return malformed(result.status);
+  const summary = readSummary((result.body as { release?: unknown }).release);
+  if (!summary) return malformed(result.status);
+  return { ok: true, status: result.status, body: summary, etag: result.etag };
+}
+
 export async function buildRelease(
   token: string,
   tenantId: string,

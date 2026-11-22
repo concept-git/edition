@@ -7,7 +7,7 @@ export function loadFailureMessage(failure: ApiFailure): string {
 }
 
 export function importFailureMessage(failure: ApiFailure): string {
-  if (failure.code === 'space_mode_restricted') return 'authored 空间拒绝整体导入。';
+  if (failure.code === 'space_mode_restricted') return 'authored 空间拒绝整体导入。界面创作不能被外部发版包覆盖。';
   if (failure.code === 'import_in_progress') return '已有进行中的导入。';
   if (failure.code === 'invalid_bundle' || failure.code === 'file_too_large') return '发版包不能导入。';
   if (failure.code === 'resource_not_found') return '发版包没有上传完成。';

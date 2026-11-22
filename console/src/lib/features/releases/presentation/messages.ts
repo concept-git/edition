@@ -28,6 +28,13 @@ export function switchFailureMessage(failure: ApiFailure): string {
   return failure.code ? `主版本没有切换（${failure.code}）。` : '主版本没有切换。';
 }
 
+export function approveFailureMessage(failure: ApiFailure): string {
+  if (failure.status === 0) return '网络失败，确认没有完成。';
+  if (failure.status === 429) return retryText('确认', failure.retryAfter);
+  if (failure.status >= 500) return withTrace('确认没有完成。', failure.traceId);
+  return failure.code ? `确认没有完成（${failure.code}）。` : '确认没有完成。';
+}
+
 export function canRetry(failure: ApiFailure): boolean {
   return failure.status === 0 || failure.status === 429 || failure.status >= 500;
 }

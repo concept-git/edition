@@ -7,6 +7,7 @@ import {
   type PageList,
   type PageReadiness,
   type PageSource,
+  type SavedPage,
   type PageSummary
 } from '../domain/page';
 
@@ -76,6 +77,14 @@ export async function viewPageContent(
   return { ok: true, status: result.status, body: source, etag: result.etag };
 }
 
+export async function readSpaceMode(token: string, tenantId: string, spaceId: string): Promise<ApiResult<'authored' | 'synced'>> {
+  const result = await api<{ mode?: unknown }>(token, spacePath(tenantId, spaceId));
+  if (!result.ok) return result;
+  const mode = result.body.mode;
+  if (mode !== 'authored' && mode !== 'synced') return malformed(result.status);
+  return { ok: true, status: result.status, body: mode, etag: result.etag };
+}
+
 export async function editPage(
   token: string,
   tenantId: string,
@@ -83,18 +92,20 @@ export async function editPage(
   pageId: string,
   content: string,
   ifMatch: string,
-  idempotencyKey: string
-): Promise<ApiResult<PageSource>> {
+  idempotencyKey: string,
+  intent: 'draft_only' | 'hotfix'
+): Promise<ApiResult<SavedPage>> {
   const result = await api<unknown>(token, contentPath(tenantId, spaceId, pageId), {
     method: 'PUT',
-    body: { content },
+    body: { content, intent },
     ifMatch,
     idempotencyKey
   });
   if (!result.ok) return result;
   const source = readSource(result.body, result.etag);
   if (!source) return malformed(result.status);
-  return { ok: true, status: result.status, body: source, etag: result.etag };
+  const drift = !!result.body && typeof result.body === 'object' && (result.body as { driftFlag?: unknown }).driftFlag === true;
+  return { ok: true, status: result.status, body: { ...source, drift }, etag: result.etag };
 }
 
 export async function trashPage(
@@ -150,8 +161,12 @@ async function mark(
   return { ok: true, status: result.status, body: status, etag: result.etag };
 }
 
+function spacePath(tenantId: string, spaceId: string) {
+  return `/api/v1/tenants/${encodeURIComponent(tenantId)}/spaces/${encodeURIComponent(spaceId)}`;
+}
+
 function collection(tenantId: string, spaceId: string) {
-  return `/api/v1/tenants/${encodeURIComponent(tenantId)}/spaces/${encodeURIComponent(spaceId)}/pages`;
+  return `${spacePath(tenantId, spaceId)}/pages`;
 }
 
 function pagePath(tenantId: string, spaceId: string, pageId: string) {
