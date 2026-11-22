@@ -94,6 +94,7 @@ export async function handle(req, res, ctx) {
 
   const listed = url.pathname.match(/^\/api\/v1\/tenants\/([^/]+)\/spaces\/([^/]+)\/pages$/);
   if (listed && req.method === 'GET' && !url.searchParams.has('status')) {
+    if (!fromSpaceContent(req)) return false;
     const items = pages.get(decodeURIComponent(listed[2])) ?? [];
     ctx.send(res, 200, { items, nextCursor: null, total: items.length, allowedActions: ['read', 'create'] });
     return true;
@@ -332,4 +333,15 @@ function reset() {
   pages = new Map();
   imports = new Map();
   retries = new Map();
+}
+
+function fromSpaceContent(req) {
+  const referer = req.headers.referer ?? '';
+  if (!referer) return false;
+  try {
+    const path = new URL(referer, 'http://127.0.0.1').pathname;
+    return /\/content\/spaces\/[^/]+\/(?:pages|imports)$/.test(path);
+  } catch {
+    return false;
+  }
 }
