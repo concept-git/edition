@@ -1,12 +1,13 @@
 <script lang="ts">
   import { getSession } from '#lib/features/session/presentation/session.svelte';
   import Button from '#lib/shared/ui/Button.svelte';
+  import Dialog from '#lib/shared/ui/Dialog.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
-  import { createSpace, listSpaces, resolveTenant } from '../data/http-spaces';
+  import { archiveSpace, createSpace, deleteSpace, listSpaces, resolveTenant } from '../data/http-spaces';
   import { mergeSpace, sameIntent, type SpaceMode, type SpaceSummary, type WriteIntent } from '../domain/space';
-  import { createRejection, queryFailureMessage } from './messages';
+  import { archiveRejection, createRejection, deleteRejection, queryFailureMessage } from './messages';
 
   const session = getSession();
   let tenantId = $state<string | null>(null);
@@ -18,6 +19,15 @@
   let pending = $state(false);
   let rejection = $state('');
   let intent: WriteIntent | null = null;
+  let archiving = $state('');
+  let archiveMessage = $state('');
+  let archiveIntent: WriteIntent | null = null;
+  let deleteOpen = $state(false);
+  let pendingDelete = $state<SpaceSummary | null>(null);
+  let confirmationName = $state('');
+  let deleteMessage = $state('');
+  let deleting = $state(false);
+  let deleteIntent: WriteIntent | null = null;
 
   const modes = [
     ['authored', 'authored'],
@@ -83,6 +93,70 @@
     mode = next;
   }
 
+  async function archive(space: SpaceSummary) {
+    const token = session.accessToken;
+    if (archiving || !token || !tenantId) return;
+    archiveIntent = sameIntent(archiveIntent, space.id);
+    const key = archiveIntent.key;
+    archiving = space.id;
+    archiveMessage = '';
+    const result = await archiveSpace(token, tenantId, space.id, key);
+    archiving = '';
+    if (!result.ok) {
+      archiveMessage = archiveRejection(result.failure);
+      return;
+    }
+    archiveIntent = null;
+    items = (items ?? []).map((item) => (item.id === space.id ? { ...item, status: 'archived' as const } : item));
+    const refreshed = await listSpaces(token, tenantId);
+    if (!refreshed.ok) {
+      queryMessage = queryFailureMessage(refreshed.failure);
+      return;
+    }
+    items = refreshed.body.items;
+    canCreate = refreshed.body.canCreate;
+  }
+
+  function askDelete(space: SpaceSummary) {
+    pendingDelete = space;
+    confirmationName = '';
+    deleteMessage = '';
+    deleteOpen = true;
+  }
+
+  function closeDelete() {
+    deleteOpen = false;
+    pendingDelete = null;
+    deleteMessage = '';
+  }
+
+  async function confirmDelete() {
+    const space = pendingDelete;
+    const token = session.accessToken;
+    if (!space || deleting || !token || !tenantId) return;
+    deleteIntent = sameIntent(deleteIntent, `${space.id}\n${confirmationName}`);
+    const key = deleteIntent.key;
+    deleting = true;
+    deleteMessage = '';
+    const result = await deleteSpace(token, tenantId, space.id, confirmationName, key);
+    deleting = false;
+    if (!result.ok) {
+      deleteMessage = deleteRejection(result.failure);
+      if (result.failure.status !== 0 && result.failure.status !== 429 && result.failure.status < 500) deleteIntent = null;
+      return;
+    }
+    deleteIntent = null;
+    closeDelete();
+    items = (items ?? []).filter((item) => item.id !== space.id);
+    const refreshed = await listSpaces(token, tenantId);
+    if (!refreshed.ok) {
+      queryMessage = queryFailureMessage(refreshed.failure);
+      return;
+    }
+    items = refreshed.body.items;
+    canCreate = refreshed.body.canCreate;
+  }
+
   void load();
 </script>
 
@@ -93,6 +167,10 @@
     <p>{queryMessage}</p>
     <Button variant="quiet" onclick={() => void load()}>重试</Button>
   </div>
+{/if}
+
+{#if archiveMessage}
+  <p role="alert" class="mb-4 text-sm text-ink">{archiveMessage}</p>
 {/if}
 
 {#if items !== null && items.length === 0 && queryMessage === ''}
@@ -106,7 +184,15 @@
     {#each items as space (space.id)}
       <li class="flex items-center justify-between gap-3 rounded-nav border border-line bg-surface px-3 py-2">
         <Button href={`/content/spaces/${space.id}/pages`}>{space.name}</Button>
-        <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">{space.mode}</span>
+        <span class="flex items-center gap-2">
+          <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">{space.mode}</span>
+          {#if space.status === 'archived'}
+            <span class="text-xs text-muted">已归档</span>
+          {:else}
+            <Button type="button" variant="quiet" disabled={archiving === space.id} onclick={() => void archive(space)}>归档</Button>
+          {/if}
+          <Button type="button" variant="quiet" onclick={() => askDelete(space)}>删除</Button>
+        </span>
       </li>
     {/each}
   </ul>
@@ -127,4 +213,19 @@
       <Button type="submit" disabled={pending}>创建</Button>
     </div>
   </form>
+{/if}
+
+{#if deleteOpen && pendingDelete}
+  <Dialog bind:open={deleteOpen} title="确认删除空间" description="回输空间名称。名称不符时空间还在。只有已归档的空间会从列表消失。">
+    <TextField label="空间名称" bind:value={confirmationName} />
+    {#if deleteMessage}
+      <p role="alert" class="text-sm text-ink">{deleteMessage}</p>
+    {/if}
+    {#snippet actions()}
+      <Button variant="quiet" onclick={closeDelete}>取消</Button>
+      <Button variant="danger" disabled={deleting || confirmationName.trim().length === 0} onclick={() => void confirmDelete()}>
+        删除空间
+      </Button>
+    {/snippet}
+  </Dialog>
 {/if}

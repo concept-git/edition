@@ -24,6 +24,13 @@ export function saveRejection(failure: ApiFailure): string {
   return failure.code ? `正文没有保存（${failure.code}）。` : '正文没有保存。';
 }
 
+export function trashRejection(failure: ApiFailure): string {
+  if (failure.status === 0) return '网络失败，页面还在。';
+  if (failure.status === 429) return retryText('回收', failure.retryAfter);
+  if (failure.status >= 500) return withTrace('页面没有回收。', failure.traceId);
+  return failure.code ? `页面没有回收（${failure.code}）。` : '页面没有回收。';
+}
+
 export function limitRejection(): string {
   return '正文超过 2 MiB，没有保存。';
 }

@@ -6,7 +6,7 @@
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import SourceEditor from '#lib/shared/ui/SourceEditor.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
-  import { createPage, editPage, listPages, resolveTenant, viewPageContent } from '../data/http-pages';
+  import { createPage, editPage, listPages, resolveTenant, trashPage, viewPageContent } from '../data/http-pages';
   import {
     exceedsContentLimit,
     FORMATS,
@@ -18,7 +18,7 @@
     type PageSummary,
     type WriteIntent
   } from '../domain/page';
-  import { createRejection, limitRejection, queryFailureMessage, saveRejection } from './messages';
+  import { createRejection, limitRejection, queryFailureMessage, saveRejection, trashRejection } from './messages';
 
   let { spaceId }: { spaceId: string } = $props();
   const session = getSession();
@@ -40,6 +40,8 @@
   let saving = $state(false);
   let saveMessage = $state('');
   let saveIntent: WriteIntent | null = null;
+  let trashIntent: WriteIntent | null = null;
+  let trashing = $state('');
   let generation = 0;
 
   async function load(id: string) {
@@ -159,6 +161,23 @@
     format = next;
   }
 
+  async function trash(item: PageSummary) {
+    const token = session.accessToken;
+    if (trashing || !token || !tenantId) return;
+    trashIntent = sameIntent(trashIntent, item.id);
+    const key = trashIntent.key;
+    trashing = item.id;
+    const result = await trashPage(token, tenantId, spaceId, item.id, key);
+    trashing = '';
+    if (!result.ok) {
+      queryMessage = trashRejection(result.failure);
+      return;
+    }
+    trashIntent = null;
+    queryMessage = '';
+    items = (items ?? []).filter((page) => page.id !== item.id);
+  }
+
   onDestroy(() => {
     generation += 1;
   });
@@ -199,7 +218,10 @@
       {#each items as item (item.id)}
         <li class="flex items-center justify-between gap-3 rounded-nav border border-line bg-surface px-3 py-2">
           <Button type="button" variant="quiet" onclick={() => void open(item.id)}>{item.title}</Button>
-          <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">{item.format}</span>
+          <span class="flex items-center gap-2">
+            <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">{item.format}</span>
+            <Button type="button" variant="quiet" disabled={trashing === item.id} onclick={() => void trash(item)}>回收</Button>
+          </span>
         </li>
       {/each}
     </ul>

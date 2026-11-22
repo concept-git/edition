@@ -175,6 +175,18 @@ async function edit(req, res, ctx, page) {
   ctx.send(res, 200, bodyOut, { etag: tag });
 }
 
+export function takePage(spaceId, pageId) {
+  const list = bucket(spaceId);
+  const index = list.findIndex((page) => page.id === pageId);
+  if (index < 0) return null;
+  return list.splice(index, 1)[0];
+}
+
+export function putPage(spaceId, page) {
+  const list = bucket(spaceId);
+  if (!list.some((item) => item.id === page.id)) list.push(page);
+}
+
 function find(spaceId, pageId) {
   return bucket(spaceId).find((page) => page.id === pageId);
 }

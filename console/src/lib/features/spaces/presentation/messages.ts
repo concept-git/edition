@@ -21,6 +21,22 @@ export function saveRejection(failure: ApiFailure): string {
   return failure.code ? `自动发版没有保存（${failure.code}）。` : '自动发版没有保存。';
 }
 
+export function archiveRejection(failure: ApiFailure): string {
+  if (failure.status === 0) return '网络失败，空间没有归档。';
+  if (failure.status === 429) return retryText('归档', failure.retryAfter);
+  if (failure.status >= 500) return withTrace('空间没有归档。', failure.traceId);
+  return failure.code ? `空间没有归档（${failure.code}）。` : '空间没有归档。';
+}
+
+export function deleteRejection(failure: ApiFailure): string {
+  if (failure.code === 'deletion_confirmation_invalid') return '名称不符，空间还在。';
+  if (failure.code === 'space_not_archived') return '空间还没归档，仍然留在列表里。';
+  if (failure.status === 0) return '网络失败，空间还在。';
+  if (failure.status === 429) return retryText('删除', failure.retryAfter);
+  if (failure.status >= 500) return withTrace('空间没有删除。', failure.traceId);
+  return failure.code ? `空间没有删除（${failure.code}）。` : '空间没有删除。';
+}
+
 export function canRetry(failure: ApiFailure): boolean {
   return failure.status === 0 || failure.status === 429 || failure.status >= 500;
 }

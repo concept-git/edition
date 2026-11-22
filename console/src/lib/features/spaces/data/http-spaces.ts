@@ -84,6 +84,38 @@ export async function updateAutoRelease(
   return { ok: true, status: result.status, body: detail, etag: result.etag };
 }
 
+export async function archiveSpace(
+  token: string,
+  tenantId: string,
+  spaceId: string,
+  idempotencyKey: string
+): Promise<ApiResult<SpaceDetail>> {
+  const result = await api<unknown>(token, `${spaceResource(tenantId, spaceId)}:archive`, {
+    method: 'POST',
+    idempotencyKey
+  });
+  if (!result.ok) return result;
+  const detail = readDetail(result.body);
+  if (!detail) return malformed(result.status);
+  return { ok: true, status: result.status, body: detail, etag: result.etag };
+}
+
+export async function deleteSpace(
+  token: string,
+  tenantId: string,
+  spaceId: string,
+  confirmationName: string,
+  idempotencyKey: string
+): Promise<ApiResult<true>> {
+  const result = await api<unknown>(token, spaceResource(tenantId, spaceId), {
+    method: 'DELETE',
+    body: { confirmationName },
+    idempotencyKey
+  });
+  if (!result.ok) return result;
+  return { ok: true, status: result.status, body: true, etag: result.etag };
+}
+
 function spaceCollection(tenantId: string) {
   return `/api/v1/tenants/${encodeURIComponent(tenantId)}/spaces`;
 }

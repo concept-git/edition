@@ -39,7 +39,7 @@ export async function handle(req, res, ctx) {
     }
   }
 
-  const one = url.pathname.match(/^\/api\/v1\/tenants\/([^/]+)\/spaces\/([^/]+)$/);
+  const one = url.pathname.match(/^\/api\/v1\/tenants\/([^/]+)\/spaces\/([^/:]+)$/);
   if (one) {
     const tenantId = one[1];
     const space = bucket(tenantId).find((item) => item.id === one[2]);
@@ -93,6 +93,7 @@ async function create(req, res, ctx, tenantId) {
     name,
     mode,
     autoRelease: mode === 'authored',
+    status: 'active',
     createdAt: now,
     updatedAt: now
   };
@@ -135,6 +136,22 @@ async function update(req, res, ctx, tenantId, space) {
   ctx.send(res, 200, bodyOut);
 }
 
+export function readSpace(tenantId, spaceId) {
+  return bucket(tenantId).find((item) => item.id === spaceId) ?? null;
+}
+
+export function removeSpace(tenantId, spaceId) {
+  const list = bucket(tenantId);
+  const index = list.findIndex((item) => item.id === spaceId);
+  if (index < 0) return false;
+  list.splice(index, 1);
+  return true;
+}
+
+export function presentSpace(tenantId, space) {
+  return detail(tenantId, space);
+}
+
 function bucket(tenantId) {
   const found = spaces.get(tenantId);
   if (found) return found;
@@ -150,7 +167,7 @@ function summary(tenantId, space) {
     name: space.name,
     icon: null,
     mode: space.mode,
-    status: 'active',
+    status: space.status === 'archived' ? 'archived' : 'active',
     pageCount: 0,
     driftCount: 0,
     lastReleaseAt: null,
