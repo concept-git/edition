@@ -113,42 +113,39 @@ test('confirming erasure requires irreversible wording and then the account cann
   expect(visible).not.toContain('已注销');
 });
 
-test('deactivation is reversible and separate from erasure', async ({ page }) => {
+test('self-service deactivation is unavailable', async ({ page }) => {
+  const blocked: string[] = [];
+  page.on('request', (request) => {
+    if (request.method() !== 'POST') return;
+    const path = new URL(request.url()).pathname;
+    if (path === '/api/v1/me:deactivate' || path === '/api/v1/me:reactivate') blocked.push(path);
+  });
+
   await signIn(page);
   await page.goto('/account/deactivate');
   const explanation = await page.locator('[data-region="canvas"]').innerText();
-  expect(explanation).toContain('可逆');
+  expect(explanation).toContain('自助停用暂不可用');
+  expect(explanation).not.toContain('账号已停用');
+  expect(explanation).not.toContain('账号已恢复');
   expect(explanation).not.toContain('不可逆');
+  await expect(page.getByRole('button', { name: '停用账号' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '恢复账号' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: '确认注销' })).toHaveCount(0);
+  await expect(page.getByLabel('当前密码')).toHaveCount(0);
+  expect(blocked).toEqual([]);
 
-  await page.getByLabel('当前密码').fill(maintainer.password);
-  const deactivate = page.waitForRequest(
-    (request) => request.method() === 'POST' && request.url().includes(':deactivate')
-  );
-  await page.getByRole('button', { name: '停用账号' }).click();
-  const deactivateRequest = await deactivate;
-  expect(deactivateRequest.headers()['idempotency-key']).toMatch(/^[a-zA-Z0-9._:-]+$/);
-  await expect(page.getByRole('button', { name: '恢复账号' })).toBeVisible();
-  await expect(page.getByText('不可逆')).toHaveCount(0);
-
-  const restore = page.waitForRequest((request) => request.method() === 'POST' && request.url().includes(':reactivate'));
-  await page.getByRole('button', { name: '恢复账号' }).click();
-  expect((await restore).headers()['idempotency-key']).toMatch(/^[a-zA-Z0-9._:-]+$/);
-  await expect(page.getByText('账号已恢复')).toBeVisible();
-  await page.getByRole('button', { name: '退出' }).click();
-  await signInWith(page, maintainer.password);
-
-  await page.goto('/account/deactivate');
-  await page.getByLabel('当前密码').fill(maintainer.password);
-  await page.getByRole('button', { name: '停用账号' }).click();
-  await expect(page.getByRole('button', { name: '恢复账号' })).toBeVisible();
-  await page.getByRole('button', { name: '退出' }).click();
-  await expect(page).toHaveURL('/login');
-  await page.getByLabel('邮箱').fill(maintainer.email);
-  await page.getByLabel('密码').fill(maintainer.password);
-  await page.getByRole('button', { name: '登录' }).click();
-  await expect(page).toHaveURL('/login');
-  await expect(page.getByRole('alert')).toHaveText('邮箱或密码不正确。');
+  for (const path of ['/api/v1/me:deactivate', '/api/v1/me:reactivate']) {
+    const response = await page.request.post(`http://127.0.0.1:4188${path}`, {
+      data: { confirmationEmail: maintainer.email, currentPassword: maintainer.password },
+      headers: {
+        authorization: 'Bearer test-token',
+        'content-type': 'application/json',
+        'idempotency-key': 'account-lock'
+      }
+    });
+    expect(response.ok()).toBe(false);
+    expect(response.status()).not.toBe(204);
+  }
 });
 
 async function signIn(page: import('@playwright/test').Page) {

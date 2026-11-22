@@ -21,7 +21,7 @@ export type Ranked = {
 export type PlottedBucket = {
   time: string;
   label: string;
-  pv: number;
+  pv: number | null;
 };
 
 export type SiteOption = {
@@ -59,9 +59,10 @@ export function dayLabel(time: string): string {
 }
 
 /**
- * Buckets the chart may draw.
- * no_data is never a line. A null count, a bucket before retainedFrom, and a
- * bucket after a delayed update are gaps, not zeros.
+ * Points the chart may draw.
+ * no_data is never a line. A null count stays in the series as a gap.
+ * A bucket before retainedFrom, and a bucket after a delayed update, stay out
+ * so they are not drawn as zero. Dropping a null would close the line across the hole.
  */
 export function plottedBuckets(series: readonly Bucket[], health: Health): PlottedBucket[] {
   if (health.status === 'no_data') return [];
@@ -69,12 +70,12 @@ export function plottedBuckets(series: readonly Bucket[], health: Health): Plott
   const updated = millis(health.updatedAt);
   const points: PlottedBucket[] = [];
   for (const bucket of series) {
-    if (typeof bucket.pv !== 'number' || !Number.isFinite(bucket.pv)) continue;
     const time = Date.parse(bucket.time);
     if (Number.isNaN(time)) continue;
     if (health.status === 'partial' && retained !== null && time < retained) continue;
     if (health.status === 'delayed' && updated !== null && time > updated) continue;
-    points.push({ time: bucket.time, label: dayLabel(bucket.time), pv: bucket.pv });
+    const pv = typeof bucket.pv === 'number' && Number.isFinite(bucket.pv) ? bucket.pv : null;
+    points.push({ time: bucket.time, label: dayLabel(bucket.time), pv });
   }
   return points;
 }

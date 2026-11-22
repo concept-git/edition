@@ -28,8 +28,8 @@ test('the visit chart shows returned buckets and rankings show returned entries'
   const chart = page.getByRole('figure', { name: '访问趋势' });
   await expect(chart).toBeVisible();
   const buckets = chart.getByRole('list', { name: '时间桶' });
-  await expect(buckets.getByRole('listitem')).toHaveText(['11月20日 12', '11月22日 8']);
-  await expect(buckets).not.toContainText('11月21日');
+  await expect(buckets.getByRole('listitem')).toHaveText(['11月20日 12', '11月21日 —', '11月22日 8']);
+  await expect(buckets).not.toContainText('11月21日 0');
   const marks = chart.locator('svg [data-pv]');
   await expect(marks).toHaveCount(2);
   await expect(marks.nth(0)).toHaveAttribute('data-pv', '12');

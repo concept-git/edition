@@ -13,7 +13,7 @@ export type ContentHome =
 
 export type MemberRecord = { joinedAt?: unknown };
 export type SpaceRecord = { id?: unknown; pageCount?: unknown };
-export type PageRecord = { status?: unknown; publishedAt?: unknown };
+export type PageRecord = { status?: unknown; publishedAt?: unknown; createdAt?: unknown; updatedAt?: unknown };
 
 export type Source<T> = { kind: 'list'; items: T[] } | { kind: 'none' } | { kind: 'error'; traceId: string | null };
 
@@ -44,8 +44,7 @@ export function contentHome(
       {
         label: '页面',
         total: spaceItems === null ? null : pageTotal(spaceItems),
-        // Page summaries have no creation time, so this supplement is never invented as zero.
-        yesterday: null
+        yesterday: pageItems === null ? null : pagesYesterday(pageItems, now)
       },
       {
         label: '已进版页面',
@@ -79,6 +78,19 @@ function publishedYesterday(pages: PageRecord[], now: Date): Count {
     pages.filter((page) => page.status === 'published').map((page) => page.publishedAt),
     now
   );
+}
+
+/** Count pages whose payload includes a time. No time stays a gap, never a made-up zero. */
+function pagesYesterday(pages: PageRecord[], now: Date): Count {
+  const stamps = pages.map((page) => pageTime(page));
+  if (stamps.length === 0 || stamps.every((stamp) => stamp === undefined)) return null;
+  return countStamps(stamps, now);
+}
+
+function pageTime(page: PageRecord): unknown {
+  if (page.createdAt !== undefined) return page.createdAt;
+  if (page.updatedAt !== undefined) return page.updatedAt;
+  return undefined;
 }
 
 function countStamps(stamps: unknown[], now: Date): Count {

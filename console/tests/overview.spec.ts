@@ -58,8 +58,8 @@ test('signed-in overview shows the current tenant counts and the three steps', a
 
   await page.goto('/');
   await page.getByRole('link', { name: '挂载站点', exact: true }).click();
-  await expect(page).toHaveURL('/sites/example/mounts');
-  await expect(page.getByRole('heading', { name: '挂载' })).toBeVisible();
+  await expect(page).toHaveURL('/sites');
+  await expect(page.getByRole('heading', { level: 1, name: '站点' })).toBeVisible();
 });
 
 test('an empty tenant shows an empty overview instead of zeros', async ({ page }) => {

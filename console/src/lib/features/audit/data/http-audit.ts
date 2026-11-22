@@ -9,9 +9,10 @@ export async function queryAudit(
   token: string,
   action: string
 ): Promise<{ ok: true; records: AuditRecord[] } | { ok: false; failure: AuditFailure }> {
+  const tenant = await currentTenant(token);
+  if (!tenant.ok) return { ok: false, failure: toFailure(tenant.failure) };
   const params = new URLSearchParams();
-  const tenantId = await currentTenant(token);
-  if (tenantId) params.set('tenantId', tenantId);
+  if (tenant.id) params.set('tenantId', tenant.id);
   const trimmed = action.trim();
   if (trimmed) params.set('action', trimmed);
   params.set('limit', '20');
@@ -20,11 +21,11 @@ export async function queryAudit(
   return { ok: true, records: readRecords(result.body) };
 }
 
-async function currentTenant(token: string) {
+async function currentTenant(token: string): Promise<{ ok: true; id: string | null } | { ok: false; failure: ApiFailure }> {
   const me = await api<Me>(token, '/api/v1/me');
-  if (!me.ok) return null;
-  const id = me.body.tenants?.find((tenant) => typeof tenant.id === 'string')?.id;
-  return id ?? null;
+  if (!me.ok) return me;
+  const id = me.body.tenants?.find((tenant) => typeof tenant.id === 'string' && tenant.id.length > 0)?.id ?? null;
+  return { ok: true, id };
 }
 
 function toFailure(failure: ApiFailure): AuditFailure {

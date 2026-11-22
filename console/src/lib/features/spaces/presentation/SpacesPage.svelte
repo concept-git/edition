@@ -174,11 +174,7 @@
 {/if}
 
 {#if items !== null && items.length === 0 && queryMessage === ''}
-  <EmptyState title="没有数据" description="打开示例空间可以查看页面、目录、标签、发版、导入、授权和回收。">
-    {#snippet actions()}
-      <Button href="/content/spaces/example/pages">打开示例空间</Button>
-    {/snippet}
-  </EmptyState>
+  <EmptyState title="没有数据" description="创建一个空间后，页面就有了家。" />
 {:else if items !== null && items.length > 0}
   <ul class="mb-6 flex flex-col gap-2" aria-label="空间">
     {#each items as space (space.id)}

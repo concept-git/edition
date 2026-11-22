@@ -6,5 +6,7 @@
 </script>
 
 {#each points as point (point.time)}
-  <Bar data={point} data-pv={point.pv} class="fill-accent" stroke="none" strokeWidth={0} motion="none" />
+  {#if point.pv !== null}
+    <Bar data={point} data-pv={point.pv} class="fill-accent" stroke="none" strokeWidth={0} motion="none" />
+  {/if}
 {/each}

@@ -145,9 +145,6 @@
 </script>
 
 <PageHeader title="站点" description="站点把一组空间编成对外地址，并持有挂载、域名、重定向和搜索。" />
-<div class="mb-4">
-  <Button href="/sites/example/mounts" variant="quiet">打开示例站点</Button>
-</div>
 
 {#if queryFailure}
   <div role="alert" class="mb-4 flex flex-wrap items-center gap-3 text-sm text-ink">

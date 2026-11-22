@@ -109,31 +109,15 @@ export async function handle(req, res, ctx) {
     noContent(res, { 'set-cookie': clearCookie });
     return true;
   }
-  if (req.method === 'POST' && url.pathname === '/api/v1/me:deactivate') {
-    if (!bearer(req, res, ctx)) return true;
-    if (!idempotency(req, res, ctx)) return true;
-    if (status === 'erased') {
-      ctx.problem(res, 409, 'user_erased', 'Account erased', 'An erased account cannot be deactivated.', 'trace-deactivate');
-      return true;
-    }
-    const body = await ctx.readJson(req);
-    if (String(body.currentPassword ?? '') !== password || emailOf(body) !== maintainerEmail) {
-      ctx.problem(res, 400, 'invalid_old_password', 'Password rejected', 'The current password is wrong.', 'trace-deactivate');
-      return true;
-    }
-    status = 'deactivated';
-    noContent(res);
-    return true;
-  }
-  if (req.method === 'POST' && url.pathname === '/api/v1/me:reactivate') {
-    if (!bearer(req, res, ctx)) return true;
-    if (!idempotency(req, res, ctx)) return true;
-    if (status === 'erased') {
-      ctx.problem(res, 409, 'user_erased', 'Account erased', 'An erased account cannot be restored.', 'trace-reactivate');
-      return true;
-    }
-    status = 'active';
-    noContent(res);
+  if (req.method === 'POST' && (url.pathname === '/api/v1/me:deactivate' || url.pathname === '/api/v1/me:reactivate')) {
+    ctx.problem(
+      res,
+      404,
+      'not_found',
+      'Not found',
+      'Self-service deactivation is not available.',
+      'trace-account'
+    );
     return true;
   }
   return false;

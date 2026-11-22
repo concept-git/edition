@@ -27,7 +27,7 @@ test('content home shows member, page, and ready-to-release counts with yesterda
   await expect(figure(region, '成员').locator('strong')).toHaveText('2');
   await expect(figure(region, '成员')).toContainText('昨日 1');
   await expect(figure(region, '页面').locator('strong')).toHaveText('5');
-  await expect(figure(region, '页面')).toContainText('昨日 —');
+  await expect(figure(region, '页面')).toContainText('昨日 1');
   await expect(figure(region, '已进版页面').locator('strong')).toHaveText('3');
   await expect(figure(region, '已进版页面')).toContainText('昨日 1');
   const text = await page.locator('[data-region="canvas"]').innerText();
@@ -54,7 +54,7 @@ test('a missing count is a gap and an absent payload is an empty state', async (
   await page.goto('/content');
   const region = page.getByRole('region', { name: '内容使用情况' });
   await expect(figure(region, '页面').locator('strong')).toHaveText('—');
-  await expect(figure(region, '页面')).toContainText('昨日 —');
+  await expect(figure(region, '页面')).toContainText('昨日 1');
   await expect(figure(region, '已进版页面').locator('strong')).toHaveText('2');
   await expect(figure(region, '已进版页面')).toContainText('昨日 —');
   await expect(figure(region, '已进版页面')).not.toContainText('昨日 0');

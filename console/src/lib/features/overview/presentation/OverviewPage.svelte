@@ -13,7 +13,7 @@
   const steps = [
     { n: '1', title: '邀请成员', description: '把同事请入当前租户。', href: '/members', label: '邀请成员' },
     { n: '2', title: '创建空间', description: '给页面一个家。', href: '/content/spaces', label: '创建空间' },
-    { n: '3', title: '挂载站点', description: '把空间编到对外 slug。', href: '/sites/example/mounts', label: '挂载站点' }
+    { n: '3', title: '挂载站点', description: '把空间编到对外 slug。', href: '/sites', label: '挂载站点' }
   ];
 
   type View =

@@ -131,10 +131,16 @@
       return;
     }
     candidateIntent.finish();
-    formedNotice = true;
     conflict = null;
     const refreshed = await listContentTypes(token, tenant);
-    if (!alive || !refreshed.ok) return;
+    if (!alive) return;
+    if (!refreshed.ok) {
+      formedNotice = false;
+      savedNotice = false;
+      conflict = queryFailureMessage(refreshed.failure);
+      return;
+    }
+    formedNotice = true;
     types = refreshed.body;
   }
 

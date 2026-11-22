@@ -2,16 +2,25 @@
   import { beforeNavigate } from '$app/navigation';
   import { page } from '$app/state';
   import type { Snippet } from 'svelte';
+  import { loadPlatformOperator, operatorFailureText, platformOperator } from '#lib/features/platform/domain/operator.svelte';
+  import { getSession } from '#lib/features/session/presentation/session.svelte';
   import IconRail from '#lib/shared/ui/IconRail.svelte';
   import SectionNav from '#lib/shared/ui/SectionNav.svelte';
   import TopBar from '#lib/shared/ui/TopBar.svelte';
   import WideNav from '#lib/shared/ui/WideNav.svelte';
+  import Button from '#lib/shared/ui/Button.svelte';
   import { moduleOf, overviewEntries, pathActive, productEntries, rail, sections, shellFor } from '#lib/features/shell/presentation/ia';
   import { shellEnter } from '#lib/features/shell/presentation/motion';
   import { getShellMode } from '#lib/features/shell/presentation/shell-mode.svelte';
 
   let { children, account, notice }: { children: Snippet; account?: Snippet; notice?: Snippet } = $props();
   const shell = getShellMode();
+  const session = getSession();
+
+  function retryOperator() {
+    const token = session.accessToken;
+    if (token) void loadPlatformOperator(token);
+  }
   const pathname = $derived(page.url.pathname);
   const kind = $derived(shellFor(pathname, shell.stickToModule));
   const module = $derived(moduleOf(pathname));
@@ -90,21 +99,32 @@
 <div class="flex h-dvh flex-col bg-canvas font-sans text-ink">
   <TopBar onOverview={() => shell.preferOverview()} {account} />
   {#if kind === 'overview'}
-    <div class="flex min-h-0 flex-1" data-shell="overview" in:shellEnter|global>
+    <div class="flex min-h-0 flex-1" data-shell="overview" data-layout in:shellEnter|global>
       <WideNav entries={wideEntries} {products} onOverview={() => shell.preferOverview()} onModule={() => shell.preferModule()} />
       <main data-region="canvas" class="min-w-0 flex-1 overflow-auto bg-canvas px-6 py-5">
+        {@render operatorFailure()}
         {#if notice}{@render notice()}{/if}
         {@render children()}
       </main>
     </div>
   {:else}
-    <div class="flex min-h-0 flex-1" data-shell="module" in:shellEnter|global>
+    <div class="flex min-h-0 flex-1" data-shell="module" data-layout in:shellEnter|global>
       <IconRail items={railItems} onSelect={chooseRail} />
       <SectionNav items={sectionItems} onSelect={() => shell.preferModule()} />
       <main data-region="canvas" class="min-w-0 flex-1 overflow-auto bg-surface px-8 py-6">
+        {@render operatorFailure()}
         {#if notice}{@render notice()}{/if}
         {@render children()}
       </main>
     </div>
   {/if}
 </div>
+
+{#snippet operatorFailure()}
+  {#if platformOperator.failure}
+    <div role="alert" class="mb-4 flex flex-wrap items-center gap-3 text-sm text-ink">
+      <p>{operatorFailureText(platformOperator.failure)}</p>
+      <Button variant="quiet" onclick={retryOperator}>重试</Button>
+    </div>
+  {/if}
+{/snippet}

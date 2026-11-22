@@ -126,8 +126,7 @@ test('every information architecture destination is reachable', async ({ page })
 
   await page.goto('/content');
   await openPlace(page, '分区', '空间', '/content/spaces', '空间');
-  await page.getByRole('link', { name: '打开示例空间' }).click();
-  await expect(page).toHaveURL('/content/spaces/example/pages');
+  await page.goto('/content/spaces/example/pages');
   await expect(page.getByText('当前空间')).toBeVisible();
   await expect(page.getByRole('heading', { name: '示例空间' })).toBeVisible();
 
@@ -155,8 +154,7 @@ test('every information architecture destination is reachable', async ({ page })
   await page.getByRole('navigation', { name: '模块' }).getByRole('link', { name: '站点', exact: true }).click();
   await expect(page).toHaveURL('/sites');
   await expect(page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '站点列表' })).toBeVisible();
-  await page.getByRole('link', { name: '打开示例站点' }).click();
-  await expect(page).toHaveURL('/sites/example/mounts');
+  await page.goto('/sites/example/mounts');
   await expect(page.getByText('当前站点')).toBeVisible();
 
   for (const [label, path, heading] of [

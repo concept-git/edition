@@ -80,7 +80,10 @@ type RailEntry = (typeof railEntries)[number];
 
 export const rail = {
   map<T>(mapper: (item: RailEntry, index: number) => T): T[] {
-    const visible = platformOperator.allowed ? railEntries : railEntries.filter((item) => item.id !== 'platform');
+    const visible =
+      platformOperator.allowed || platformOperator.failure
+        ? railEntries
+        : railEntries.filter((item) => item.id !== 'platform');
     return visible.map(mapper);
   }
 };

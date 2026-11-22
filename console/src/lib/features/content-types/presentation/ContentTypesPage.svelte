@@ -6,6 +6,7 @@
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import SectionCard from '#lib/shared/ui/SectionCard.svelte';
   import SelectField from '#lib/shared/ui/SelectField.svelte';
+  import TextArea from '#lib/shared/ui/TextArea.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
   import {
     activateContentType,
@@ -35,7 +36,6 @@
   } from '../domain/content-type';
 
   const session = getSession();
-  const interpretationId = $props.id();
 
   let tenantId = $state<string | null>(null);
   let types = $state<ContentTypeState[] | null>(null);
@@ -232,7 +232,7 @@
           {#each types as type (type.contentType)}
             <li class="flex flex-wrap items-center justify-between gap-3 border-b border-line py-2 last:border-b-0">
               <div>
-                <button type="button" class="text-sm text-ink" onclick={() => void choose(type.contentType)}>{type.label}</button>
+                <Button type="button" variant="quiet" onclick={() => void choose(type.contentType)}>{type.label}</Button>
                 <p class="text-xs text-muted">{type.enabled ? '已启用' : '已停用'} · 修订 {type.revision}</p>
               </div>
               {#if canManage}
@@ -287,14 +287,7 @@
       <TextField label="媒体类型" required bind:value={mediaType} />
       <TextField label="语言" required bind:value={language} />
       <SelectField label="呈现宿主" bind:value={renderHost} options={renderHostOptions} />
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-ink" for={interpretationId}>默认解释</label>
-        <textarea
-          id={interpretationId}
-          bind:value={interpretation}
-          class="min-h-24 rounded-nav border border-line bg-surface px-3 py-2 text-sm text-ink"
-        ></textarea>
-      </div>
+      <TextArea label="默认解释" bind:value={interpretation} />
       <div>
         <Button type="submit" disabled={pending}>登记版本</Button>
       </div>
