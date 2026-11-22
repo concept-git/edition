@@ -1,5 +1,6 @@
 <script lang="ts">
-  import SpaceSection from '#lib/features/content/presentation/SpaceSection.svelte';
+  import { page } from '$app/state';
+  import TagsPage from '#lib/features/tags/presentation/TagsPage.svelte';
 </script>
 
-<SpaceSection view="tags" />
+<TagsPage spaceId={page.params.space} />
