@@ -1,5 +1,8 @@
 import { createServer } from 'node:http';
 import { randomBytes } from 'node:crypto';
+import { readdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 /**
  * Stand-in for Control's auth session endpoints.
@@ -56,9 +59,31 @@ const server = createServer(async (req, res) => {
     logout(req, res);
     return;
   }
+  for (const handler of handlers) {
+    if (await handler.handle(req, res, { url, problem, json, send, readJson })) return;
+  }
   res.writeHead(404, { 'content-type': 'text/plain' });
   res.end('not found');
 });
+
+const handlers = await loadHandlers();
+
+async function loadHandlers() {
+  const directory = join(dirname(fileURLToPath(import.meta.url)), 'handlers');
+  let names = [];
+  try {
+    names = readdirSync(directory)
+      .filter((name) => name.endsWith('.mjs'))
+      .sort();
+  } catch {
+    return [];
+  }
+  const loaded = [];
+  for (const name of names) {
+    loaded.push(await import(pathToFileURL(join(directory, name)).href));
+  }
+  return loaded;
+}
 
 server.listen(port, '127.0.0.1');
 
@@ -171,6 +196,16 @@ function problem(res, status, code, title, detail, traceId, extra) {
   else if (extra) Object.assign(headers, extra);
   res.writeHead(status, headers);
   res.end(body);
+}
+
+function send(res, status, body, headers = {}) {
+  const payload = JSON.stringify(body);
+  res.writeHead(status, {
+    'content-type': 'application/json',
+    'content-length': Buffer.byteLength(payload),
+    ...headers
+  });
+  res.end(payload);
 }
 
 function json(res, status, body, cookie) {
