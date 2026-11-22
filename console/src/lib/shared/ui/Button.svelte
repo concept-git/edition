@@ -12,16 +12,18 @@
   }: {
     href?: string;
     type?: 'button' | 'submit';
-    variant?: 'primary' | 'quiet';
+    variant?: 'primary' | 'quiet' | 'danger';
     disabled?: boolean;
     children: Snippet;
     onclick?: (event: MouseEvent) => void;
   } = $props();
 
   const classes = $derived(
-    variant === 'primary'
-      ? 'inline-flex h-8 items-center rounded-full bg-accent px-4 text-sm text-white disabled:opacity-60'
-      : 'inline-flex h-8 items-center rounded-full px-2 text-sm text-accent disabled:opacity-60'
+    variant === 'quiet'
+      ? 'inline-flex h-8 items-center rounded-full px-2 text-sm text-accent disabled:opacity-60'
+      : variant === 'danger'
+        ? 'inline-flex h-8 items-center rounded-full bg-danger px-4 text-sm text-white disabled:opacity-60'
+        : 'inline-flex h-8 items-center rounded-full bg-accent px-4 text-sm text-white disabled:opacity-60'
   );
 </script>
 
