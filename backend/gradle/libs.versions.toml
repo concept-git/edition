@@ -1,6 +1,6 @@
 [versions]
 spring-boot = "4.1.1"
-spring-modulith = "2.1.1"
+spring-modulith = "2.1.2"
 springdoc = "3.1.0"
 springdoc-plugin = "1.9.0"
 testcontainers = "1.21.4"
