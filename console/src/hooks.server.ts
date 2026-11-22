@@ -1,14 +1,21 @@
 import type { Handle } from '@sveltejs/kit/hooks';
 
-/** Forward audit JSON calls to Control. Document navigations stay on this route. */
+/** Forward audit and platform JSON calls to Control. Document navigations stay on the console route. */
 export const handle: Handle = async ({ event, resolve }) => {
-  if (!isAuditApi(event.url.pathname, event.request.headers.get('accept') ?? '')) return resolve(event);
+  const accept = event.request.headers.get('accept') ?? '';
+  const path = event.url.pathname;
+  if (!isAuditApi(path, accept) && !isPlatformApi(path, accept)) return resolve(event);
   return proxyAudit(event.request, event.url);
 };
 
 function isAuditApi(pathname: string, accept: string) {
   if (!accept.includes('application/problem+json')) return false;
   return pathname === '/audit' || pathname === '/audit:export' || pathname.startsWith('/audit/exports');
+}
+
+function isPlatformApi(pathname: string, accept: string) {
+  if (!accept.includes('application/problem+json')) return false;
+  return pathname.startsWith('/admin') || pathname.startsWith('/ops');
 }
 
 function controlOrigin() {
