@@ -200,6 +200,7 @@
       if (item.status === 'live' && result.body.status === 'live') return { ...item, status: 'archived' };
       return item;
     });
+    reportLive(items);
     await refresh(token, tenant);
   }
 
