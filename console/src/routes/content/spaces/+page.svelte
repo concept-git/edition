@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ContentPlacePage from '#lib/features/content/presentation/ContentPlacePage.svelte';
+  import SpacesPage from '#lib/features/spaces/presentation/SpacesPage.svelte';
 </script>
 
-<ContentPlacePage view="spaces" />
+<SpacesPage />
