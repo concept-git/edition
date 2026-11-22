@@ -42,7 +42,8 @@ async function proxyAudit(request: Request, url: URL) {
     if (type) forwarded.set('content-type', type);
     const retry = response.headers.get('retry-after');
     if (retry) forwarded.set('retry-after', retry);
-    return new Response(await response.arrayBuffer(), { status: response.status, headers: forwarded });
+    const empty = response.status === 204 || response.status === 205 || response.status === 304;
+    return new Response(empty ? null : await response.arrayBuffer(), { status: response.status, headers: forwarded });
   } catch {
     return new Response(
       JSON.stringify({
