@@ -19,6 +19,7 @@
     type WriteIntent
   } from '../domain/page';
   import { createRejection, limitRejection, queryFailureMessage, saveRejection } from './messages';
+  import Revisions from './Revisions.svelte';
 
   let { spaceId }: { spaceId: string } = $props();
   const session = getSession();
@@ -146,6 +147,14 @@
     if (draft === body) draft = result.body.content;
   }
 
+  function restored(next: PageSource) {
+    if (editing?.id !== next.id) return;
+    editing = next;
+    draft = next.content;
+    saveIntent = null;
+    saveMessage = '';
+  }
+
   function close() {
     generation += 1;
     opening = false;
@@ -188,6 +197,9 @@
       <Button type="button" disabled={saving} onclick={() => void save()}>保存</Button>
       <Button type="button" variant="quiet" onclick={close}>返回</Button>
     </div>
+    {#if tenantId}
+      <Revisions tenantId={tenantId} spaceId={spaceId} source={editing} onRestored={restored} />
+    {/if}
   </section>
 {:else if opening}
   <p class="text-sm text-muted">正在载入页面。</p>

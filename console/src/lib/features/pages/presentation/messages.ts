@@ -28,6 +28,26 @@ export function limitRejection(): string {
   return '正文超过 2 MiB，没有保存。';
 }
 
+export function revisionQueryFailure(failure: ApiFailure): string {
+  if (failure.status === 0) return '网络失败，修订没有载入。';
+  if (failure.status === 429) return retryText('载入修订', failure.retryAfter);
+  return failure.traceId ? `修订没有载入。追踪号 ${failure.traceId}。` : '修订没有载入。';
+}
+
+export function revisionOpenFailure(failure: ApiFailure): string {
+  if (failure.status === 0) return '网络失败，这份修订没有打开。';
+  if (failure.status === 429) return retryText('打开修订', failure.retryAfter);
+  return failure.traceId ? `这份修订没有打开。追踪号 ${failure.traceId}。` : '这份修订没有打开。';
+}
+
+export function revertRejection(failure: ApiFailure): string {
+  if (failure.code === 'edit_conflict') return '基线冲突。正文没有取回。';
+  if (failure.status === 0) return '网络失败。正文没有取回。';
+  if (failure.status === 429) return retryText('取回', failure.retryAfter);
+  if (failure.status >= 500) return withTrace('正文没有取回。', failure.traceId);
+  return failure.code ? `正文没有取回（${failure.code}）。` : '正文没有取回。';
+}
+
 function retryText(action: string, retryAfter: number | null): string {
   return retryAfter === null ? `${action}过于频繁，请稍后再试。` : `${action}过于频繁，请在 ${retryAfter} 秒后再试。`;
 }
