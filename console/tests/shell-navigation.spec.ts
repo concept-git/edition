@@ -106,7 +106,16 @@ test('every information architecture destination is reachable', async ({ page })
     ['密码', '/account/password', '密码'],
     ['管理会话', '/account/sessions', '管理会话'],
     ['停用', '/account/deactivate', '停用'],
-    ['注销', '/account/erase', '注销'],
+    ['注销', '/account/erase', '注销']
+  ] as const) {
+    await page.goto('/');
+    await openGroup(page, '设置');
+    await page.getByRole('navigation', { name: '管理' }).getByRole('link', { name: groupItem, exact: true }).click();
+    await expect(page).toHaveURL(path);
+    await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
+  }
+
+  for (const [groupItem, path, heading] of [
     ['内容类型', '/settings/content-types', '内容类型'],
     ['插件', '/settings/plugins', '插件']
   ] as const) {

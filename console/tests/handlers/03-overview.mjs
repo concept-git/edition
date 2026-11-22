@@ -31,7 +31,7 @@ export async function handle(req, res, ctx) {
       name: '维护者',
       verified: true,
       status: 'active',
-      platformOperator: false,
+      platformOperator: globalThis.__editionPlatformOperator !== false, // 27-platform toggles a normal member; unset stays an operator
       tenants: [tenant]
     });
     return true;
