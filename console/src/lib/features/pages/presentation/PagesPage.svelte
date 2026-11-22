@@ -3,6 +3,7 @@
   import { getSession } from '#lib/features/session/presentation/session.svelte';
   import Button from '#lib/shared/ui/Button.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
+  import MarkdownVisual from '#lib/shared/ui/MarkdownVisual.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import SourceEditor from '#lib/shared/ui/SourceEditor.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
@@ -40,6 +41,9 @@
 
   let editing = $state<PageSource | null>(null);
   let draft = $state('');
+  let mode = $state<'source' | 'visual'>('source');
+  let flushVisual: (() => string) | null = null;
+  let editorGeneration = $state(0);
   let opening = $state(false);
   let saving = $state(false);
   let saveMessage = $state('');
@@ -117,6 +121,7 @@
     if (!token || !tenantId) return;
     opening = true;
     editing = null;
+    mode = 'source';
     saveMessage = '';
     saveIntent = null;
     markMessage = '';
@@ -134,6 +139,7 @@
   }
 
   async function save() {
+    if (mode === 'visual' && flushVisual) draft = flushVisual();
     const current = editing;
     const token = session.accessToken;
     if (!current || saving || !token || !tenantId) return;
@@ -188,12 +194,14 @@
     draft = next.content;
     saveIntent = null;
     saveMessage = '';
+    editorGeneration += 1;
   }
 
   function close() {
     generation += 1;
     opening = false;
     editing = null;
+    mode = 'source';
     draft = '';
     saveMessage = '';
     saveIntent = null;
@@ -204,6 +212,15 @@
 
   function choose(next: PageFormat) {
     format = next;
+  }
+
+  function useMode(next: 'source' | 'visual') {
+    if (mode === 'visual' && next === 'source' && flushVisual) draft = flushVisual();
+    mode = next;
+  }
+
+  function keepFlush(flush: (() => string) | null) {
+    flushVisual = flush;
   }
 
   async function trash(item: PageSummary) {
@@ -230,7 +247,11 @@
   void load(untrack(() => spaceId));
 </script>
 
-<PageHeader level={2} title="页面" description="可以创建 markdown、html、txt、json 和 xml 五种页面，并用源码编辑器保存原文。" />
+<PageHeader
+  level={2}
+  title="页面"
+  description="可以创建 markdown、html、txt、json 和 xml 五种页面。Markdown 可以在可视化和源码之间切换，保存的仍是 Markdown 原文。"
+/>
 
 {#if queryMessage}
   <div role="alert" class="mb-4 flex flex-wrap items-center gap-3 text-sm text-ink">
@@ -242,6 +263,12 @@
 {#if editing}
   <section aria-label="正文编辑" class="flex max-w-3xl flex-col gap-3">
     <p class="text-sm text-muted">{editing.format}</p>
+    {#if editing.format === 'markdown'}
+      <div role="group" aria-label="编辑模式" class="flex gap-2">
+        <Button type="button" variant={mode === 'visual' ? 'primary' : 'quiet'} onclick={() => useMode('visual')}>可视化</Button>
+        <Button type="button" variant={mode === 'source' ? 'primary' : 'quiet'} onclick={() => useMode('source')}>源码</Button>
+      </div>
+    {/if}
     <section aria-label="进版" class="flex flex-col items-start gap-2">
       <p class="text-sm text-muted">这还不是读者可见。进版只表示可以进入下一份发版。</p>
       <div class="flex items-center gap-2">
@@ -256,8 +283,12 @@
         <p role="alert" class="text-sm text-ink">{markMessage}</p>
       {/if}
     </section>
-    {#key editing.id}
-      <SourceEditor bind:value={draft} label="正文" language={editing.format} />
+    {#key `${editing.id}:${editorGeneration}`}
+      {#if editing.format === 'markdown' && mode === 'visual'}
+        <MarkdownVisual bind:value={draft} label="正文" onready={keepFlush} />
+      {:else}
+        <SourceEditor bind:value={draft} label="正文" language={editing.format} />
+      {/if}
     {/key}
     {#if saveMessage}
       <p role="alert" class="text-sm text-ink">{saveMessage}</p>
