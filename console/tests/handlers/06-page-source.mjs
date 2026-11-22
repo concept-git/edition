@@ -267,7 +267,7 @@ function fromPages(req) {
   if (!referer) return false;
   try {
     const path = new URL(referer, 'http://127.0.0.1').pathname;
-    return /^\/content\/spaces\/[^/]+\/pages\/?$/.test(path);
+    return /^\/content\/spaces\/[^/]+\/(?:pages|toc)\/?$/.test(path);
   } catch {
     return false;
   }
