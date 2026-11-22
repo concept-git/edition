@@ -10,6 +10,7 @@
 - 后端：[backend/CLAUDE.md](backend/CLAUDE.md)
 - 概念规格：[docs/prd/README.md](docs/prd/README.md)；共置于 `backend/libraries/<领域名>/CONCEPT.md`
 - 消费适配：[clients/edition/CLAUDE.md](clients/edition/CLAUDE.md)
+- 管理控制台：[console/CLAUDE.md](console/CLAUDE.md)
 
 ## Agent skills
 

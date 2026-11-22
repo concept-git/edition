@@ -346,7 +346,7 @@ export function entrypointErrors(root: string) {
   const errors: string[] = [];
   const check = (text: string, name: string) => { for (const file of entrypoints(text)) if (!existsSync(join(root, file))) errors.push(`${name}: missing script ${file}`); };
   for (const path of globSync('.github/workflows/*.yml', { cwd: root })) check(readFileSync(join(root, path), 'utf8'), path);
-  for (const directory of ['acceptance', 'reading', 'infra']) {
+  for (const directory of ['acceptance', 'reading', 'infra', 'console']) {
     const path = join(root, directory, 'package.json'); if (!existsSync(path)) continue;
     const scripts = readJson<{ scripts?: Record<string, string> }>(path).scripts ?? {};
     for (const [name, command] of Object.entries(scripts)) {
@@ -375,7 +375,7 @@ export function composition(root: string) {
   return report;
 }
 export function repositoryCheck(root = ROOT) {
-  const patterns = ['*.md', 'docs/**/*.md', 'infra/**/*.md', '{backend,acceptance,reading,clients/edition,contracts}/*.md', 'backend/{apps,libraries}/*/*.md', 'backend/{apps,libraries}/*/src/main/java/**/*.md'];
+  const patterns = ['*.md', 'docs/**/*.md', 'infra/**/*.md', '{backend,acceptance,reading,clients/edition,contracts,console}/*.md', 'backend/{apps,libraries}/*/*.md', 'backend/{apps,libraries}/*/src/main/java/**/*.md'];
   const paths = [...new Set(globSync(patterns, { cwd: root }).map(path => join(root, path)))].sort();
   const errors = [...documentErrors(root, paths), ...entrypointErrors(root)];
   let count = 0;

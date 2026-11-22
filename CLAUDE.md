@@ -13,6 +13,7 @@ Edition 是多租户文档与知识交付平台：Java 25 / Gradle 的 control�
 - `contracts/` — 生成的 OpenAPI
 - `infra/` — 启动、验收、部署与仓库检查
 - `docs/` — PRD、ADR 与工程文档
+- `console/` — 管理控制台。路由只装配 feature
 
 @AGENTS.md
 

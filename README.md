@@ -404,3 +404,5 @@ node infra/edition.ts platform stop --project dw-demo
 本项目采用 [Apache License 2.0](LICENSE)。
 
 博客消费端与同机部署说明见 [reading](reading/README.md)。
+
+管理控制台见 [console](console/README.md)。
