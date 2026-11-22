@@ -3,12 +3,14 @@
     label,
     value = $bindable(''),
     options,
-    disabled = false
+    disabled = false,
+    onchange
   }: {
     label: string;
     value?: string;
     options: Array<{ value: string; label: string }>;
     disabled?: boolean;
+    onchange?: (value: string) => void;
   } = $props();
 
   const id = $props.id();
@@ -16,7 +18,13 @@
 
 <div class="flex flex-col gap-1">
   <label class="text-sm text-ink" for={id}>{label}</label>
-  <select {id} bind:value {disabled} class="h-9 rounded-nav border border-line bg-surface px-3 text-sm text-ink">
+  <select
+    {id}
+    bind:value
+    {disabled}
+    class="h-9 rounded-nav border border-line bg-surface px-3 text-sm text-ink"
+    onchange={(event) => onchange?.(event.currentTarget.value)}
+  >
     {#each options as option (option.value)}
       <option value={option.value}>{option.label}</option>
     {/each}
