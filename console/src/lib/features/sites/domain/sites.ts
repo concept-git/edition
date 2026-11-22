@@ -89,6 +89,17 @@ export function writeFailureMessage(failure: FailureLike): string {
   return failure.traceId ? `没有完成。追踪号 ${failure.traceId}。` : '没有完成。';
 }
 
+export function deleteSiteMessage(failure: FailureLike): string {
+  if (failure.code === 'deletion_confirmation_invalid') return '名称不符，站点还在。';
+  if (failure.code === 'site_not_empty') return '站点仍有挂载，没有删除。';
+  if (failure.status === 0) return '网络失败，站点还在。';
+  if (failure.status === 429) return retryMessage(failure.retryAfter);
+  if (failure.status >= 500) {
+    return failure.traceId ? `站点没有删除。追踪号 ${failure.traceId}。` : '站点没有删除。';
+  }
+  return failure.code ? `站点没有删除（${failure.code}）。` : '站点没有删除。';
+}
+
 export function queryFailureMessage(failure: Pick<FailureLike, 'status' | 'traceId' | 'retryAfter'>): string {
   if (failure.status === 429) return retryMessage(failure.retryAfter);
   if (failure.status === 0) return '网络失败。';

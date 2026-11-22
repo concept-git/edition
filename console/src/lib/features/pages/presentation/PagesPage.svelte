@@ -6,19 +6,23 @@
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import SourceEditor from '#lib/shared/ui/SourceEditor.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
-  import { createPage, editPage, listPages, resolveTenant, viewPageContent } from '../data/http-pages';
+  import { createPage, editPage, listPages, publishPage, resolveTenant, trashPage, unpublishPage, viewPageContent } from '../data/http-pages';
   import {
+    applyReadiness,
     exceedsContentLimit,
     FORMATS,
     mergePage,
     pageAddress,
+    readinessOf,
     sameIntent,
     type PageFormat,
+    type PageReadiness,
     type PageSource,
     type PageSummary,
     type WriteIntent
   } from '../domain/page';
-  import { createRejection, limitRejection, queryFailureMessage, saveRejection } from './messages';
+  import { clearMarkRejection, createRejection, limitRejection, markRejection, queryFailureMessage, saveRejection, trashRejection } from './messages';
+  import Revisions from './Revisions.svelte';
 
   let { spaceId }: { spaceId: string } = $props();
   const session = getSession();
@@ -40,6 +44,12 @@
   let saving = $state(false);
   let saveMessage = $state('');
   let saveIntent: WriteIntent | null = null;
+  let trashIntent: WriteIntent | null = null;
+  let trashing = $state('');
+  let readiness = $state<PageReadiness>('draft');
+  let marking = $state(false);
+  let markMessage = $state('');
+  let markIntent: WriteIntent | null = null;
   let generation = 0;
 
   async function load(id: string) {
@@ -109,6 +119,9 @@
     editing = null;
     saveMessage = '';
     saveIntent = null;
+    markMessage = '';
+    markIntent = null;
+    readiness = readinessOf(items?.find((item) => item.id === id)?.status);
     const result = await viewPageContent(token, tenantId, spaceId, id);
     if (request !== generation) return;
     opening = false;
@@ -146,6 +159,37 @@
     if (draft === body) draft = result.body.content;
   }
 
+  async function setReady(next: PageReadiness) {
+    const current = editing;
+    const token = session.accessToken;
+    if (!current || marking || !token || !tenantId || next === readiness) return;
+    const fingerprint = `${current.id}\n${next}`;
+    markIntent = sameIntent(markIntent, fingerprint);
+    const key = markIntent.key;
+    marking = true;
+    markMessage = '';
+    const result =
+      next === 'published'
+        ? await publishPage(token, tenantId, spaceId, current.id, key)
+        : await unpublishPage(token, tenantId, spaceId, current.id, key);
+    marking = false;
+    if (!result.ok) {
+      if (editing?.id === current.id) markMessage = next === 'published' ? markRejection(result.failure) : clearMarkRejection(result.failure);
+      return;
+    }
+    markIntent = null;
+    if (editing?.id === current.id) readiness = result.body;
+    items = applyReadiness(items ?? [], current.id, result.body);
+  }
+
+  function restored(next: PageSource) {
+    if (editing?.id !== next.id) return;
+    editing = next;
+    draft = next.content;
+    saveIntent = null;
+    saveMessage = '';
+  }
+
   function close() {
     generation += 1;
     opening = false;
@@ -153,10 +197,30 @@
     draft = '';
     saveMessage = '';
     saveIntent = null;
+    markMessage = '';
+    markIntent = null;
+    marking = false;
   }
 
   function choose(next: PageFormat) {
     format = next;
+  }
+
+  async function trash(item: PageSummary) {
+    const token = session.accessToken;
+    if (trashing || !token || !tenantId) return;
+    trashIntent = sameIntent(trashIntent, item.id);
+    const key = trashIntent.key;
+    trashing = item.id;
+    const result = await trashPage(token, tenantId, spaceId, item.id, key);
+    trashing = '';
+    if (!result.ok) {
+      queryMessage = trashRejection(result.failure);
+      return;
+    }
+    trashIntent = null;
+    queryMessage = '';
+    items = (items ?? []).filter((page) => page.id !== item.id);
   }
 
   onDestroy(() => {
@@ -178,6 +242,20 @@
 {#if editing}
   <section aria-label="正文编辑" class="flex max-w-3xl flex-col gap-3">
     <p class="text-sm text-muted">{editing.format}</p>
+    <section aria-label="进版" class="flex flex-col items-start gap-2">
+      <p class="text-sm text-muted">这还不是读者可见。进版只表示可以进入下一份发版。</p>
+      <div class="flex items-center gap-2">
+        {#if readiness === 'published'}
+          <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">可发版</span>
+          <Button type="button" variant="quiet" disabled={marking} onclick={() => void setReady('draft')}>取消进版</Button>
+        {:else}
+          <Button type="button" disabled={marking} onclick={() => void setReady('published')}>进版</Button>
+        {/if}
+      </div>
+      {#if markMessage}
+        <p role="alert" class="text-sm text-ink">{markMessage}</p>
+      {/if}
+    </section>
     {#key editing.id}
       <SourceEditor bind:value={draft} label="正文" language={editing.format} />
     {/key}
@@ -188,6 +266,9 @@
       <Button type="button" disabled={saving} onclick={() => void save()}>保存</Button>
       <Button type="button" variant="quiet" onclick={close}>返回</Button>
     </div>
+    {#if tenantId}
+      <Revisions tenantId={tenantId} spaceId={spaceId} source={editing} onRestored={restored} />
+    {/if}
   </section>
 {:else if opening}
   <p class="text-sm text-muted">正在载入页面。</p>
@@ -199,7 +280,13 @@
       {#each items as item (item.id)}
         <li class="flex items-center justify-between gap-3 rounded-nav border border-line bg-surface px-3 py-2">
           <Button type="button" variant="quiet" onclick={() => void open(item.id)}>{item.title}</Button>
-          <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">{item.format}</span>
+          <span class="flex items-center gap-2">
+            {#if item.status === 'published'}
+              <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">可发版</span>
+            {/if}
+            <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">{item.format}</span>
+            <Button type="button" variant="quiet" disabled={trashing === item.id} onclick={() => void trash(item)}>回收</Button>
+          </span>
         </li>
       {/each}
     </ul>
