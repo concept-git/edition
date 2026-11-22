@@ -38,6 +38,8 @@ export async function handle(req, res, ctx) {
   }
   const list = listKind(path);
   if (req.method !== 'GET' || list === null) return false;
+  // Unpaginated space and site lists are the editable ones used by site mounts.
+  if ((list === 'spaces' || list === 'sites') && !ctx.url.searchParams.has('limit')) return false;
   if (mode === 'drop') {
     req.socket.destroy();
     return true;
