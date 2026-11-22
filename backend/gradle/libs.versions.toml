@@ -17,7 +17,7 @@ json-schema-validator = "3.0.7"
 bucket4j = "8.19.0"
 checkstyle = "14.1.0"
 palantirJavaFormat = "2.98.0"
-spotless = "8.10.2"
+spotless = "8.11.0"
 dependency-analysis = "3.19.1"
 
 [libraries]
