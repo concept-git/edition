@@ -77,7 +77,7 @@ jobs:
         run: ./gradlew --no-daemon --max-workers=2 generateOpenApiDocs && git diff --exit-code -- ../contracts/openapi.json
       - name: 上传 Modulith 模块文档（与 PRD 对账素材）
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: spring-modulith-docs
           path: backend/apps/control/build/spring-modulith-docs
@@ -103,7 +103,7 @@ jobs:
       - run: python -m pip install -r infra/requirements.txt -e 'clients/edition/python[mirage,fuse]'
       - run: node infra/edition.ts quality static --scope ${{ matrix.scope }}
       - run: node infra/edition.ts quality coverage --scope ${{ matrix.scope }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: python-quality-${{ matrix.scope }}
