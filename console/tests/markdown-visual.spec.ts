@@ -32,7 +32,7 @@ test('a markdown page keeps heading, list, and emphasis as markdown across visua
   });
 
   await openFreshSpace(page);
-  await createPage(page, 'markdown', '章节');
+  await createPage(page, 'Markdown', '章节');
   await openPage(page, '章节');
 
   const modes = page.getByRole('group', { name: '编辑模式' });

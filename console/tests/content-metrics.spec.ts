@@ -1,4 +1,5 @@
 import { expect, test, type Locator } from '@playwright/test';
+import { contentSpaceId, contentTenantId } from './ids.mjs';
 import { signIn } from './sign-in';
 import { resetStub } from './stub';
 
@@ -17,19 +18,27 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async () => {
-  await arm('data');
+  await arm('off');
 });
 
 test('content home shows member, page, and ready-to-release counts with yesterday', async ({ page }) => {
+  const paths: string[] = [];
+  page.on('request', (request) => {
+    const path = new URL(request.url()).pathname;
+    if (path.startsWith('/api/')) paths.push(path);
+  });
   await page.goto('/content');
   const region = page.getByRole('region', { name: '内容使用情况' });
   await expect(region).toBeVisible();
-  await expect(figure(region, '成员').locator('strong')).toHaveText('2');
+  await expect(figure(region, '成员').locator('[data-figure]')).toHaveText('2');
   await expect(figure(region, '成员')).toContainText('昨日 1');
-  await expect(figure(region, '页面').locator('strong')).toHaveText('5');
+  await expect(figure(region, '页面').locator('[data-figure]')).toHaveText('5');
   await expect(figure(region, '页面')).toContainText('昨日 1');
-  await expect(figure(region, '已进版页面').locator('strong')).toHaveText('3');
+  await expect(figure(region, '已进版页面').locator('[data-figure]')).toHaveText('3');
   await expect(figure(region, '已进版页面')).toContainText('昨日 1');
+  expect(paths).toContain(`/api/v1/tenants/${contentTenantId}/members`);
+  expect(paths).toContain(`/api/v1/tenants/${contentTenantId}/spaces`);
+  expect(paths).toContain(`/api/v1/tenants/${contentTenantId}/spaces/${contentSpaceId}/pages`);
   const text = await page.locator('[data-region="canvas"]').innerText();
   for (const word of ['席位', '套餐', 'Credit', '协作文档']) {
     expect(text).not.toContain(word);
@@ -41,11 +50,11 @@ test('a measured zero stays zero and a missing page-creation series stays a gap'
   await page.goto('/content');
   const region = page.getByRole('region', { name: '内容使用情况' });
   await expect(page.getByText('没有数据', { exact: true })).toHaveCount(0);
-  await expect(figure(region, '成员').locator('strong')).toHaveText('0');
+  await expect(figure(region, '成员').locator('[data-figure]')).toHaveText('0');
   await expect(figure(region, '成员')).toContainText('昨日 0');
-  await expect(figure(region, '页面').locator('strong')).toHaveText('0');
+  await expect(figure(region, '页面').locator('[data-figure]')).toHaveText('0');
   await expect(figure(region, '页面')).toContainText('昨日 —');
-  await expect(figure(region, '已进版页面').locator('strong')).toHaveText('0');
+  await expect(figure(region, '已进版页面').locator('[data-figure]')).toHaveText('0');
   await expect(figure(region, '已进版页面')).toContainText('昨日 0');
 });
 
@@ -53,9 +62,9 @@ test('a missing count is a gap and an absent payload is an empty state', async (
   await arm('gap');
   await page.goto('/content');
   const region = page.getByRole('region', { name: '内容使用情况' });
-  await expect(figure(region, '页面').locator('strong')).toHaveText('—');
+  await expect(figure(region, '页面').locator('[data-figure]')).toHaveText('—');
   await expect(figure(region, '页面')).toContainText('昨日 1');
-  await expect(figure(region, '已进版页面').locator('strong')).toHaveText('2');
+  await expect(figure(region, '已进版页面').locator('[data-figure]')).toHaveText('2');
   await expect(figure(region, '已进版页面')).toContainText('昨日 —');
   await expect(figure(region, '已进版页面')).not.toContainText('昨日 0');
 
@@ -78,7 +87,7 @@ test('a failed query shows the trace id instead of an empty state or zeros', asy
   await arm('data');
   await page.getByRole('button', { name: '重试' }).click();
   await expect(page.getByRole('region', { name: '内容使用情况' })).toBeVisible();
-  await expect(figure(page.getByRole('region', { name: '内容使用情况' }), '成员').locator('strong')).toHaveText('2');
+  await expect(figure(page.getByRole('region', { name: '内容使用情况' }), '成员').locator('[data-figure]')).toHaveText('2');
 });
 
 async function arm(mode: string) {

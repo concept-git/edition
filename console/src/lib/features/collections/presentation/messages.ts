@@ -1,3 +1,4 @@
+import { rateLimitText as retryText, traceText as withTrace } from '#lib/shared/api/copy';
 import type { ApiFailure } from '#lib/shared/api/client';
 
 export function queryFailureMessage(failure: ApiFailure): string {
@@ -23,10 +24,3 @@ export function placeRejection(failure: ApiFailure): string {
   return failure.code ? `空间没有放入分组（${failure.code}）。` : '空间没有放入分组。';
 }
 
-function retryText(action: string, retryAfter: number | null): string {
-  return retryAfter === null ? `${action}过于频繁，请稍后再试。` : `${action}过于频繁，请在 ${retryAfter} 秒后再试。`;
-}
-
-function withTrace(prefix: string, traceId: string | null): string {
-  return traceId ? `${prefix}追踪号 ${traceId}。` : prefix;
-}

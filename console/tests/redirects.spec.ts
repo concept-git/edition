@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('an admin sees stable redirect targets after address changes and can delete a manual one', async ({ page }) => {
-  await page.getByRole('navigation', { name: '管理' }).getByRole('link', { name: '站点', exact: true }).click();
+  await page.getByRole('navigation', { name: '租户' }).getByRole('link', { name: '站点', exact: true }).click();
   await page.getByLabel('名称').fill('阅读站');
   await page.getByRole('button', { name: '创建站点' }).click();
   await page.getByRole('link', { name: '阅读站' }).click();
@@ -59,7 +59,7 @@ test('an admin sees stable redirect targets after address changes and can delete
   const mountRow = page.getByRole('list', { name: '挂载地址' }).getByRole('listitem').filter({ hasText: '手册' });
   const remount = page.waitForRequest((request) => request.method() === 'POST' && request.url().includes(':remount'));
   await mountRow.getByLabel('新 slug').fill('manual');
-  await mountRow.getByRole('button', { name: '更改 slug' }).click();
+  await mountRow.getByRole('button', { name: '更改路径' }).click();
   expect(idempotencyKey(await remount)).toMatch(/^[a-zA-Z0-9._:-]+$/);
   await expect(mountRow).toContainText('manual');
   await expect(mountRow).not.toContainText('guide');

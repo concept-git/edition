@@ -36,8 +36,9 @@ test('a user changes password and then signs in with the new one', async ({ page
   await page.getByLabel('密码').fill(nextPassword);
   await page.getByRole('button', { name: '登录' }).click();
   await expect(page).toHaveURL('/');
-  await expect(page.getByRole('heading', { level: 1, name: '概览' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '当前租户' })).toBeVisible();
 
+  await page.getByRole('button', { name: '我' }).click();
   await page.getByRole('button', { name: '退出' }).click();
   await expect(page).toHaveURL('/login');
   await page.getByLabel('邮箱').fill(maintainer.email);
@@ -54,11 +55,11 @@ test('ending the current management session blocks refresh', async ({ page }) =>
   await expect(page.getByText('另一台设备', { exact: true })).toBeVisible();
   await expect(page.getByText('当前', { exact: true })).toBeVisible();
 
-  await page.getByRole('button', { name: '结束另一台设备' }).click();
+  await page.getByRole('listitem').filter({ hasText: '另一台设备' }).getByRole('button', { name: '结束会话' }).click();
   await expect(page.getByText('另一台设备', { exact: true })).toHaveCount(0);
   await expect(page).toHaveURL('/account/sessions');
 
-  await page.getByRole('button', { name: '结束这台设备' }).click();
+  await page.getByRole('listitem').filter({ hasText: '这台设备' }).getByRole('button', { name: '结束会话' }).click();
   await expect(page).toHaveURL('/login');
 
   const refresh = page.waitForResponse((response) => response.url().endsWith('/auth/refresh'));
@@ -84,6 +85,7 @@ test('cancelling erasure keeps the account able to sign in', async ({ page }) =>
   await expect(dialog).toHaveCount(0);
   expect(erased).toBe(false);
 
+  await page.getByRole('button', { name: '我' }).click();
   await page.getByRole('button', { name: '退出' }).click();
   await signInWith(page, maintainer.password);
 });
@@ -158,5 +160,5 @@ async function signInWith(page: import('@playwright/test').Page, password: strin
   await page.getByLabel('密码').fill(password);
   await page.getByRole('button', { name: '登录' }).click();
   await expect(page).toHaveURL('/');
-  await expect(page.getByRole('heading', { level: 1, name: '概览' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '当前租户' })).toBeVisible();
 }

@@ -7,5 +7,5 @@ export async function signIn(page: Page) {
   await page.getByLabel('密码').fill(maintainer.password);
   await page.getByRole('button', { name: '登录' }).click();
   await expect(page).toHaveURL('/');
-  await expect(page.getByRole('heading', { level: 1, name: '概览' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '当前租户' })).toBeVisible();
 }

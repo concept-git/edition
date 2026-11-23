@@ -1,14 +1,20 @@
 @import 'tailwindcss';
 
 :root {
-  --edition-canvas: #f4f6f8;
+  --edition-canvas: #f3f4f8;
   --edition-surface: #ffffff;
-  --edition-line: #e6e8eb;
+  --edition-line: #eceef1;
+  --edition-stroke: #dcdfe3;
   --edition-ink: #1f2329;
   --edition-muted: #646a73;
-  --edition-mint: #e7f6ef;
-  --edition-accent: #148f56;
-  --edition-danger: #d14343;
+  --edition-faint: #8f959e;
+  --edition-mint: #def6f2;
+  --edition-accent: #00b86c;
+  --edition-accent-press: #009a5b;
+  --edition-chip: #f2f3f5;
+  --edition-danger: #e34d59;
+  --edition-danger-press: #c93545;
+  --edition-danger-soft: #fdecee;
   --motion-duration: 180ms;
 }
 
@@ -16,13 +22,19 @@
   --color-canvas: var(--edition-canvas);
   --color-surface: var(--edition-surface);
   --color-line: var(--edition-line);
+  --color-stroke: var(--edition-stroke);
   --color-ink: var(--edition-ink);
   --color-muted: var(--edition-muted);
+  --color-faint: var(--edition-faint);
   --color-mint: var(--edition-mint);
   --color-accent: var(--edition-accent);
+  --color-accent-press: var(--edition-accent-press);
+  --color-chip: var(--edition-chip);
   --color-danger: var(--edition-danger);
+  --color-danger-press: var(--edition-danger-press);
+  --color-danger-soft: var(--edition-danger-soft);
   --radius-nav: 8px;
-  --radius-card: 12px;
+  --radius-card: 8px;
   --font-sans:
     'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', 'Heiti SC', sans-serif;
 }
@@ -37,11 +49,27 @@ body {
   background: var(--edition-canvas);
   color: var(--edition-ink);
   font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
 }
 
 :focus-visible {
   outline: 2px solid var(--edition-accent);
   outline-offset: 2px;
+}
+
+@keyframes edition-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.edition-rise {
+  animation: edition-in var(--motion-duration) ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {

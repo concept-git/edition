@@ -120,9 +120,9 @@ async function openSiteWebhooks(page: Page, name: string) {
   await expect(page).toHaveURL(/\/sites\/[^/]+\/mounts$/);
   const siteId = new URL(page.url()).pathname.split('/')[2] ?? '';
   expect(siteId).toMatch(/^[0-9a-f-]{36}$/i);
-  await page.getByRole('navigation', { name: '站点' }).getByRole('link', { name: 'Webhook', exact: true }).click();
+  await page.getByRole('navigation', { name: '站点' }).getByRole('link', { name: '投递结果', exact: true }).click();
   await expect(page).toHaveURL(`/sites/${siteId}/webhooks`);
-  await expect(page.getByRole('heading', { level: 2, name: 'Webhook' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: '投递结果' })).toBeVisible();
   return siteId;
 }
 

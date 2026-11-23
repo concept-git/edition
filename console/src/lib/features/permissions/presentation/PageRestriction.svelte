@@ -169,13 +169,13 @@
 {:else if !ready}
   <p class="mb-4 text-sm text-muted">正在读取</p>
 {:else}
-  <h3 class="text-sm font-semibold text-ink">当前可见</h3>
+  <h3 class="text-sm font-medium text-ink">当前可见</h3>
   <ul aria-label="当前可见" class="mt-2 mb-4 flex flex-col gap-1 text-sm text-ink">
     {#each visibleGrants as grant (grant.principal.key)}
       <li>{grant.principal.name}</li>
     {/each}
   </ul>
-  <h3 class="text-sm font-semibold text-ink">操作</h3>
+  <h3 class="text-sm font-medium text-ink">操作</h3>
   <ul aria-label="操作" class="mt-2 mb-4 flex flex-col gap-1 text-sm text-ink">
     {#each operations as operation (operation)}
       <li>{operation}</li>

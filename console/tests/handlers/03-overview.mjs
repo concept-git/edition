@@ -3,8 +3,10 @@
  * Shapes follow listTenantMembers, listSpaces, and listSites.
  */
 
+import { overviewTenantId } from '../ids.mjs';
+
 const tenant = {
-  id: '6f1e0c2a-6b4d-4e3a-9c11-0a1b2c3d4e5f',
+  id: overviewTenantId,
   name: '示例租户',
   role: 'owner',
   status: 'active'
@@ -25,6 +27,7 @@ export async function handle(req, res, ctx) {
     return true;
   }
   if (req.method === 'GET' && path === '/api/v1/me') {
+    if (globalThis.__editionContentMetrics === true) return false;
     ctx.send(res, 200, {
       id: '8d2c1b0a-9e8f-4a7b-8c6d-5e4f3a2b1c0d',
       email: 'maintainer@edition.test',

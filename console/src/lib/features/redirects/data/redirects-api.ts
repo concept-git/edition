@@ -10,13 +10,8 @@ function tenantPath(tenant: string): string {
   return `/api/v1/tenants/${encodeURIComponent(tenant)}`;
 }
 
-export async function currentTenant(token: string): Promise<ApiResult<string>> {
-  const result = await api<{ tenants?: { id?: unknown }[] }>(token, '/api/v1/me');
-  if (!result.ok) return result;
-  const id = result.body.tenants?.[0]?.id;
-  if (typeof id !== 'string' || id.length === 0) return broken(result.status);
-  return { ok: true, status: result.status, body: id, etag: result.etag };
-}
+export { currentTenant as currentTenant } from '#lib/shared/api/tenant';
+
 
 export async function loadMounts(token: string, tenant: string, siteId: string): Promise<ApiResult<MountAddress[]>> {
   const [site, spaces] = await Promise.all([

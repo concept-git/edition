@@ -51,11 +51,11 @@
   }
 </script>
 
-<PageHeader title="注销" description="注销不可逆。确认前账号仍然保留。取消则账号仍在。" />
-<Button onclick={start}>继续注销</Button>
+<PageHeader title="注销" description="注销不可逆。确认前，用户还在。取消则用户仍在。" />
+<Button variant="danger" onclick={start}>继续注销</Button>
 
 {#if open}
-<Dialog bind:open title="确认注销" description="注销不可逆。确认后该账号不能再登录，个人资料会被抹去。">
+<Dialog bind:open title="确认注销" description="注销不可逆。确认后不能再登录，个人资料会被抹去。">
   <TextField label="确认邮箱" type="email" autocomplete="username" bind:value={confirmationEmail} />
   <TextField label="当前密码" type="password" autocomplete="current-password" bind:value={currentPassword} />
   {#if error}

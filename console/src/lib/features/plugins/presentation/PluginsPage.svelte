@@ -149,7 +149,7 @@
   }
 </script>
 
-<PageHeader title="插件" description="按基线编辑插件源码并形成候选。候选不接触管理凭据，也不改生产登记。" />
+<PageHeader title="插件开发" description="按基线编辑插件源码，并形成候选。候选碰不到会话和令牌，也不改已经启用的内容类型。" />
 
 {#if phase === 'error' && queryFailure}
   <div role="alert" class="flex flex-wrap items-center gap-3 text-sm text-ink">
@@ -193,7 +193,7 @@
           <p role="status" class="text-sm text-muted">已形成候选</p>
         {/if}
         <div class="flex flex-wrap gap-2">
-          <Button disabled={pending} onclick={() => void save()}>保存</Button>
+          <Button variant="ink" disabled={pending} onclick={() => void save()}>保存</Button>
           <Button variant="quiet" disabled={pending} onclick={() => void formCandidate()}>形成候选</Button>
         </div>
       </div>

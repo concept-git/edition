@@ -134,7 +134,7 @@
   {:else}
     <ul aria-label="页面" class="mb-6 flex flex-col gap-2">
       {#each pages as item (item.id)}
-        <li class="flex items-center justify-between gap-3 border-b border-line py-2 text-sm text-ink last:border-b-0">
+        <li class="flex flex-wrap items-center justify-between gap-3 border-b border-line py-2 text-sm text-ink last:border-b-0">
           <span>{item.title}</span>
           <Button type="button" variant="quiet" onclick={() => void open(item.id)}>打开</Button>
         </li>
@@ -143,7 +143,7 @@
   {/if}
   {#if opened}
     <section aria-label="页面解释" class="mb-6 rounded-card border border-line bg-surface p-5">
-      <h3 class="text-sm font-semibold text-ink">{opened.title}</h3>
+      <h3 class="text-sm font-medium text-ink">{opened.title}</h3>
       <p class="mt-2 text-sm text-ink">版本 {opened.versionRef}</p>
       <pre class="mt-3 overflow-auto text-xs leading-5 text-ink">{JSON.stringify(opened.interpretation, null, 2)}</pre>
     </section>

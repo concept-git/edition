@@ -194,7 +194,7 @@
 </form>
 
 {#if kind === 'spaces' && pages.length > 0}
-  <h3 class="mt-8 text-sm font-semibold text-ink">页面</h3>
+  <h3 class="mt-8 text-sm font-medium text-ink">页面</h3>
   <ul aria-label="页面" class="mt-3 flex flex-col items-start gap-2">
     {#each pages as item (item.id)}
       <li>

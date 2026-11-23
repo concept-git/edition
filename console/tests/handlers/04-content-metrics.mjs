@@ -6,9 +6,11 @@
  * `error` is a problem response with a trace id.
  */
 
-const tenantId = '11111111-1111-4111-8111-111111111111';
-const spaceId = '22222222-2222-4222-8222-222222222222';
-const userId = '33333333-3333-4333-8333-333333333333';
+import { contentSpaceId, contentTenantId, contentUserId } from '../ids.mjs';
+
+const tenantId = contentTenantId;
+const spaceId = contentSpaceId;
+const userId = contentUserId;
 
 let mode = 'data';
 
@@ -17,16 +19,32 @@ export async function handle(req, res, ctx) {
   if (req.method === 'POST' && url.pathname === '/__stub/content-metrics') {
     const body = await ctx.readJson(req);
     mode = typeof body.mode === 'string' ? body.mode : 'data';
+    globalThis.__editionContentMetrics = mode !== 'off';
     res.writeHead(204);
     res.end();
     return true;
   }
+  if (globalThis.__editionContentMetrics !== true) return false;
+  if (req.method === 'GET' && url.pathname === '/api/v1/me') return profile(res, ctx);
   if (req.method !== 'GET') return false;
   if (url.pathname === '/api/v1/auth/context') return context(res, ctx);
   if (url.pathname === '/api/v1/tenants/' + tenantId + '/members') return members(res, ctx);
   if (url.pathname === '/api/v1/tenants/' + tenantId + '/spaces') return spaces(res, ctx);
   if (url.pathname === '/api/v1/tenants/' + tenantId + '/spaces/' + spaceId + '/pages') return pages(res, ctx, url);
   return false;
+}
+
+function profile(res, ctx) {
+  ctx.send(res, 200, {
+    id: userId,
+    email: 'maintainer@edition.test',
+    name: '维护者',
+    verified: true,
+    status: 'active',
+    platformOperator: true,
+    tenants: [{ id: tenantId, name: '内容租户', role: 'owner', status: 'active' }]
+  });
+  return true;
 }
 
 function context(res, ctx) {

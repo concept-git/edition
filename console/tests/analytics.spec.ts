@@ -38,9 +38,9 @@ test('the visit chart shows returned buckets and rankings show returned entries'
   const pages = page.getByRole('list', { name: '页面排行' });
   await expect(pages.getByRole('listitem')).toHaveText(['/guide 9', '/start 4']);
 
-  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '搜索排行', exact: true }).click();
+  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '搜索统计', exact: true }).click();
   await expect(page).toHaveURL('/analytics/search');
-  const ranking = page.getByRole('list', { name: '搜索排行' });
+  const ranking = page.getByRole('list', { name: '搜索统计' });
   await expect(ranking.getByRole('listitem')).toHaveText(['安装 6', '域名 2']);
 });
 
@@ -56,7 +56,7 @@ test('no_data, partial, and delayed stay distinct, and no events is an empty sta
   await expect(page.getByText('采集延迟', { exact: true })).toHaveCount(0);
 
   await arm('delayed');
-  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '搜索排行', exact: true }).click();
+  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '搜索统计', exact: true }).click();
   await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '访问趋势', exact: true }).click();
   await expect(page.getByRole('status')).toHaveText('采集延迟');
   const delayed = page.getByRole('figure', { name: '访问趋势' });
@@ -67,11 +67,11 @@ test('no_data, partial, and delayed stay distinct, and no events is an empty sta
   await expect(page.getByText('无采集', { exact: true })).toHaveCount(0);
 
   await arm('no_data');
-  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '搜索排行', exact: true }).click();
+  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '搜索统计', exact: true }).click();
   await expect(page).toHaveURL('/analytics/search');
   await expect(page.getByRole('status')).toHaveText('无采集');
   await expect(page.getByText('没有数据', { exact: true })).toBeVisible();
-  await expect(page.getByRole('list', { name: '搜索排行' })).toHaveCount(0);
+  await expect(page.getByRole('list', { name: '搜索统计' })).toHaveCount(0);
 
   await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '访问趋势', exact: true }).click();
   await expect(page.getByRole('status')).toHaveText('无采集');
@@ -92,7 +92,7 @@ test('a failed stats query keeps the error instead of an empty chart', async ({ 
 });
 
 async function openVisits(page: Page) {
-  await page.getByRole('navigation', { name: '模块' }).getByRole('link', { name: '统计', exact: true }).click();
+  await page.getByRole('navigation', { name: '模块' }).getByRole('link', { name: '访问统计', exact: true }).click();
   await expect(page).toHaveURL('/analytics/visits');
 }
 

@@ -169,7 +169,7 @@
   void load();
 </script>
 
-<PageHeader level={2} title="域名" description="未核验的自定义域名不参与解析。主域名必须已核验。" />
+<PageHeader level={2} title="自有域名" description="未核验的自定义域名不参与解析。主域名必须已核验。" />
 
 {#if queryFailure}
   <div role="alert" class="mb-4 flex flex-wrap items-center gap-3 text-sm text-ink">

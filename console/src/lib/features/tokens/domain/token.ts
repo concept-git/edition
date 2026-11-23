@@ -96,8 +96,8 @@ export const managementScopes = [
   { value: 'audit:read', label: '审计读取' },
   { value: 'operations:read', label: '运维读取' },
   { value: 'operations:write', label: '运维写入' },
-  { value: 'account:read', label: '账号读取' },
-  { value: 'account:write', label: '账号写入' },
+  { value: 'account:read', label: '用户读取' },
+  { value: 'account:write', label: '用户写入' },
   { value: 'platform:read', label: '平台读取' },
   { value: 'platform:write', label: '平台写入' },
   { value: 'platform:erase', label: '平台注销' }

@@ -8,8 +8,6 @@
   import { HttpAuth } from '#lib/features/session/data/http-auth';
   import SessionNotice from '#lib/features/session/presentation/SessionNotice.svelte';
   import { Session, setSession } from '#lib/features/session/presentation/session.svelte';
-  import Button from '#lib/shared/ui/Button.svelte';
-
   let { children } = $props();
   const session = new Session(new HttpAuth());
   setSession(session);
@@ -48,12 +46,16 @@
 
 <svelte:window onfocus={() => void renew()} />
 
+<svelte:head>
+  <title>Edition</title>
+</svelte:head>
+
 {#if !ready}
   <div class="h-dvh bg-canvas"></div>
 {:else if session.status === 'signed-in'}
   <Shell>
     {#snippet account()}
-      <Button variant="quiet" onclick={() => void signOut()}>退出</Button>
+      <button type="button" class="flex h-9 w-full items-center rounded-nav px-3 text-left text-sm font-normal text-ink hover:bg-chip" onclick={() => void signOut()}>退出</button>
     {/snippet}
     {#snippet notice()}
       <SessionNotice failure={session.hold} onRetry={() => void renew()} />

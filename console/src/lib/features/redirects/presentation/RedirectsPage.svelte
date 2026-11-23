@@ -205,7 +205,7 @@
           <div class="w-40">
             <TextField label="新 slug" disabled={pending} bind:value={slugDrafts[mount.spaceId]} />
           </div>
-          <Button type="submit" disabled={pending}>更改 slug</Button>
+          <Button type="submit" disabled={pending}>更改路径</Button>
         </form>
       </li>
     {/each}
@@ -243,7 +243,7 @@
             {#if confirming === rule.path}
               <Button variant="danger" disabled={pending} onclick={() => void remove(rule.path)}>确认删除</Button>
             {:else}
-              <Button variant="quiet" disabled={pending} onclick={() => (confirming = rule.path)}>删除</Button>
+              <Button variant="danger-quiet" disabled={pending} onclick={() => (confirming = rule.path)}>删除</Button>
             {/if}
           {/if}
         </li>

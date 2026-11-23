@@ -149,7 +149,8 @@ async function openFreshSpace(page: Page) {
 
 async function createPage(page: Page, format: string, title: string) {
   const form = page.getByRole('form', { name: '按格式创建' });
-  await form.getByRole('group', { name: '格式' }).getByRole('button', { name: format, exact: true }).click();
+  const labels: Record<string, string> = { markdown: 'Markdown', html: 'HTML', txt: 'TXT', json: 'JSON', xml: 'XML' };
+  await form.getByRole('group', { name: '格式' }).getByRole('button', { name: labels[format] ?? format, exact: true }).click();
   await form.getByLabel('标题').fill(title);
   await form.getByRole('button', { name: '创建', exact: true }).click();
   await expect(page.getByRole('listitem').filter({ hasText: title })).toBeVisible();

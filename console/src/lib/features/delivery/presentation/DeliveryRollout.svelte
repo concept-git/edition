@@ -81,7 +81,7 @@
 
 {#if failure || (rollouts && rollouts.length > 0)}
   <section aria-label="逐站交付" class="mt-8 max-w-md">
-    <h3 class="text-sm font-semibold text-ink">逐站交付</h3>
+    <h3 class="text-sm font-medium text-ink">逐站交付</h3>
     <p class="mt-1 text-sm text-muted">主版本选定之后，这里是每个挂载站点的实际上线进度。</p>
     {#if rollouts && rollouts.length > 0}
       <ul aria-label="上线进度" class="mt-4 flex flex-col gap-2">

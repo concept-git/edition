@@ -2,8 +2,9 @@
   import { getSession } from '#lib/features/session/presentation/session.svelte';
   import { loadContentMetrics } from '../data/content-metrics';
   import type { ContentHome, Count } from '../domain/content-metrics';
-  import Button from '#lib/shared/ui/Button.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
+  import LoadingNote from '#lib/shared/ui/LoadingNote.svelte';
+  import Notice from '#lib/shared/ui/Notice.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import Stat from '#lib/shared/ui/Stat.svelte';
 
@@ -34,21 +35,25 @@
   void load();
 </script>
 
-<PageHeader title="内容数据" description="成员、页面和已进版页面，以及昨日补充。没有计数时不把缺口画成零。" />
+<PageHeader title="使用情况" description="成员、页面和已进版页面。没有计数时不把缺口画成零。" />
 
 {#if home.status === 'loading'}
-  <p class="text-sm text-muted">正在读取内容数据。</p>
+  <LoadingNote text="正在读取内容数据。" />
 {:else if home.status === 'error'}
-  <div role="alert" class="flex flex-wrap items-center gap-3 text-sm text-ink">
-    <p>{home.traceId === null ? '内容数据没有读到。' : `内容数据没有读到。追踪号 ${home.traceId}。`}</p>
-    <Button variant="quiet" onclick={() => void load()}>重试</Button>
-  </div>
+  <Notice text={home.traceId === null ? '内容数据没有读到。' : `内容数据没有读到。追踪号 ${home.traceId}。`} onRetry={() => void load()} />
 {:else if home.status === 'empty'}
   <EmptyState title="没有数据" description="没有可显示的计数。缺口不会画成零。" />
 {:else}
-  <section aria-label="内容使用情况" class="mt-8 grid grid-cols-3 gap-8">
-    {#each home.figures as figure (figure.label)}
-      <Stat label={figure.label} value={shown(figure.total)} supplement={shownYesterday(figure.yesterday)} />
-    {/each}
+  <section aria-label="内容使用情况">
+    <h2 class="text-sm font-medium text-ink">内容使用情况</h2>
+    <p class="mt-1 text-xs text-faint">
+      详细了解内容使用情况，可查看
+      <a href="/analytics/visits" class="font-normal text-accent">使用分析</a>
+    </p>
+    <div class="mt-8 grid grid-cols-3 gap-x-16 gap-y-8">
+      {#each home.figures as figure (figure.label)}
+        <Stat scale="sheet" label={figure.label} value={shown(figure.total)} supplement={shownYesterday(figure.yesterday)} />
+      {/each}
+    </div>
   </section>
 {/if}

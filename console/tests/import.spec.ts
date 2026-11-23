@@ -42,7 +42,7 @@ test('a maintainer watches an import leave acceptance and finds the imported pag
   await signIn(page);
   await page.goto('/content/spaces');
   const form = page.getByRole('form', { name: '创建空间' });
-  await form.getByRole('group', { name: '来源模式' }).getByRole('button', { name: 'synced' }).click();
+  await form.getByRole('group', { name: '来源模式' }).getByRole('button', { name: '同步' }).click();
   await form.getByLabel('名称').fill('镜像');
   await form.getByRole('button', { name: '创建', exact: true }).click();
   await page.getByRole('link', { name: '镜像' }).click();

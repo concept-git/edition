@@ -31,7 +31,7 @@ test('saving plugin source keeps it, a baseline conflict keeps the local source,
   page
 }) => {
   await page.goto('/settings/plugins');
-  await expect(page.getByRole('heading', { level: 1, name: '插件' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '插件开发' })).toBeVisible();
   const editor = page.getByRole('textbox', { name: '插件源码' });
   await expect(editor).toContainText('hello');
   await expect(page.getByText('启用版本 article@1')).toBeVisible();

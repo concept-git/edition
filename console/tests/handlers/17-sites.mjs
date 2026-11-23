@@ -74,7 +74,7 @@ async function create(req, res, ctx, tenant) {
     }
     const now = new Date().toISOString();
     const site = {
-      id: crypto.randomUUID(),
+      id: typeof body.id === 'string' && /^[0-9a-f-]{36}$/i.test(body.id) ? body.id : crypto.randomUUID(),
       tenantId: tenant,
       name,
       mounts: [],

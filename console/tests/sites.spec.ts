@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('an admin creates a site, mounts a space, and keeps the search field order', async ({ page }) => {
-  await page.getByRole('navigation', { name: '管理' }).getByRole('link', { name: '站点', exact: true }).click();
+  await page.getByRole('navigation', { name: '租户' }).getByRole('link', { name: '站点', exact: true }).click();
   await expect(page).toHaveURL('/sites');
 
   await page.getByLabel('名称').fill('文档站');
@@ -32,7 +32,7 @@ test('an admin creates a site, mounts a space, and keeps the search field order'
   await expect(docsMounts.getByRole('listitem')).toContainText('手册');
   await expect(docsMounts.getByRole('listitem')).toContainText('guide');
 
-  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '站点列表' }).click();
+  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '站点' }).click();
   await page.getByLabel('名称').fill('帮助站');
   await page.getByRole('button', { name: '创建站点' }).click();
   await page.getByRole('link', { name: '帮助站' }).click();
@@ -54,8 +54,9 @@ test('an admin creates a site, mounts a space, and keeps the search field order'
   await expect(helpMounts.getByRole('listitem')).not.toContainText('指南');
 
   await page.getByRole('navigation', { name: '站点' }).getByRole('link', { name: '搜索', exact: true }).click();
-  await page.getByRole('button', { name: '上移正文' }).click();
-  await page.getByRole('button', { name: '上移正文' }).click();
+  const bodyField = page.getByRole('listitem').filter({ hasText: '正文' });
+  await bodyField.getByRole('button', { name: '上移', exact: true }).click();
+  await bodyField.getByRole('button', { name: '上移', exact: true }).click();
   await page.getByRole('button', { name: '保存顺序' }).click();
   await expect(page.getByRole('status')).toHaveText('已保存');
   const order = page.getByRole('list', { name: '搜索字段顺序' }).getByRole('listitem');
@@ -63,7 +64,7 @@ test('an admin creates a site, mounts a space, and keeps the search field order'
   await expect(order.nth(1).getByText('标题', { exact: true })).toBeVisible();
   await expect(order.nth(2).getByText('标题层级', { exact: true })).toBeVisible();
 
-  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '站点列表' }).click();
+  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '站点' }).click();
   await page.getByRole('link', { name: '帮助站' }).click();
   await expect(page.getByRole('list', { name: '已挂载' }).getByRole('listitem')).toContainText('manual');
   await page.getByRole('navigation', { name: '站点' }).getByRole('link', { name: '搜索', exact: true }).click();
@@ -72,7 +73,7 @@ test('an admin creates a site, mounts a space, and keeps the search field order'
   await expect(reopened.nth(1).getByText('标题', { exact: true })).toBeVisible();
   await expect(reopened.nth(2).getByText('标题层级', { exact: true })).toBeVisible();
 
-  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '站点列表' }).click();
+  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '站点' }).click();
   await page.getByRole('link', { name: '文档站' }).click();
   const stillThere = page.getByRole('list', { name: '已挂载' }).getByRole('listitem');
   await expect(stillThere).toContainText('手册');

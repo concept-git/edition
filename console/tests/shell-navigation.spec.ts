@@ -28,9 +28,9 @@ test.beforeEach(async ({ page }) => {
 
 test('overview shell shows a wide sidebar and the content and site entries', async ({ page }) => {
   await page.goto('/');
-  const nav = page.getByRole('navigation', { name: '管理' });
+  const nav = page.getByRole('navigation', { name: '租户' });
   await expect(nav).toBeVisible();
-  await expect(nav.getByRole('link', { name: '概览', exact: true })).toBeVisible();
+  await expect(nav.getByRole('link', { name: '当前租户', exact: true })).toBeVisible();
   await expect(nav.getByRole('link', { name: '内容', exact: true })).toBeVisible();
   await expect(nav.getByRole('link', { name: '站点', exact: true })).toBeVisible();
   await expect(page.getByRole('navigation', { name: '模块' })).toHaveCount(0);
@@ -43,15 +43,15 @@ test('overview shell shows a wide sidebar and the content and site entries', asy
   expect(bar?.height).toBeLessThan(68);
 
   const canvas = await page.locator('[data-region="canvas"]').evaluate((element) => getComputedStyle(element).backgroundColor);
-  expect(canvas).toBe('rgb(244, 246, 248)');
-  const selected = await nav.getByRole('link', { name: '概览', exact: true }).evaluate((element) => getComputedStyle(element).backgroundColor);
-  expect(selected).toBe('rgb(231, 246, 239)');
-  await expect(page.getByRole('region', { name: '上手' })).toBeVisible();
+  expect(canvas).toBe('rgb(243, 244, 248)');
+  const selected = await nav.getByRole('link', { name: '当前租户', exact: true }).evaluate((element) => getComputedStyle(element).backgroundColor);
+  expect(selected).toBe('rgb(222, 246, 242)');
+  await expect(page.getByRole('region', { name: '快速上手' })).toBeVisible();
 });
 
 test('content entry opens the icon rail, section menu, and three stat figures', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('navigation', { name: '管理' }).getByRole('link', { name: '内容', exact: true }).click();
+  await page.getByRole('navigation', { name: '租户' }).getByRole('link', { name: '内容', exact: true }).click();
   await expect(page).toHaveURL('/content');
 
   const rail = page.getByRole('navigation', { name: '模块' });
@@ -59,16 +59,17 @@ test('content entry opens the icon rail, section menu, and three stat figures', 
   const railBox = await rail.boundingBox();
   expect(railBox?.width).toBeGreaterThan(52);
   expect(railBox?.width).toBeLessThan(80);
-  await expect(page.getByRole('navigation', { name: '管理' })).toHaveCount(0);
+  await expect(page.getByRole('navigation', { name: '租户' })).toHaveCount(0);
 
   const section = page.getByRole('navigation', { name: '分区' });
-  await expect(section.getByRole('link', { name: '内容数据', exact: true })).toBeVisible();
+  await expect(section.getByRole('link', { name: '使用情况', exact: true })).toBeVisible();
   await expect(section.getByRole('link', { name: '空间', exact: true })).toBeVisible();
   await expect(section.getByRole('link', { name: '分组', exact: true })).toBeVisible();
 
   const canvas = page.locator('[data-region="canvas"]');
-  await expect(canvas).toHaveCSS('background-color', 'rgb(255, 255, 255)');
-  const figures = canvas.getByRole('region', { name: '内容使用情况' }).locator('strong');
+  await expect(canvas).toHaveCSS('background-color', 'rgb(243, 244, 248)');
+  await expect(canvas.locator('[data-sheet="page"]')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  const figures = canvas.getByRole('region', { name: '内容使用情况' }).locator('[data-figure]');
   await expect(figures).toHaveCount(3);
   await expect(canvas.getByText('成员', { exact: true })).toBeVisible();
   await expect(canvas.getByText('页面', { exact: true })).toBeVisible();
@@ -79,53 +80,54 @@ test('content entry opens the icon rail, section menu, and three stat figures', 
 
 test('every information architecture destination is reachable', async ({ page }) => {
   await page.goto('/');
-  await openGroup(page, '成员与用户组');
-  await openPlace(page, '管理', '成员', '/members', '成员');
+  await openGroup(page, '成员关系');
+  await openPlace(page, '租户', '成员', '/members', '成员');
   await page.goto('/');
-  await openGroup(page, '成员与用户组');
-  await openPlace(page, '管理', '用户组', '/teams', '用户组');
+  await openGroup(page, '成员关系');
+  await openPlace(page, '租户', '用户组', '/teams', '用户组');
 
   await page.goto('/');
-  await openGroup(page, '开放与集成');
-  await openPlace(page, '管理', 'API 令牌', '/integrations/api-tokens', 'API 令牌');
+  await openGroup(page, '令牌');
+  await openPlace(page, '租户', '机器令牌', '/integrations/api-tokens', '机器令牌');
   await page.goto('/');
-  await openGroup(page, '开放与集成');
-  await openPlace(page, '管理', '管理令牌', '/integrations/management-tokens', '管理令牌');
+  await openGroup(page, '令牌');
+  await openPlace(page, '租户', '管理令牌', '/integrations/management-tokens', '管理令牌');
 
   await page.goto('/');
-  await openGroup(page, '统计');
-  await openPlace(page, '管理', '访问趋势', '/analytics/visits', '访问趋势');
+  await openGroup(page, '访问统计');
+  await openPlace(page, '租户', '访问趋势', '/analytics/visits', '访问趋势');
   await page.goto('/');
-  await openGroup(page, '统计');
-  await openPlace(page, '管理', '搜索排行', '/analytics/search', '搜索排行');
+  await openGroup(page, '访问统计');
+  await openPlace(page, '租户', '搜索统计', '/analytics/search', '搜索统计');
 
   await page.goto('/');
-  await openPlace(page, '管理', '审计', '/audit', '审计');
+  await openPlace(page, '租户', '审计日志', '/audit', '审计日志');
 
   for (const [groupItem, path, heading] of [
     ['密码', '/account/password', '密码'],
-    ['管理会话', '/account/sessions', '管理会话'],
+    ['会话', '/account/sessions', '会话'],
     ['停用', '/account/deactivate', '停用'],
     ['注销', '/account/erase', '注销']
   ] as const) {
     await page.goto('/');
-    await openGroup(page, '设置');
-    await page.getByRole('navigation', { name: '管理' }).getByRole('link', { name: groupItem, exact: true }).click();
+    await openGroup(page, '用户');
+    await page.getByRole('navigation', { name: '租户' }).getByRole('link', { name: groupItem, exact: true }).click();
     await expect(page).toHaveURL(path);
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
   }
 
   for (const [groupItem, path, heading] of [
     ['内容类型', '/settings/content-types', '内容类型'],
-    ['插件', '/settings/plugins', '插件']
+    ['插件开发', '/settings/plugins', '插件开发']
   ] as const) {
     await page.goto('/');
-    await openGroup(page, '设置');
-    await openPlace(page, '管理', groupItem, path, heading);
+    await openPlace(page, '租户', groupItem, path, heading);
   }
 
   await page.goto('/content');
-  await openPlace(page, '分区', '空间', '/content/spaces', '空间');
+  await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '空间', exact: true }).click();
+  await expect(page).toHaveURL('/content/spaces');
+  await expect(page.getByRole('heading', { level: 1, name: '空间' })).toBeVisible();
   await page.goto('/content/spaces/example/pages');
   await expect(page.getByText('当前空间')).toBeVisible();
   await expect(page.getByRole('heading', { name: '示例空间' })).toBeVisible();
@@ -153,17 +155,17 @@ test('every information architecture destination is reachable', async ({ page })
 
   await page.getByRole('navigation', { name: '模块' }).getByRole('link', { name: '站点', exact: true }).click();
   await expect(page).toHaveURL('/sites');
-  await expect(page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '站点列表' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '站点' })).toBeVisible();
   await page.goto('/sites/example/mounts');
   await expect(page.getByText('当前站点')).toBeVisible();
 
   for (const [label, path, heading] of [
     ['挂载', '/sites/example/mounts', '挂载'],
-    ['域名', '/sites/example/domains', '域名'],
+    ['自有域名', '/sites/example/domains', '自有域名'],
     ['重定向', '/sites/example/redirects', '重定向'],
     ['搜索', '/sites/example/search', '搜索'],
     ['授权', '/sites/example/grants', '授权'],
-    ['Webhook', '/sites/example/webhooks', 'Webhook']
+    ['投递结果', '/sites/example/webhooks', '投递结果']
   ] as const) {
     await page.getByRole('navigation', { name: '站点' }).getByRole('link', { name: label, exact: true }).click();
     await expect(page).toHaveURL(path);
@@ -172,11 +174,11 @@ test('every information architecture destination is reachable', async ({ page })
     await expect(page.getByText('没有数据')).toBeVisible();
   }
 
-  await page.getByRole('navigation', { name: '模块' }).getByRole('link', { name: '平台', exact: true }).click();
+  await page.getByRole('navigation', { name: '模块' }).getByRole('link', { name: '平台运营', exact: true }).click();
   for (const [label, path, heading] of [
     ['租户', '/platform/tenants', '租户'],
     ['用户', '/platform/users', '用户'],
-    ['进程健康', '/platform/health', '进程健康'],
+    ['运行状态', '/platform/health', '运行状态'],
     ['邮件作业', '/platform/mail', '邮件作业']
   ] as const) {
     await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: label, exact: true }).click();
@@ -189,13 +191,13 @@ test('every information architecture destination is reachable', async ({ page })
 
 test('the icon rail keeps the module shell until overview is chosen', async ({ page }) => {
   await page.goto('/content');
-  await page.getByRole('navigation', { name: '模块' }).getByRole('link', { name: '统计', exact: true }).click();
+  await page.getByRole('navigation', { name: '模块' }).getByRole('link', { name: '访问统计', exact: true }).click();
   await expect(page).toHaveURL('/analytics/visits');
   await expect(page.getByRole('navigation', { name: '模块' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '搜索排行' })).toBeVisible();
-  await page.getByRole('navigation', { name: '模块' }).getByRole('link', { name: '概览', exact: true }).click();
+  await expect(page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '搜索统计' })).toBeVisible();
+  await page.getByRole('navigation', { name: '模块' }).getByRole('link', { name: '当前租户', exact: true }).click();
   await expect(page).toHaveURL('/');
-  await expect(page.getByRole('navigation', { name: '管理' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: '租户' })).toBeVisible();
   await expect(page.getByRole('navigation', { name: '模块' })).toHaveCount(0);
 });
 
@@ -218,28 +220,25 @@ test('keyboard focus is visible on the shell', async ({ page }) => {
   expect(sawOutline).toBe(true);
 });
 
-test('the shell eases into place when motion is allowed', async ({ page }) => {
+test('the shell stays still when motion is allowed', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/');
   await clearAnimations(page);
-  await page.getByRole('navigation', { name: '管理' }).getByRole('link', { name: '内容', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '内容数据' })).toBeVisible();
-  await page.waitForFunction(
-    () =>
-      (window as unknown as { __shellAnimations: Array<{ duration: number; frames: string }> }).__shellAnimations.some(
-        (item) => item.duration >= 160 && item.duration <= 200 && item.frames.includes('translate')
-      ),
-    null,
-    { timeout: 2000 }
-  );
+  await page.getByRole('navigation', { name: '租户' }).getByRole('link', { name: '内容', exact: true }).click();
+  await expect(page.getByRole('heading', { level: 1, name: '使用情况', exact: true })).toBeVisible();
+  await settleMotion(page);
+  const transform = await page.locator('[data-shell="module"]').evaluate((element) => getComputedStyle(element).transform);
+  expect(transform).toBe('none');
+  const recorded = await animations(page);
+  expect(recorded.filter((item) => item.frames.includes('translate'))).toEqual([]);
 });
 
 test('reduced motion does not translate the shell', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await clearAnimations(page);
-  await page.getByRole('navigation', { name: '管理' }).getByRole('link', { name: '内容', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '内容数据' })).toBeVisible();
+  await page.getByRole('navigation', { name: '租户' }).getByRole('link', { name: '内容', exact: true }).click();
+  await expect(page.getByRole('heading', { level: 1, name: '使用情况', exact: true })).toBeVisible();
   await settleMotion(page);
   const transform = await page.locator('[data-shell="module"]').evaluate((element) => getComputedStyle(element).transform);
   expect(transform).toBe('none');
@@ -249,7 +248,7 @@ test('reduced motion does not translate the shell', async ({ page }) => {
 
 test('shell copy stays on Edition words', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('navigation', { name: '管理' }).getByRole('link', { name: '内容', exact: true }).click();
+  await page.getByRole('navigation', { name: '租户' }).getByRole('link', { name: '内容', exact: true }).click();
   const text = await page.locator('body').innerText();
   for (const word of ['WorkBuddy', '腾讯', '席位', 'Credit', '套餐', '协作文档']) {
     expect(text).not.toContain(word);
@@ -276,7 +275,7 @@ async function clearAnimations(page: Page) {
 }
 
 async function openGroup(page: Page, name: string) {
-  const button = page.getByRole('navigation', { name: '管理' }).getByRole('button', { name, exact: true });
+  const button = page.getByRole('navigation', { name: '租户' }).getByRole('button', { name, exact: true });
   if ((await button.getAttribute('aria-expanded')) !== 'true') await button.click();
 }
 

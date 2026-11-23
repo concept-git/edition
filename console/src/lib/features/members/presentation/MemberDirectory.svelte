@@ -2,9 +2,11 @@
   import { onMount } from 'svelte';
   import { getSession } from '#lib/features/session/presentation/session.svelte';
   import Button from '#lib/shared/ui/Button.svelte';
+  import DataTable from '#lib/shared/ui/DataTable.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
-  import SectionCard from '#lib/shared/ui/SectionCard.svelte';
+  import SearchBox from '#lib/shared/ui/SearchBox.svelte';
+  import SelectField from '#lib/shared/ui/SelectField.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
   import {
     idempotencyKey,
@@ -26,6 +28,12 @@
   let invitations = $state.raw<Invitation[] | null>(null);
   let email = $state('');
   let role = $state<MemberRole>('member');
+  let query = $state('');
+  const roles = [
+    { value: 'member', label: '成员' },
+    { value: 'owner', label: '所有者' }
+  ];
+  const visibleMembers = $derived((members ?? []).filter((member) => member.name.includes(query.trim())));
   let issuedToken = $state<string | null>(null);
   let confirmingId = $state<string | null>(null);
   let notice = $state('');
@@ -115,59 +123,73 @@
   {#if notice}
     <p role="alert" class="mb-4 text-sm text-ink">{notice}</p>
   {/if}
-  <div class="flex flex-col gap-4">
-    <SectionCard title="成员">
-      <ul aria-label="成员" class="flex flex-col gap-2">
-        {#each members as member (member.id)}
-          <li class="flex items-center justify-between gap-3 border-b border-line py-2 last:border-b-0">
-            <div>
-              <p class="text-sm text-ink">{member.name}</p>
-              <p class="text-xs text-muted">{roleLabel(member.role)}</p>
-            </div>
-            {#if confirmingId === member.id}
-              <span class="flex gap-2">
-                <Button type="button" disabled={pending} onclick={() => void confirmRemove(member)}>确认移除</Button>
-                <Button type="button" variant="quiet" disabled={pending} onclick={() => (confirmingId = null)}>取消</Button>
-              </span>
-            {:else}
-              <Button type="button" variant="quiet" onclick={() => (confirmingId = member.id)}>移除</Button>
-            {/if}
-          </li>
-        {/each}
-      </ul>
-    </SectionCard>
-    <SectionCard title="邀请">
-      <form class="flex flex-col gap-3" onsubmit={submitInvite}>
-        <TextField label="邮箱" type="email" required bind:value={email} />
-        <div class="flex gap-2" role="group" aria-label="角色">
-          <Button type="button" variant={role === 'member' ? 'primary' : 'quiet'} onclick={() => (role = 'member')}>成员</Button>
-          <Button type="button" variant={role === 'owner' ? 'primary' : 'quiet'} onclick={() => (role = 'owner')}>所有者</Button>
-        </div>
-        <div>
-          <Button type="submit" disabled={pending}>邀请</Button>
-        </div>
-      </form>
-      {#if issuedToken}
-        <div class="mt-4">
-          <p class="text-xs text-muted">邀请令牌只显示这一次。</p>
-          <p role="status" aria-label="邀请令牌" class="mt-1 break-all text-sm text-ink">{issuedToken}</p>
-        </div>
-      {/if}
-      {#if invitations.length === 0}
-        <div class="mt-4">
-          <EmptyState title="没有数据" description="登录后可以邀请成员，并看到邀请状态。" />
-        </div>
-      {:else}
-        <ul aria-label="邀请" class="mt-4 flex flex-col gap-2">
-          {#each invitations as invite (invite.id)}
-            <li class="flex flex-wrap gap-3 border-b border-line py-2 text-sm text-ink last:border-b-0">
-              <span>{invite.email}</span>
-              <span>{roleLabel(invite.role)}</span>
-              <span>{invitationStatus(invite.expiresAt)}</span>
-            </li>
-          {/each}
-        </ul>
-      {/if}
-    </SectionCard>
+  <div class="mb-3 flex justify-end">
+    <SearchBox label="搜索成员" placeholder="请输入成员名称" bind:value={query} />
   </div>
+  {#if visibleMembers.length === 0}
+    <EmptyState title="没有数据" description="没有符合名称的成员。" />
+  {:else}
+    <DataTable label="成员" columns={['名称', '角色', ' ']} total={visibleMembers.length}>
+      {#snippet rows()}
+        {#each visibleMembers as member (member.id)}
+          <tr class="border-b border-line">
+            <td class="px-3 py-3">{member.name}</td>
+            <td class="px-3 py-3 text-muted">{roleLabel(member.role)}</td>
+            <td class="px-3 py-3 text-right">
+              {#if confirmingId === member.id}
+                <span class="inline-flex items-center gap-3">
+                  <Button type="button" variant="danger" disabled={pending} onclick={() => void confirmRemove(member)}>确认移除</Button>
+                  <Button type="button" variant="quiet" disabled={pending} onclick={() => (confirmingId = null)}>取消</Button>
+                </span>
+              {:else}
+                <Button type="button" variant="danger-quiet" onclick={() => (confirmingId = member.id)}>移除</Button>
+              {/if}
+            </td>
+          </tr>
+        {/each}
+      {/snippet}
+    </DataTable>
+  {/if}
+  <section class="mt-8" aria-label="邀请成员">
+    <h2 class="text-sm font-medium text-ink">邀请</h2>
+    <form class="mt-2" onsubmit={submitInvite}>
+      <TextField layout="line" label="邮箱" type="email" required hint="同事用这个地址接受邀请。" bind:value={email} />
+      <SelectField
+        layout="line"
+        label="角色"
+        hint="所有者决定这个租户的成员。成员使用被授予的空间。"
+        options={roles}
+        value={role}
+        onchange={(value) => {
+          if (value === 'owner' || value === 'member') role = value;
+        }}
+      />
+      <div class="pt-4">
+        <Button type="submit" disabled={pending}>邀请成员</Button>
+        <p class="mt-2 text-xs text-faint">邀请令牌只显示这一次。</p>
+      </div>
+    </form>
+    {#if issuedToken}
+      <p role="status" aria-label="邀请令牌" class="mt-3 break-all text-sm text-ink">{issuedToken}</p>
+    {/if}
+    {#if invitations.length === 0}
+      <div class="mt-4">
+        <EmptyState title="没有数据" description="登录后可以邀请成员，并看到邀请状态。" />
+      </div>
+    {:else}
+      <div class="mt-4">
+        <DataTable label="邀请" columns={['邮箱', '角色', '状态']} total={invitations.length}>
+          {#snippet rows()}
+            {#each invitations as invite (invite.id)}
+              <tr class="border-b border-line">
+                <td class="px-3 py-3">{invite.email}</td>
+                <td class="px-3 py-3 text-muted">{roleLabel(invite.role)}</td>
+                <td class="px-3 py-3 text-faint">{invitationStatus(invite.expiresAt)}</td>
+              </tr>
+            {/each}
+          {/snippet}
+        </DataTable>
+      </div>
+    {/if}
+  </section>
 {/if}

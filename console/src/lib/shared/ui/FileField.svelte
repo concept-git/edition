@@ -28,6 +28,6 @@
     {accept}
     {disabled}
     onchange={changed}
-    class="text-sm text-ink file:mr-3 file:rounded-full file:border-0 file:bg-mint file:px-3 file:py-1 file:text-sm file:text-accent"
+    class="text-sm text-ink disabled:pointer-events-none disabled:opacity-60 file:mr-3 file:rounded-nav file:border-0 file:bg-chip file:px-3 file:py-1 file:text-sm file:text-ink"
   />
 </div>

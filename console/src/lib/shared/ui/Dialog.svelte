@@ -21,10 +21,10 @@
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 z-10 bg-ink/20" />
     <Dialog.Content
-      class="fixed top-1/2 left-1/2 z-10 w-[min(100%-2rem,28rem)] -translate-x-1/2 -translate-y-1/2 rounded-card border border-line bg-surface p-5 outline-none"
+      class="edition-rise fixed top-1/2 left-1/2 z-10 w-[min(100%-2rem,28rem)] -translate-x-1/2 -translate-y-1/2 rounded-card border border-line bg-surface p-5 shadow-[0_8px_24px_rgba(31,35,41,0.08)] outline-none"
     >
-      <Dialog.Title level={2} class="text-base font-semibold text-ink">{title}</Dialog.Title>
-      <Dialog.Description class="mt-2 text-sm leading-6 text-ink">{description}</Dialog.Description>
+      <Dialog.Title level={2} class="text-base font-medium text-ink">{title}</Dialog.Title>
+      <Dialog.Description class="mt-2 text-sm leading-6 text-muted">{description}</Dialog.Description>
       {#if children}
         <div class="mt-4 flex flex-col gap-3">
           {@render children()}

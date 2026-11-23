@@ -28,8 +28,8 @@
 
 </script>
 
-<nav aria-label="管理" class="flex w-[220px] shrink-0 flex-col border-r border-line bg-surface">
-  <div class="flex min-h-0 flex-1 flex-col gap-1 overflow-auto px-2 py-3">
+<nav aria-label="租户" class="flex h-full w-full shrink-0 flex-col border-r border-line bg-surface md:w-[220px]">
+  <div class="flex min-h-0 flex-1 flex-col gap-0.5 overflow-auto px-3 py-4">
     {#each entries as entry (entry.id)}
       {#if entry.kind === 'link'}
         <NavItem href={entry.link.href} label={entry.link.label} active={entry.link.active} onSelect={onOverview}>
@@ -42,9 +42,9 @@
       {/if}
     {/each}
   </div>
-  <div class="flex flex-col gap-1 border-t border-line px-2 py-3">
+  <div class="flex flex-col gap-0.5 border-t border-line px-3 py-3">
     {#each products as item (item.href)}
-      <NavItem href={item.href} label={item.label} active={item.active} onSelect={onModule}>
+      <NavItem href={item.href} label={item.label} active={item.active} chevron onSelect={onModule}>
         {#snippet icon()}
           <Icon name={item.icon ?? 'content'} />
         {/snippet}

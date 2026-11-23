@@ -1,9 +1,9 @@
 import { api, type ApiResult } from '#lib/shared/api/client';
+import { currentTenant as tenantOf } from '#lib/shared/api/tenant';
 import type {
   IssuedInvitation,
   MemberRole,
   Page,
-  Profile,
   Team,
   TeamMember,
   TenantMember,
@@ -11,14 +11,12 @@ import type {
 } from '../domain/membership';
 
 export async function currentTenant(token: string): Promise<ApiResult<string>> {
-  const profile = await api<Profile>(token, '/api/v1/me');
-  const tenantId = profile.ok ? profile.body.tenants?.find((tenant) => tenant.id)?.id : undefined;
-  if (profile.ok && tenantId) return { ok: true, status: profile.status, body: tenantId, etag: profile.etag };
+  const profile = await tenantOf(token);
+  if (profile.ok) return profile;
   const context = await api<{ tenantId?: string | null }>(token, '/api/v1/auth/context');
   if (context.ok && context.body.tenantId) return { ok: true, status: context.status, body: context.body.tenantId, etag: context.etag };
-  if (!profile.ok) return profile;
-  if (!context.ok) return context;
-  return { ok: false, failure: { status: profile.status, code: null, traceId: null, retryAfter: null } };
+  if (!context.ok) return profile.failure.status === 200 ? context : profile;
+  return profile;
 }
 
 export function listMembers(token: string, tenantId: string) {

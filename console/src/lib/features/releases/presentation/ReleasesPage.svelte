@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import type { ApiFailure } from '#lib/shared/api/client';
+  import { keyedText } from '#lib/shared/api/copy';
   import { getSession } from '#lib/features/session/presentation/session.svelte';
   import Button from '#lib/shared/ui/Button.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
@@ -22,7 +23,7 @@
   let { spaceId, onLive }: { spaceId: string; onLive?: (releaseId: string | null) => void } = $props();
   const session = getSession();
   const tones: Record<ReleaseOutcome, string> = {
-    promoted: 'bg-mint text-accent',
+    promoted: 'bg-chip text-ink',
     unchanged: 'bg-surface text-ink',
     skipped: 'bg-line text-ink',
     held: 'bg-ink text-white'
@@ -226,8 +227,8 @@
       </p>
       {#if confirmed.outcome === 'held'}
         <ul aria-label="校验报告" class="flex flex-col gap-1 text-sm text-ink">
-          {#each confirmed.report as line, index (index)}
-            <li>{line}</li>
+          {#each keyedText(confirmed.report) as line (line.key)}
+            <li>{line.text}</li>
           {/each}
         </ul>
       {/if}

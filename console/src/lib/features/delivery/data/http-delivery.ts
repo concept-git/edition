@@ -1,13 +1,8 @@
 import { api, type ApiResult } from '#lib/shared/api/client';
 import { readDelivery, readMounts, readSiteName, type SiteRollout } from '../domain/delivery';
 
-export async function resolveTenant(token: string): Promise<ApiResult<string>> {
-  const me = await api<{ tenants?: Array<{ id?: unknown }> }>(token, '/api/v1/me');
-  if (!me.ok) return me;
-  const tenantId = me.body.tenants?.find((tenant) => typeof tenant.id === 'string')?.id;
-  if (typeof tenantId !== 'string') return malformed(me.status);
-  return { ok: true, status: me.status, body: tenantId, etag: me.etag };
-}
+export { currentTenant as resolveTenant } from '#lib/shared/api/tenant';
+
 
 export async function loadRollouts(token: string, tenantId: string, spaceId: string): Promise<ApiResult<SiteRollout[]>> {
   const listed = await api<unknown>(token, mountsPath(tenantId, spaceId));

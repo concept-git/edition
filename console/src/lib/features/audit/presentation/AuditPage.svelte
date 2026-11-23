@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getSession } from '#lib/features/session/presentation/session.svelte';
   import Button from '#lib/shared/ui/Button.svelte';
+  import DataTable from '#lib/shared/ui/DataTable.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
@@ -50,12 +51,13 @@
   }
 </script>
 
-<PageHeader title="审计" description="按操作查阅审计。已注销的主体不再被重新认出。" />
-<form class="mb-5 flex items-end gap-3" onsubmit={submit}>
-  <div class="w-64">
-    <TextField label="操作" bind:value={action} />
+<PageHeader title="审计日志" description="按操作查阅审计。已注销的主体不再被重新认出。" />
+<form class="mb-6" onsubmit={submit}>
+  <TextField layout="line" label="操作" hint="填写操作标识，例如 Space.create。" bind:value={action} />
+  <div class="pt-4">
+    <Button type="submit" disabled={pending}>查询记录</Button>
+    <p class="mt-2 text-xs text-faint">只列出匹配的记录。查询失败时保留错误，不把结果画成空表。</p>
   </div>
-  <Button type="submit">查询</Button>
 </form>
 
 {#if failure}
@@ -68,17 +70,17 @@
 {:else if records === null || records.length === 0}
   <EmptyState title="没有数据" description="没有符合该操作的审计记录。" />
 {:else}
-  <ul aria-label="审计记录" class="max-w-3xl">
-    {#each records as record (record.id)}
-      <li class="flex flex-wrap items-baseline gap-x-6 gap-y-1 border-b border-line py-3 text-sm">
-        <div class="min-w-40">
-          <p class="font-medium text-ink">{actionLabel(record.action)}</p>
-          <p class="mt-1 text-xs text-muted">{record.action}</p>
-        </div>
-        <p class="text-ink">{record.actorName}</p>
-        <p class="text-muted">{outcomeLabel(record.outcome)}</p>
-        <time class="text-xs text-muted" datetime={record.time}>{formatTime(record.time)}</time>
-      </li>
-    {/each}
-  </ul>
+  <DataTable label="审计记录" columns={['操作', '标识', '操作者', '结果', '时间']} total={records.length}>
+    {#snippet rows()}
+      {#each records as record (record.id)}
+        <tr class="border-b border-line">
+          <td class="px-3 py-3">{actionLabel(record.action)}</td>
+          <td class="px-3 py-3 text-faint">{record.action}</td>
+          <td class="px-3 py-3">{record.actorName}</td>
+          <td class="px-3 py-3 text-muted">{outcomeLabel(record.outcome)}</td>
+          <td class="px-3 py-3 text-faint"><time datetime={record.time}>{formatTime(record.time)}</time></td>
+        </tr>
+      {/each}
+    {/snippet}
+  </DataTable>
 {/if}

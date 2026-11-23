@@ -4,6 +4,7 @@
   import Button from '#lib/shared/ui/Button.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
   import MarkdownVisual from '#lib/shared/ui/MarkdownVisual.svelte';
+  import Notice from '#lib/shared/ui/Notice.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
   import SourceEditor from '#lib/shared/ui/SourceEditor.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
@@ -57,6 +58,17 @@
   let generation = 0;
   let spaceMode = $state<'authored' | 'synced' | null>(null);
   let hotfix = $state(false);
+  const formatNames: Record<PageFormat, string> = {
+    markdown: 'Markdown',
+    html: 'HTML',
+    txt: 'TXT',
+    json: 'JSON',
+    xml: 'XML'
+  };
+
+  function formatLabel(format: string) {
+    return format in formatNames ? formatNames[format as PageFormat] : format;
+  }
 
   async function load(id: string) {
     const request = ++generation;
@@ -260,19 +272,16 @@
 <PageHeader
   level={2}
   title="页面"
-  description="可以创建 markdown、html、txt、json 和 xml 五种页面。Markdown 可以在可视化和源码之间切换，保存的仍是 Markdown 原文。"
+  description="可以创建 Markdown、HTML、TXT、JSON 和 XML 五种页面。Markdown 可以在可视化和源码之间切换，保存的仍是 Markdown 原文。"
 />
 
 {#if queryMessage}
-  <div role="alert" class="mb-4 flex flex-wrap items-center gap-3 text-sm text-ink">
-    <p>{queryMessage}</p>
-    <Button variant="quiet" onclick={() => void load(spaceId)}>重试</Button>
-  </div>
+  <Notice text={queryMessage} onRetry={() => void load(spaceId)} />
 {/if}
 
 {#if editing}
   <section aria-label="正文编辑" class="flex max-w-3xl flex-col gap-3">
-    <p class="text-sm text-muted">{editing.format}</p>
+    <p class="text-sm text-muted">{formatLabel(editing.format)}</p>
     {#if editing.format === 'markdown'}
       <div role="group" aria-label="编辑模式" class="flex gap-2">
         <Button type="button" variant={mode === 'visual' ? 'primary' : 'quiet'} onclick={() => useMode('visual')}>可视化</Button>
@@ -283,7 +292,7 @@
       <p class="text-sm text-muted">这还不是读者可见。进版只表示可以进入下一份发版。</p>
       <div class="flex items-center gap-2">
         {#if readiness === 'published'}
-          <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">可发版</span>
+          <span class="rounded-nav bg-chip px-2 py-0.5 text-xs font-normal text-ink">可发版</span>
           <Button type="button" variant="quiet" disabled={marking} onclick={() => void setReady('draft')}>取消进版</Button>
         {:else}
           <Button type="button" disabled={marking} onclick={() => void setReady('published')}>进版</Button>
@@ -307,7 +316,7 @@
       <p role="alert" class="text-sm text-ink">{saveMessage}</p>
     {/if}
     <div class="flex gap-2">
-      <Button type="button" disabled={saving} onclick={() => void save()}>保存</Button>
+      <Button type="button" variant="ink" disabled={saving} onclick={() => void save()}>保存</Button>
       <Button type="button" variant="quiet" onclick={close}>返回</Button>
     </div>
     {#if tenantId}
@@ -322,14 +331,14 @@
   {:else if items !== null && items.length > 0}
     <ul class="mb-6 flex flex-col gap-2" aria-label="源码页面">
       {#each items as item (item.id)}
-        <li class="flex items-center justify-between gap-3 rounded-nav border border-line bg-surface px-3 py-2">
+        <li class="flex flex-wrap items-center justify-between gap-3 rounded-nav border border-line bg-surface px-3 py-2">
           <Button type="button" variant="quiet" onclick={() => void open(item.id)}>{item.title}</Button>
-          <span class="flex items-center gap-2">
+          <span class="flex flex-wrap items-center gap-2">
             {#if item.status === 'published'}
-              <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">可发版</span>
+              <span class="rounded-nav bg-chip px-2 py-0.5 text-xs font-normal text-ink">可发版</span>
             {/if}
-            <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">{item.format}</span>
-            <Button type="button" variant="quiet" disabled={trashing === item.id} onclick={() => void trash(item)}>回收</Button>
+            <span class="rounded-nav bg-chip px-2 py-0.5 text-xs font-normal text-ink">{formatLabel(item.format)}</span>
+            <Button type="button" variant="danger-quiet" disabled={trashing === item.id} onclick={() => void trash(item)}>回收</Button>
           </span>
         </li>
       {/each}
@@ -341,7 +350,7 @@
       <TextField label="标题" name="title" required bind:value={title} />
       <div role="group" aria-label="格式" class="flex flex-wrap gap-2">
         {#each FORMATS as option (option)}
-          <Button type="button" variant={format === option ? 'primary' : 'quiet'} onclick={() => choose(option)}>{option}</Button>
+          <Button type="button" variant={format === option ? 'primary' : 'quiet'} onclick={() => choose(option)}>{formatLabel(option)}</Button>
         {/each}
       </div>
       {#if createMessage}

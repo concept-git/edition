@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { untrack } from 'svelte';
   import type { ApiFailure } from '#lib/shared/api/client';
   import { getSession } from '#lib/features/session/presentation/session.svelte';
   import Button from '#lib/shared/ui/Button.svelte';
@@ -10,9 +9,7 @@
 
   let { tenantId, spaceId, saved }: { tenantId: string; spaceId: string; saved: boolean } = $props();
   const session = getSession();
-  const initial = untrack(() => saved);
-  let checked = $state(initial);
-  let committed = $state(initial);
+  let checked = $derived(saved);
   let pending = $state(false);
   let failure = $state<ApiFailure | null>(null);
   let desired: boolean | null = null;
@@ -22,7 +19,7 @@
   const retryable = $derived(failure !== null && canRetry(failure));
 
   function changed(next: boolean) {
-    if (pending || next === committed) return;
+    if (pending || next === saved) return;
     const fingerprint = `autoRelease:${String(next)}`;
     intent = sameIntent(intent, fingerprint);
     desired = next;
@@ -39,20 +36,19 @@
   async function commit(next: boolean, key: string) {
     const token = session.accessToken;
     if (!token) {
-      checked = committed;
+      checked = saved;
       pending = false;
       return;
     }
     failure = null;
     const result = await updateAutoRelease(token, tenantId, spaceId, next, key);
     if (!result.ok) {
-      checked = committed;
+      checked = saved;
       failure = result.failure;
       pending = false;
       return;
     }
-    committed = result.body.autoRelease === true;
-    checked = committed;
+    checked = result.body.autoRelease === true;
     failure = null;
     pending = false;
   }

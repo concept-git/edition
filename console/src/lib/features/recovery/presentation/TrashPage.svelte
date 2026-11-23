@@ -87,9 +87,9 @@
 {:else if items !== null && items.length > 0}
   <ul class="flex flex-col gap-2" aria-label="回收页">
     {#each items as item (item.id)}
-      <li class="flex items-center justify-between gap-3 rounded-nav border border-line bg-surface px-3 py-2">
-        <span class="text-sm text-ink">{item.title}</span>
-        <Button type="button" variant="quiet" disabled={restoring === item.id} onclick={() => void restore(item)}>恢复</Button>
+      <li class="flex flex-wrap items-center justify-between gap-3 rounded-nav border border-line bg-surface px-3 py-2">
+        <span class="min-w-0 text-sm break-words text-ink">{item.title}</span>
+        <Button type="button" disabled={restoring === item.id} onclick={() => void restore(item)}>恢复</Button>
       </li>
     {/each}
   </ul>

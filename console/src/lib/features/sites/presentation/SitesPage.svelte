@@ -2,10 +2,10 @@
   import { onDestroy } from 'svelte';
   import type { ApiFailure } from '#lib/shared/api/client';
   import Button from '#lib/shared/ui/Button.svelte';
+  import DataTable from '#lib/shared/ui/DataTable.svelte';
   import Dialog from '#lib/shared/ui/Dialog.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
-  import SectionCard from '#lib/shared/ui/SectionCard.svelte';
   import TextField from '#lib/shared/ui/TextField.svelte';
   import { getSession } from '#lib/features/session/presentation/session.svelte';
   import { createSite, currentTenant, deleteSite, loadSiteList } from '../data/sites-api';
@@ -156,28 +156,34 @@
 {:else if list.items.length === 0}
   <EmptyState title="没有数据" description="创建一个站点后，可以把空间挂到 slug 上。" />
 {:else}
-  <ul aria-label="站点" class="mb-6 flex flex-col items-start gap-2">
-    {#each list.items as site (site.id)}
-      <li class="flex items-center gap-3">
-        <Button href={`/sites/${site.id}/mounts`}>{site.name}</Button>
-        <Button type="button" variant="quiet" onclick={() => askDelete(site)}>删除</Button>
-      </li>
-    {/each}
-  </ul>
+  <DataTable label="站点" columns={['名称', ' ']} total={list.items.length}>
+    {#snippet rows()}
+      {#each list.items as site (site.id)}
+        <tr class="border-b border-line">
+          <td class="px-3 py-3">
+            <a class="text-ink hover:text-accent" href={`/sites/${site.id}/mounts`}>{site.name}</a>
+          </td>
+          <td class="px-3 py-3 text-right">
+            <Button type="button" variant="danger-quiet" onclick={() => askDelete(site)}>删除</Button>
+          </td>
+        </tr>
+      {/each}
+    {/snippet}
+  </DataTable>
 {/if}
 
 {#if list?.canCreate}
-  <SectionCard title="新站点">
-    <form aria-label="创建站点" class="flex max-w-md flex-col gap-3" onsubmit={create}>
-      <TextField label="名称" name="name" required disabled={pending} bind:value={name} />
-      {#if createFailure}
-        <p role="alert" class="text-sm text-ink">{writeFailureMessage(createFailure)}</p>
-      {/if}
-      <div>
-        <Button type="submit" disabled={pending}>创建站点</Button>
-      </div>
-    </form>
-  </SectionCard>
+  <form aria-label="创建站点" class="mt-8" onsubmit={create}>
+    <h2 class="mb-1 text-sm font-medium text-ink">新站点</h2>
+    <TextField layout="line" label="名称" name="name" required disabled={pending} hint="站点把空间编成对外地址。" bind:value={name} />
+    {#if createFailure}
+      <p role="alert" class="mt-3 text-sm text-ink">{writeFailureMessage(createFailure)}</p>
+    {/if}
+    <div class="pt-4">
+      <Button type="submit" disabled={pending}>创建站点</Button>
+      <p class="mt-2 text-xs text-faint">创建后可以挂载空间、域名和重定向。</p>
+    </div>
+  </form>
 {/if}
 
 {#if deleteOpen && pendingDelete}

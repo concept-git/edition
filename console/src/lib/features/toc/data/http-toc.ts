@@ -1,12 +1,6 @@
 import { api, type ApiResult } from '#lib/shared/api/client';
 import { readPages, readTree, type PageOption, type TocKind, type TocTree } from '../domain/toc';
 
-type Profile = {
-  tenants?: Array<{ id?: unknown }>;
-};
-
-const tenants = new Map<string, string>();
-
 export type AddEntry = {
   label: string;
   kind: TocKind;
@@ -16,18 +10,8 @@ export type AddEntry = {
   url?: string;
 };
 
-export async function resolveTenant(token: string): Promise<ApiResult<string>> {
-  const cached = tenants.get(token);
-  if (cached) return { ok: true, status: 200, body: cached, etag: null };
-  const me = await api<Profile>(token, '/api/v1/me');
-  if (!me.ok) return me;
-  const tenantId = me.body.tenants?.find((tenant) => typeof tenant.id === 'string')?.id;
-  if (typeof tenantId !== 'string') {
-    return { ok: false, failure: { status: me.status, code: null, traceId: null, retryAfter: null } };
-  }
-  tenants.set(token, tenantId);
-  return { ok: true, status: 200, body: tenantId, etag: null };
-}
+export { currentTenant as resolveTenant } from '#lib/shared/api/tenant';
+
 
 export async function viewToc(token: string, tenantId: string, spaceId: string): Promise<ApiResult<TocTree>> {
   const result = await api<unknown>(token, entriesPath(tenantId, spaceId));

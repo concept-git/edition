@@ -106,7 +106,7 @@
       <li class="rounded-nav border border-line bg-surface px-3 py-2 text-sm text-ink">
         <span>{item.title}</span>
         {#each item.tags as tag (tag)}
-          <span class="ml-2 rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">{tag}</span>
+          <span class="ml-2 rounded-nav bg-chip px-2 py-0.5 text-xs font-normal text-ink">{tag}</span>
         {/each}
       </li>
     {/each}

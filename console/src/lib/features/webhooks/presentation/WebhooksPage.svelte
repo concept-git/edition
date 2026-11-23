@@ -205,7 +205,7 @@
   void load();
 </script>
 
-<PageHeader level={2} title="Webhook" description="登记投递，并区分成功和失败。" />
+<PageHeader level={2} title="投递结果" description="登记 Webhook 投递，并区分成功和失败。" />
 
 {#if queryFailure}
   <div role="alert" class="mb-4 flex flex-wrap items-center gap-3 text-sm text-ink">
@@ -222,11 +222,11 @@
       {#each siteSubscriptions as item (item.id)}
         <li class="rounded-card border border-line bg-surface px-4 py-3">
           <div class="flex flex-wrap items-center gap-3 text-sm">
-            <span class="font-medium break-all text-ink">{item.url}</span>
+            <span class="break-all font-normal text-ink">{item.url}</span>
             <span class="text-muted">{subscriptionState(item.active)}</span>
             <Button variant="quiet" disabled={pending} onclick={() => beginEdit(item)}>修改</Button>
             {#if item.active}
-              <Button variant="quiet" disabled={pending} onclick={() => void disable(item)}>停用</Button>
+              <Button variant="danger-quiet" disabled={pending} onclick={() => void disable(item)}>停用</Button>
             {/if}
             <Button variant="quiet" disabled={pending} onclick={() => void showDeliveries(item.id)}>投递</Button>
             <Button variant="quiet" disabled={pending} onclick={() => void rotate(item.id)}>轮换密钥</Button>
@@ -245,7 +245,7 @@
                 {/each}
               </fieldset>
               <div>
-                <Button type="submit" disabled={pending}>保存</Button>
+                <Button type="submit" variant="ink" disabled={pending}>保存</Button>
               </div>
             </form>
           {/if}

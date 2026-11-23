@@ -22,9 +22,9 @@ test.beforeEach(async ({ page }) => {
 test('an authorized reader finds the audit record for a completed management action', async ({ page }) => {
   await page.goto('/audit');
   await page.getByLabel('操作').fill('Space.create');
-  await page.getByRole('button', { name: '查询' }).click();
+  await page.getByRole('button', { name: '查询记录' }).click();
 
-  const records = page.getByRole('list', { name: '审计记录' });
+  const records = page.getByRole('table', { name: '审计记录' });
   await expect(records.getByText('创建空间')).toBeVisible();
   await expect(records.getByText('Space.create')).toBeVisible();
   await expect(records.getByText('维护者')).toBeVisible();
@@ -35,20 +35,20 @@ test('an authorized reader finds the audit record for a completed management act
 test('a failed audit query shows an error instead of an empty table', async ({ page }) => {
   await armAudit('error');
   await page.goto('/audit');
-  await page.getByRole('button', { name: '查询' }).click();
+  await page.getByRole('button', { name: '查询记录' }).click();
 
-  await expect(page.getByRole('heading', { level: 1, name: '审计' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '审计日志' })).toBeVisible();
   await expect(page.getByRole('alert')).toContainText('trace-audit');
   await expect(page.getByText('没有数据')).toHaveCount(0);
-  await expect(page.getByRole('list', { name: '审计记录' })).toHaveCount(0);
+  await expect(page.getByRole('table', { name: '审计记录' })).toHaveCount(0);
 });
 
 test('an erased subject is not shown with the former email or name', async ({ page }) => {
   await page.goto('/audit');
   await page.getByLabel('操作').fill('Page.create');
-  await page.getByRole('button', { name: '查询' }).click();
+  await page.getByRole('button', { name: '查询记录' }).click();
 
-  const records = page.getByRole('list', { name: '审计记录' });
+  const records = page.getByRole('table', { name: '审计记录' });
   await expect(records.getByText('已注销用户')).toBeVisible();
   await expect(records.getByText('创建页面')).toBeVisible();
   const visible = await page.locator('[data-region="canvas"]').innerText();

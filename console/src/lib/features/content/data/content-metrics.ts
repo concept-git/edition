@@ -1,4 +1,5 @@
 import { api } from '#lib/shared/api/client';
+import { currentTenant } from '#lib/shared/api/tenant';
 import {
   contentHome,
   type ContentHome,
@@ -8,15 +9,12 @@ import {
   type SpaceRecord
 } from '../domain/content-metrics';
 
-type AuthContext = { tenantId?: unknown };
-
 /** Reads the current tenant's member list, space page counts, and published pages. */
 export async function loadContentMetrics(token: string, now = new Date()): Promise<ContentHome> {
-  const context = await api<AuthContext>(token, '/api/v1/auth/context');
-  if (!context.ok) return { status: 'error', traceId: context.failure.traceId };
-  if (typeof context.body.tenantId !== 'string' || context.body.tenantId.length === 0) return { status: 'empty' };
+  const tenant = await currentTenant(token);
+  if (!tenant.ok) return { status: 'error', traceId: tenant.failure.traceId };
 
-  const tenantId = encodeURIComponent(context.body.tenantId);
+  const tenantId = encodeURIComponent(tenant.body);
   const [members, spaces] = await Promise.all([
     readList<MemberRecord>(token, `/api/v1/tenants/${tenantId}/members`),
     readList<SpaceRecord>(token, `/api/v1/tenants/${tenantId}/spaces`)

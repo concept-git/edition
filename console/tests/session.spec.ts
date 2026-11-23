@@ -73,19 +73,19 @@ test('a maintainer signs in, stays signed in after refresh, and can sign out', a
   expect(body.tokenType).toBe('Bearer');
   const accessToken = body.accessToken as string;
   await expect(page).toHaveURL('/');
-  await expect(page.getByRole('heading', { level: 1, name: '概览' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: '管理' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '当前租户' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: '租户' })).toBeVisible();
   await expect(page.getByRole('region', { name: '上手' })).toBeVisible();
 
   const refreshOnReload = page.waitForRequest((request) => request.method() === 'POST' && request.url().endsWith('/auth/refresh'));
   await page.reload();
   const refresh = await refreshOnReload;
-  expect(new URL(refresh.url()).origin).toBe('http://127.0.0.1:4177');
+  expect(new URL(refresh.url()).origin).toBe(new URL(page.url()).origin);
   expect(refresh.postData()).toBeNull();
   const headers = await refresh.allHeaders();
   expect(headers.cookie ?? '').toContain('refresh_token=');
   await expect(page).toHaveURL('/');
-  await expect(page.getByRole('heading', { level: 1, name: '概览' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '当前租户' })).toBeVisible();
 
   const stored = await page.context().cookies();
   const cookie = stored.find((item) => item.name === 'refresh_token');
@@ -102,12 +102,13 @@ test('a maintainer signs in, stays signed in after refresh, and can sign out', a
   expect(leaked).toBe(false);
   expect(await page.evaluate(() => document.cookie.includes('refresh_token'))).toBe(false);
 
+  await page.getByRole('button', { name: '我' }).click();
   await page.getByRole('button', { name: '退出' }).click();
   await expect(page).toHaveURL('/login');
   await page.goto('/content');
   await expect(page).toHaveURL('/login');
   await expect(page.getByRole('heading', { name: '登录' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: '管理' })).toHaveCount(0);
+  await expect(page.getByRole('navigation', { name: '租户' })).toHaveCount(0);
 });
 
 test('only invalid_refresh clears the session; other refresh failures keep the page and the draft', async ({ page }) => {
@@ -132,7 +133,7 @@ test('only invalid_refresh clears the session; other refresh failures keep the p
   await arm('refresh', 'ok');
   await page.getByRole('button', { name: '登录' }).click();
   await expect(page).toHaveURL('/');
-  await expect(page.getByRole('heading', { level: 1, name: '概览' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '当前租户' })).toBeVisible();
 
   await page.goto('/account/password');
   const draft = page.getByLabel('当前密码');

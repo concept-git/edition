@@ -237,7 +237,7 @@
               </div>
               {#if canManage}
                 {#if type.enabled}
-                  <Button type="button" variant="quiet" disabled={pending} onclick={() => void deactivate(type)}>停用</Button>
+                  <Button type="button" variant="danger-quiet" disabled={pending} onclick={() => void deactivate(type)}>停用</Button>
                 {:else}
                   <Button type="button" disabled={pending} onclick={() => void activate(type, type.activeVersionRef)}>启用</Button>
                 {/if}

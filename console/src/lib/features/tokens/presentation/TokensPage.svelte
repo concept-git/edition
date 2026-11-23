@@ -59,12 +59,12 @@
 
   const pages = {
     api: {
-      title: 'API 令牌',
+      title: '机器令牌',
       description: 'API 令牌代表机器调用方，权限同时受自身范围与资源授权约束。'
     },
     management: {
       title: '管理令牌',
-      description: '管理令牌是用户为管理自动化签发的有限期凭据，仍然代表该用户。'
+      description: '你签发给自己的有限期凭据，仍然代表你。'
     }
   };
   const current = $derived(pages[kind]);
@@ -274,11 +274,11 @@
       {#each rows as token (token.id)}
         <li class="rounded-card border border-line bg-surface px-4 py-3">
           <div class="flex flex-wrap items-center gap-3">
-            <span class="text-sm font-medium text-ink">{token.name}</span>
+            <span class="text-sm font-normal text-ink">{token.name}</span>
             <span class="text-sm text-muted">{usability(token.status)}</span>
             <Button variant="quiet" disabled={pending} onclick={() => (detailId = token.id)}>详情</Button>
             {#if token.status === 'active' && confirmId !== token.id}
-              <Button variant="quiet" disabled={pending} onclick={() => (confirmId = token.id)}>吊销</Button>
+              <Button variant="danger-quiet" disabled={pending} onclick={() => (confirmId = token.id)}>吊销</Button>
             {/if}
             {#if confirmId === token.id}
               <Button variant="danger" disabled={pending} onclick={() => void revoke(token.id)}>确认吊销</Button>

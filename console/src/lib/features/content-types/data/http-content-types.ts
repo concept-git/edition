@@ -7,10 +7,6 @@ import type {
   VersionList
 } from '../domain/content-type';
 
-type Profile = {
-  tenants?: Array<{ id?: unknown }>;
-};
-
 type RegisterBody = {
   contentType: string;
   baseRevision: number;
@@ -28,15 +24,8 @@ type DeactivateBody = {
   baseRevision: number;
 };
 
-export async function resolveTenant(token: string): Promise<ApiResult<string>> {
-  const me = await api<Profile>(token, '/api/v1/me');
-  if (!me.ok) return me;
-  const tenantId = me.body.tenants?.find((tenant) => typeof tenant.id === 'string')?.id;
-  if (typeof tenantId !== 'string') {
-    return { ok: false, failure: { status: me.status, code: null, traceId: null, retryAfter: null } };
-  }
-  return { ok: true, status: me.status, body: tenantId, etag: me.etag };
-}
+export { currentTenant as resolveTenant } from '#lib/shared/api/tenant';
+
 
 export function listContentTypes(token: string, tenantId: string) {
   return api<TypeList>(token, `${tenantBase(tenantId)}/content-types`);

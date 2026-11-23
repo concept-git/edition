@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { dndzone, TRIGGERS, type DndEvent } from 'svelte-dnd-action';
+  import { dndzone, type DndEvent } from 'svelte-dnd-action';
   import { flip } from 'svelte/animate';
+  import Self from './TocList.svelte';
   import Button from '#lib/shared/ui/Button.svelte';
   import { kindLabel, type TocNode } from '../domain/toc';
 
@@ -54,7 +55,7 @@
       {#if !item.isDndShadowItem}
         <div class="flex flex-wrap items-center gap-2 px-3 py-2">
           <span class="text-sm text-ink">{item.label}</span>
-          <span class="rounded-nav bg-mint px-2 py-0.5 text-xs font-medium text-accent">{kindLabel(item.kind)}</span>
+          <span class="rounded-nav bg-chip px-2 py-0.5 text-xs font-normal text-ink">{kindLabel(item.kind)}</span>
           {#if item.kind === 'link' && item.url}
             <span class="text-sm text-muted">{item.url}</span>
           {/if}
@@ -69,7 +70,7 @@
             </span>
           {/if}
         </div>
-        <svelte:self
+        <Self
           items={item.children}
           parentId={item.id}
           {flipDurationMs}

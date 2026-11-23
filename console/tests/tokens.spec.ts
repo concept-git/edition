@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
 
 test('issuing an API token shows the secret once and revoking marks it unusable', async ({ page }) => {
   await page.goto('/integrations/api-tokens');
-  await expect(page.getByRole('heading', { level: 1, name: 'API 令牌' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '机器令牌' })).toBeVisible();
 
   const issued = page.waitForRequest(
     (request) => request.method() === 'POST' && request.url().includes('/api/v1/tenants/') && request.url().endsWith('/tokens')

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import { keyedDiff } from '#lib/shared/api/copy';
   import { getSession } from '#lib/features/session/presentation/session.svelte';
   import Button from '#lib/shared/ui/Button.svelte';
   import SourceEditor from '#lib/shared/ui/SourceEditor.svelte';
@@ -141,7 +142,7 @@
   {:else}
     <ul aria-label="修订" class="flex flex-col gap-2">
       {#each items as item (item.n)}
-        <li class="flex items-center justify-between gap-3 rounded-nav border border-line bg-surface px-3 py-2">
+        <li class="flex flex-wrap items-center justify-between gap-3 rounded-nav border border-line bg-surface px-3 py-2">
           <Button type="button" variant="quiet" onclick={() => void openRevision(item.n)}>修订 {item.n}</Button>
           <time class="text-sm text-muted" datetime={item.createdAt}>{clock.format(new Date(item.createdAt))}</time>
         </li>
@@ -152,12 +153,12 @@
     {/if}
     {#if selected && lines}
       <section aria-label="修订差异" class="flex flex-col gap-2">
-        <h3 class="text-sm font-semibold text-ink">与当前正文的差异</h3>
+        <h3 class="text-sm font-medium text-ink">与当前正文的差异</h3>
         {#if lines.length === 0}
           <p class="text-sm text-muted">与当前正文相同。</p>
         {:else}
           <ul class="flex flex-col gap-1" aria-label="差异行">
-            {#each lines as line, index (index)}
+            {#each keyedDiff(lines) as line (line.key)}
               <li class={`rounded-nav px-2 py-1 text-sm text-ink ${line.type === 'add' ? 'bg-mint' : ''}`}>{lineLabel(line.type)} {line.content}</li>
             {/each}
           </ul>

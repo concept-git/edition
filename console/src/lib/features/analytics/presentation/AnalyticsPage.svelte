@@ -19,7 +19,7 @@
       empty: '没有采集时这里是无数据，不是一条贴地的零线。'
     },
     search: {
-      title: '搜索排行',
+      title: '搜索统计',
       description: '查看读者在站点上的搜索。',
       empty: '没有采集时不把缺失画成零。'
     }
@@ -111,7 +111,7 @@
   {#if status}
     <p role="status" class="mb-4 inline-flex rounded-nav border px-2 py-0.5 text-sm {healthClass(report.health.status)}">{status}</p>
   {/if}
-  <ul aria-label="搜索排行" class="max-w-md">
+  <ul aria-label="搜索统计" class="max-w-md">
     {#each report.popular as item (item.label)}
       <li class="flex items-baseline justify-between gap-4 border-b border-line py-2 text-sm">
         <span>{item.label}</span>

@@ -58,7 +58,7 @@ test('an author restores a trashed page, and deletion honors the name and mounts
   await expect(page.getByRole('list', { name: '源码页面' }).getByRole('listitem').filter({ hasText: '旧稿' })).toBeVisible();
 
   await page.goto('/content/spaces');
-  const handbook = page.getByRole('list', { name: '空间' }).getByRole('listitem').filter({ hasText: '手册' });
+  const handbook = page.getByRole('table', { name: '空间' }).getByRole('row').filter({ hasText: '手册' });
   await handbook.getByRole('button', { name: '删除', exact: true }).click();
   const spaceDialog = page.getByRole('dialog', { name: '确认删除空间' });
   await spaceDialog.getByLabel('空间名称').fill('手册副本');
@@ -97,7 +97,7 @@ test('an author restores a trashed page, and deletion honors the name and mounts
   await expect(page.getByRole('list', { name: '已挂载' })).toContainText('guide');
 
   await page.goto('/sites');
-  const mounted = page.getByRole('list', { name: '站点' }).getByRole('listitem').filter({ hasText: '有挂载' });
+  const mounted = page.getByRole('table', { name: '站点' }).getByRole('row').filter({ hasText: '有挂载' });
   await mounted.getByRole('button', { name: '删除', exact: true }).click();
   const mountedDialog = page.getByRole('dialog', { name: '确认删除站点' });
   await mountedDialog.getByLabel('站点名称').fill('有挂载');
@@ -108,7 +108,7 @@ test('an author restores a trashed page, and deletion honors the name and mounts
 
   await page.getByLabel('名称').fill('空站点');
   await page.getByRole('button', { name: '创建站点' }).click();
-  const empty = page.getByRole('list', { name: '站点' }).getByRole('listitem').filter({ hasText: '空站点' });
+  const empty = page.getByRole('table', { name: '站点' }).getByRole('row').filter({ hasText: '空站点' });
   await empty.getByRole('button', { name: '删除', exact: true }).click();
   const emptyDialog = page.getByRole('dialog', { name: '确认删除站点' });
   await emptyDialog.getByLabel('站点名称').fill('空站点');

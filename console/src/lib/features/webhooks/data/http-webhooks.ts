@@ -10,13 +10,8 @@ function tenantQuery(tenantId: string): string {
   return `tenantId=${encodeURIComponent(tenantId)}`;
 }
 
-export async function currentTenant(token: string): Promise<ApiResult<string>> {
-  const result = await api<{ tenants?: { id?: unknown }[] }>(token, '/api/v1/me');
-  if (!result.ok) return result;
-  const id = result.body.tenants?.[0]?.id;
-  if (typeof id !== 'string' || id.length === 0) return broken(result.status);
-  return { ok: true, status: result.status, body: id, etag: result.etag };
-}
+export { currentTenant as currentTenant } from '#lib/shared/api/tenant';
+
 
 export async function listWebhooks(token: string, tenantId: string): Promise<ApiResult<SubscriptionPage>> {
   const result = await api<unknown>(token, `/webhooks?${tenantQuery(tenantId)}`);

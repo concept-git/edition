@@ -53,7 +53,7 @@
   });
 </script>
 
-<PageHeader title="管理会话" description="查看并结束自己的管理会话。结束后的会话不能再续期。" />
+<PageHeader title="会话" description="查看并结束自己的会话。结束后不能再续期。" />
 {#if failure}
   <div role="alert" class="flex max-w-lg flex-wrap items-center gap-3 text-sm text-ink">
     <p>{keptDraft('会话没有读出来', failure)}</p>
@@ -62,15 +62,15 @@
 {:else if sessions}
   <ul class="flex max-w-lg flex-col gap-3">
     {#each sessions as item (item.id)}
-      <li class="flex items-center justify-between gap-4 rounded-card border border-line bg-surface px-4 py-3">
+      <li class="flex flex-wrap items-center justify-between gap-3 rounded-card border border-line bg-surface px-4 py-3">
         <div>
-          <p class="text-sm font-medium text-ink">
+          <p class="text-sm font-normal text-ink">
             <span>{item.device.name}</span>
-            {#if item.current}<span class="ml-2 text-accent">当前</span>{/if}
+            {#if item.current}<span class="ml-2 rounded-nav bg-chip px-2 py-0.5 text-xs font-normal text-ink">当前</span>{/if}
           </p>
           <p class="mt-1 text-xs text-muted">{item.device.browser} · {item.device.os}</p>
         </div>
-        <Button variant="quiet" disabled={ending === item.id} onclick={() => void end(item)}>结束{item.device.name}</Button>
+        <Button variant="danger-quiet" disabled={ending === item.id} onclick={() => void end(item)}>结束会话</Button>
       </li>
     {/each}
   </ul>

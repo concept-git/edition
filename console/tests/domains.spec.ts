@@ -1,4 +1,5 @@
 import { expect, test, type Request } from '@playwright/test';
+import { existingSiteId, overviewTenantId } from './ids.mjs';
 import { signIn } from './sign-in';
 import { resetStub } from './stub';
 
@@ -15,24 +16,17 @@ test.beforeEach(async ({ page }) => {
   await resetDomains();
   const goto = page.goto.bind(page);
   page.goto = (url, options) => goto(url, { waitUntil: 'networkidle', ...options });
-  let tenantId = '';
-  page.on('response', (response) => {
-    if (new URL(response.url()).pathname !== '/api/v1/me' || !response.ok()) return;
-    void response.json().then((body: { tenants?: Array<{ id?: string }> }) => {
-      tenantId = body.tenants?.[0]?.id ?? tenantId;
-    });
-  });
   await signIn(page);
-  await expect.poll(() => tenantId).not.toBe('');
-  await ensureSite(tenantId);
+  await ensureSite(overviewTenantId);
 });
 
 test('an admin adds an unverified domain, sees its TXT record, and verifies it', async ({ page }) => {
-  await page.getByRole('navigation', { name: '管理' }).getByRole('link', { name: '站点', exact: true }).click();
+  await page.getByRole('navigation', { name: '租户' }).getByRole('link', { name: '站点', exact: true }).click();
   await page.getByRole('link', { name: '现有站点' }).click();
+  await expect(page).toHaveURL(new RegExp(`/sites/${existingSiteId}(?:/|$)`));
   await expect(page.getByRole('heading', { level: 1, name: '现有站点' })).toBeVisible();
-  await page.getByRole('navigation', { name: '站点' }).getByRole('link', { name: '域名', exact: true }).click();
-  await expect(page.getByRole('heading', { level: 2, name: '域名' })).toBeVisible();
+  await page.getByRole('navigation', { name: '站点' }).getByRole('link', { name: '自有域名', exact: true }).click();
+  await expect(page.getByRole('heading', { level: 2, name: '自有域名' })).toBeVisible();
 
   const bound = page.waitForResponse(
     (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/domains') && response.ok()
@@ -104,7 +98,7 @@ async function ensureSite(tenantId: string) {
       'content-type': 'application/json',
       'idempotency-key': 'domains-existing-site'
     },
-    body: JSON.stringify({ name: '现有站点' })
+    body: JSON.stringify({ name: '现有站点', id: existingSiteId })
   });
   if (!response.ok) throw new Error(`site seed ${response.status}`);
 }

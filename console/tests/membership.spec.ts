@@ -23,15 +23,15 @@ test('an owner invites a member, places someone on a team, and cannot remove the
   const main = canvas(page);
   await page.goto('/members');
 
-  const members = main.getByRole('list', { name: '成员' });
-  const owner = members.getByRole('listitem').filter({ hasText: '甲' });
+  const members = main.getByRole('table', { name: '成员' });
+  const owner = members.getByRole('row').filter({ hasText: '甲' });
   await expect(owner).toContainText('所有者');
 
   await main.getByLabel('邮箱').fill('newcomer@edition.test');
-  await main.getByRole('button', { name: '邀请' }).click();
+  await main.getByRole('button', { name: '邀请成员' }).click();
 
-  const invites = main.getByRole('list', { name: '邀请' });
-  const invite = invites.getByRole('listitem').filter({ hasText: 'newcomer@edition.test' });
+  const invites = main.getByRole('table', { name: '邀请' });
+  const invite = invites.getByRole('row').filter({ hasText: 'newcomer@edition.test' });
   await expect(invite).toContainText('待接受');
   await expect(invite).toContainText('成员');
   const token = (await main.getByRole('status', { name: '邀请令牌' }).innerText()).trim();
@@ -39,7 +39,7 @@ test('an owner invites a member, places someone on a team, and cannot remove the
   await expect(invites).not.toContainText(token);
 
   await page.reload();
-  await expect(canvas(page).getByRole('list', { name: '邀请' })).toContainText('待接受');
+  await expect(canvas(page).getByRole('table', { name: '邀请' })).toContainText('待接受');
   await expect(page.getByText(token)).toHaveCount(0);
 
   await page.goto('/teams');
@@ -63,7 +63,7 @@ test('an owner invites a member, places someone on a team, and cannot remove the
   await expect(page.getByText(teamToken)).toHaveCount(0);
 
   await page.goto('/members');
-  const stillOwner = canvas(page).getByRole('list', { name: '成员' }).getByRole('listitem').filter({ hasText: '甲' });
+  const stillOwner = canvas(page).getByRole('table', { name: '成员' }).getByRole('row').filter({ hasText: '甲' });
   await stillOwner.getByRole('button', { name: '移除' }).click();
   await stillOwner.getByRole('button', { name: '确认移除' }).click();
   await expect(canvas(page).getByRole('alert')).toHaveText('不能移除最后一位所有者。');

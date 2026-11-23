@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { overviewTenantId } from './ids.mjs';
 import { signIn } from './sign-in';
 import { resetStub } from './stub';
 
@@ -21,7 +22,7 @@ test.afterEach(async () => {
 
 test('signed-in overview shows the current tenant counts and the three steps', async ({ page }) => {
   const paths: string[] = [];
-  let tenantId = '';
+  let seenTenant = '';
   page.on('request', (request) => {
     const url = new URL(request.url());
     if (url.pathname.startsWith('/api/')) paths.push(url.pathname);
@@ -29,20 +30,20 @@ test('signed-in overview shows the current tenant counts and the three steps', a
   page.on('response', (response) => {
     if (new URL(response.url()).pathname !== '/api/v1/me' || !response.ok()) return;
     void response.json().then((body: { tenants?: Array<{ id?: string }> }) => {
-      tenantId = body.tenants?.[0]?.id ?? '';
+      seenTenant = body.tenants?.[0]?.id ?? '';
     });
   });
 
   await signIn(page);
-  const counts = page.getByRole('region', { name: '数量' });
-  await expect(counts.locator('strong')).toHaveText(['4', '6', '5']);
-  await expect(counts.getByText('成员', { exact: true })).toBeVisible();
-  await expect(counts.getByText('空间', { exact: true })).toBeVisible();
-  await expect(counts.getByText('站点', { exact: true })).toBeVisible();
-  await expect.poll(() => tenantId).not.toBe('');
-  expect(paths).toContain(`/api/v1/tenants/${tenantId}/members`);
-  expect(paths).toContain(`/api/v1/tenants/${tenantId}/spaces`);
-  expect(paths).toContain(`/api/v1/tenants/${tenantId}/sites`);
+  const counts = page.getByRole('region', { name: '租户' });
+  await expect(counts.locator('[data-figure]')).toHaveText(['4', '6', '5']);
+  await expect(counts.locator('p').filter({ hasText: /^成员$/ })).toBeVisible();
+  await expect(counts.locator('p').filter({ hasText: /^空间$/ })).toBeVisible();
+  await expect(counts.locator('p').filter({ hasText: /^站点$/ })).toBeVisible();
+  await expect.poll(() => seenTenant).toBe(overviewTenantId);
+  expect(paths).toContain(`/api/v1/tenants/${overviewTenantId}/members`);
+  expect(paths).toContain(`/api/v1/tenants/${overviewTenantId}/spaces`);
+  expect(paths).toContain(`/api/v1/tenants/${overviewTenantId}/sites`);
 
   const body = await page.locator('body').innerText();
   for (const word of ['席位', '套餐', 'Credit']) expect(body).not.toContain(word);
@@ -65,7 +66,7 @@ test('signed-in overview shows the current tenant counts and the three steps', a
 test('an empty tenant shows an empty overview instead of zeros', async ({ page }) => {
   await armOverview('empty');
   await signIn(page);
-  const counts = page.getByRole('region', { name: '数量' });
+  const counts = page.getByRole('region', { name: '租户' });
   await expect(counts).toContainText('当前租户还没有成员、空间和站点。');
   await expect(counts.locator('strong')).toHaveCount(0);
 });
@@ -73,7 +74,7 @@ test('an empty tenant shows an empty overview instead of zeros', async ({ page }
 test('a failed count query shows the error and trace id, not a zero', async ({ page }) => {
   await armOverview('error');
   await signIn(page);
-  const counts = page.getByRole('region', { name: '数量' });
+  const counts = page.getByRole('region', { name: '租户' });
   const alert = page.getByRole('alert');
   await expect(alert).toContainText('unexpected_error');
   await expect(alert).toContainText('trace-overview');
@@ -83,7 +84,7 @@ test('a failed count query shows the error and trace id, not a zero', async ({ p
 test('a dropped count query shows a network failure, not a zero', async ({ page }) => {
   await armOverview('drop');
   await signIn(page);
-  const counts = page.getByRole('region', { name: '数量' });
+  const counts = page.getByRole('region', { name: '租户' });
   await expect(page.getByRole('alert')).toContainText('网络失败');
   await expect(counts.locator('strong')).toHaveCount(0);
 });

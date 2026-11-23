@@ -15,7 +15,7 @@
 <div class="max-w-md">
   <p class="text-sm font-medium text-ink">{title}</p>
   {#if description}
-    <p class="mt-1 text-sm leading-6 text-muted">{description}</p>
+    <p class="mt-1 text-xs leading-5 text-faint">{description}</p>
   {/if}
   {#if actions}
     <div class="mt-4">

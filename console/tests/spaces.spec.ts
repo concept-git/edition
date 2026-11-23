@@ -42,8 +42,8 @@ test('a maintainer lists spaces, creates one, and keeps auto-release as saved', 
 
   await form.getByLabel('名称').fill('手册');
   await form.getByRole('button', { name: '创建', exact: true }).click();
-  const authored = page.getByRole('listitem').filter({ hasText: '手册' });
-  await expect(authored.getByText('authored', { exact: true })).toBeVisible();
+  const authored = page.getByRole('row').filter({ hasText: '手册' });
+  await expect(authored.getByText('手写', { exact: true })).toBeVisible();
   expect(createKeys).toHaveLength(3);
   expect(createKeys[2]).not.toBe(createKeys[0]);
   expect(createKeys[2]).toBeTruthy();
@@ -75,12 +75,12 @@ test('a maintainer lists spaces, creates one, and keeps auto-release as saved', 
   await expect(page.getByRole('switch', { name: '自动发版' })).not.toBeChecked();
 
   await page.getByRole('navigation', { name: '分区' }).getByRole('link', { name: '空间', exact: true }).click();
-  await form.getByRole('group', { name: '来源模式' }).getByRole('button', { name: 'synced' }).click();
+  await form.getByRole('group', { name: '来源模式' }).getByRole('button', { name: '同步' }).click();
   await form.getByLabel('名称').fill('镜像');
   await form.getByRole('button', { name: '创建', exact: true }).click();
-  const synced = page.getByRole('listitem').filter({ hasText: '镜像' });
-  await expect(synced.getByText('synced', { exact: true })).toBeVisible();
-  await expect(page.getByRole('listitem').filter({ hasText: '手册' }).getByText('authored', { exact: true })).toBeVisible();
+  const synced = page.getByRole('row').filter({ hasText: '镜像' });
+  await expect(synced.getByText('同步', { exact: true })).toBeVisible();
+  await expect(page.getByRole('row').filter({ hasText: '手册' }).getByText('手写', { exact: true })).toBeVisible();
   await synced.getByRole('link', { name: '镜像' }).click();
   await expect(page.getByRole('heading', { level: 1, name: '镜像' })).toBeVisible();
   await expect(page.getByRole('switch', { name: '自动发版' })).toHaveCount(0);

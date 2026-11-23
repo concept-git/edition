@@ -75,7 +75,7 @@ async function openFreshSpace(page: Page) {
 
 async function createPage(page: Page, title: string) {
   const form = page.getByRole('form', { name: '按格式创建' });
-  await form.getByRole('group', { name: '格式' }).getByRole('button', { name: 'markdown', exact: true }).click();
+  await form.getByRole('group', { name: '格式' }).getByRole('button', { name: 'Markdown', exact: true }).click();
   await form.getByLabel('标题').fill(title);
   await form.getByRole('button', { name: '创建', exact: true }).click();
   await expect(page.getByRole('listitem').filter({ hasText: title })).toBeVisible();

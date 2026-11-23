@@ -22,7 +22,7 @@ export function passwordFeedback(failure: ApiFailure): { target: 'old' | 'new' |
 
 export function confirmFeedback(failure: ApiFailure): string {
   if (failure.code === 'invalid_old_password' || failure.code === 'erase_confirmation_invalid') return '邮箱或当前密码不正确。';
-  if (failure.code === 'ownership_transfer_required') return '需要先移交所有者身份，账号仍在。';
+  if (failure.code === 'ownership_transfer_required') return '需要先移交所有者身份，用户还在。';
   return keptDraft('没有完成', failure);
 }
 

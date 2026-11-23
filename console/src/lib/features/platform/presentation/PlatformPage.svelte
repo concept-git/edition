@@ -1,8 +1,9 @@
 <script lang="ts">
   import { api, type ApiResult } from '#lib/shared/api/client';
   import { healthRows, type HealthReport } from '#lib/features/platform/domain/health-status';
-  import { platformOperator } from '#lib/features/platform/domain/operator.svelte';
+  import { readOperator } from '#lib/features/platform/domain/operator.svelte';
   import { getSession } from '#lib/features/session/presentation/session.svelte';
+  import { keyedText } from '#lib/shared/api/copy';
   import Button from '#lib/shared/ui/Button.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
   import PageHeader from '#lib/shared/ui/PageHeader.svelte';
@@ -23,7 +24,7 @@
       empty: '输入至少 3 个字符后查找用户。'
     },
     health: {
-      title: '进程健康',
+      title: '运行状态',
       description: '查看进程与交付健康。这里没有租户正文。',
       empty: '还没有进程心跳。'
     },
@@ -42,7 +43,7 @@
   let query = $state('');
 
   const current = $derived(pages[view]);
-  const rejected = $derived(phase === 'rejected' || (platformOperator.ready && !platformOperator.allowed));
+  const access = $derived.by(() => readOperator(session.accessToken));
 
   if (view !== 'users') void load(session.accessToken, pathFor(view));
 
@@ -106,24 +107,29 @@
 </script>
 
 <PageHeader title={current.title} description={current.description} />
-{#if view === 'users' && !rejected}
-  <form class="mb-4 flex items-end gap-3" onsubmit={search}>
-    <TextField label="查找用户" bind:value={query} />
-    <Button type="submit">查找</Button>
-  </form>
-{/if}
-{#if rejected}
-  <p role="alert" class="text-sm text-ink">直接访问被拒绝。</p>
-{:else if phase === 'error'}
-  <p role="alert" class="text-sm text-ink">{traceId ? `没有完成。追踪号 ${traceId}。` : '没有完成。'}</p>
-{:else if phase === 'loading'}
+{#await access}
   <p class="text-sm text-muted">正在读取。</p>
-{:else if lines.length === 0}
-  <EmptyState title="没有数据" description={current.empty} />
-{:else}
-  <ul class="flex flex-col gap-2 text-sm text-ink">
-    {#each lines as line (line)}
-      <li>{line}</li>
-    {/each}
-  </ul>
-{/if}
+{:then status}
+  {@const denied = phase === 'rejected' || (!status.failure && !status.allowed)}
+  {#if view === 'users' && !denied}
+    <form class="mb-4 flex items-end gap-3" onsubmit={search}>
+      <TextField label="查找用户" bind:value={query} />
+      <Button type="submit">查找</Button>
+    </form>
+  {/if}
+  {#if denied}
+    <p role="alert" class="text-sm text-ink">直接访问被拒绝。</p>
+  {:else if phase === 'error'}
+    <p role="alert" class="text-sm text-ink">{traceId ? `没有完成。追踪号 ${traceId}。` : '没有完成。'}</p>
+  {:else if phase === 'loading'}
+    <p class="text-sm text-muted">正在读取。</p>
+  {:else if lines.length === 0}
+    <EmptyState title="没有数据" description={current.empty} />
+  {:else}
+    <ul class="flex flex-col gap-2 text-sm text-ink">
+      {#each keyedText(lines) as line (line.key)}
+        <li>{line.text}</li>
+      {/each}
+    </ul>
+  {/if}
+{/await}

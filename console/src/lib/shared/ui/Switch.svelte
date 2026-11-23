@@ -23,7 +23,7 @@
     {disabled}
     {onCheckedChange}
     aria-labelledby={labelId}
-    class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full bg-line data-[state=checked]:bg-accent"
+    class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full bg-line disabled:pointer-events-none disabled:opacity-60 data-[state=checked]:bg-accent"
   >
     <Switch.Thumb class="block size-5 rounded-full bg-white data-[state=unchecked]:translate-x-0.5 data-[state=checked]:translate-x-5" />
   </Switch.Root>

@@ -38,7 +38,18 @@ export default defineConfig(async () => ({
   server: {
     proxy: {
       '/auth': controlProxy(controlOrigin),
-      '/api': controlProxy(controlOrigin)
+      '/api': controlProxy(controlOrigin),
+      '/admin': controlProxy(controlOrigin),
+      '/ops': controlProxy(controlOrigin),
+      '/audit': {
+        ...controlProxy(controlOrigin),
+        bypass(req) {
+          const accept = req.headers.accept;
+          if (typeof accept === 'string' && accept.includes('text/html')) return req.url;
+        }
+      },
+      '/webhooks': controlProxy(controlOrigin),
+      '/stats': controlProxy(controlOrigin)
     }
   }
 }));

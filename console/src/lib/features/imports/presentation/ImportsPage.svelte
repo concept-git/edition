@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy, tick } from 'svelte';
   import type { ApiFailure } from '#lib/shared/api/client';
+  import { keyedText } from '#lib/shared/api/copy';
   import { getSession } from '#lib/features/session/presentation/session.svelte';
   import Button from '#lib/shared/ui/Button.svelte';
   import EmptyState from '#lib/shared/ui/EmptyState.svelte';
@@ -188,8 +189,8 @@
       {/if}
       {#if lines.length > 0}
         <ul aria-label="问题报告" class="flex flex-col gap-1 text-sm text-ink">
-          {#each lines as line, index (index)}
-            <li>{line}</li>
+          {#each keyedText(lines) as line (line.key)}
+            <li>{line.text}</li>
           {/each}
         </ul>
       {/if}

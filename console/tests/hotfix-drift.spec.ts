@@ -82,7 +82,7 @@ test('an authored space rejects a whole-bundle import and says why', async ({ pa
   const upload = page.getByRole('form', { name: '导入发版包' });
   await upload.getByLabel('发版包', { exact: true }).setInputFiles('tests/fixtures/guide.zip');
   await upload.getByRole('button', { name: '导入', exact: true }).click();
-  await expect(page.getByRole('alert')).toContainText('authored 空间拒绝整体导入');
+  await expect(page.getByRole('alert')).toContainText('手写空间拒绝整体导入');
   await expect(page.getByRole('alert')).toContainText('界面创作');
   await expect(page.getByRole('status')).toHaveCount(0);
 });
@@ -101,7 +101,7 @@ async function openSpace(page: Page, mode: 'authored' | 'synced', name: string) 
 
 async function createPage(page: Page, title: string) {
   const form = page.getByRole('form', { name: '按格式创建' });
-  await form.getByRole('group', { name: '格式' }).getByRole('button', { name: 'markdown', exact: true }).click();
+  await form.getByRole('group', { name: '格式' }).getByRole('button', { name: 'Markdown', exact: true }).click();
   await form.getByLabel('标题').fill(title);
   await form.getByRole('button', { name: '创建', exact: true }).click();
   await expect(page.getByRole('listitem').filter({ hasText: title })).toBeVisible();

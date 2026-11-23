@@ -80,7 +80,7 @@
   void load();
 </script>
 
-<PageHeader level={2} title="搜索" description="设置搜索字段的优先顺序。搜索不索引工作稿。" />
+<PageHeader level={2} title="搜索" description="排定搜索字段的优先顺序。搜索不索引工作稿。" />
 
 {#if queryFailure}
   <div role="alert" class="flex flex-wrap items-center gap-3 text-sm text-ink">
@@ -93,12 +93,8 @@
       {#each fields as field, index (field)}
         <li class="flex flex-wrap items-center gap-2 text-sm text-ink">
           <span class="w-16">{searchFieldLabel[field]}</span>
-          <Button type="button" variant="quiet" disabled={pending || index === 0} onclick={() => shift(index, -1)}>
-            上移{searchFieldLabel[field]}
-          </Button>
-          <Button type="button" variant="quiet" disabled={pending || index === fields.length - 1} onclick={() => shift(index, 1)}>
-            下移{searchFieldLabel[field]}
-          </Button>
+          <Button type="button" variant="quiet" disabled={pending || index === 0} onclick={() => shift(index, -1)}>上移</Button>
+          <Button type="button" variant="quiet" disabled={pending || index === fields.length - 1} onclick={() => shift(index, 1)}>下移</Button>
         </li>
       {/each}
     </ol>
@@ -109,7 +105,7 @@
       <p role="status" class="text-sm text-ink">已保存</p>
     {/if}
     <div>
-      <Button type="submit" disabled={pending}>保存顺序</Button>
+      <Button type="submit" variant="ink" disabled={pending}>保存顺序</Button>
     </div>
   </form>
 {/if}
